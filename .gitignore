@@ -1,0 +1,73 @@
+# (전체 공통)
+# Mac OS
+.DS_Store
+
+# IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+
+# Eclipse / STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# ==========================================
+# BACKEND (Spring Boot / Gradle)
+/backend/build/
+/backend/.gradle/
+/backend/HELP.md
+
+# Gradle Wrapper는 포함시켜야 함 (협업 시 필수)
+!/backend/gradle/wrapper/gradle-wrapper.jar
+
+# 소스 코드 내의 build 폴더는 무시하되 예외 처리
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# ==========================================
+# FRONTEND (Vue.js / Node)
+/frontend/node_modules/
+/frontend/dist/
+/frontend/dist-ssr/
+
+# 로컬 환경 설정 파일 (보안상 절대 올리면 안 됨)
+/frontend/*.local
+
+# Logs (npm, yarn, pnpm)
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor specific for Frontend (redundant but kept for safety)
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
