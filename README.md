@@ -33,11 +33,12 @@ chore: [common] 초기 프로젝트 구조 세팅 (#1)
 | **`chore`**  | 빌드 설정, 패키지 매니저, 라이브러리 추가 등 |
 | **`docs`**  | 문서 수정 (README, Wiki 등) |
 | **`style`**  | 코드 포맷팅 (세미콜론, 줄바꿈 등 로직 변경 없음) |
+| **`test`**  | 테스트 코드 작성 |
 
 #### 🎯 범위 (Scope) - *필수*
 모노레포 구조이므로 작업 영역을 명시하는 것을 권장합니다.
-- **`fe`**: Frontend (`frontend/` 폴더 작업)
-- **`be`**: Backend (`backend/` 폴더 작업)
+- **`FE`**: Frontend (`frontend/` 폴더 작업)
+- **`BE`**: Backend (`backend/` 폴더 작업)
 - **`common`**: 공통 작업 (`root` 폴더 작업)
 
 <br/>
@@ -93,7 +94,9 @@ chore: [common] 초기 프로젝트 구조 세팅 (#1)
 
 #### 🚀 Pull Request (PR) Process
 1. **템플릿 작성:** PR 생성 시 나타나는 템플릿 양식을 채워주세요.
-2. **이슈 연결:** 내용(Description)에 `Closes #이슈번호`를 반드시 적어서, 머지될 때 이슈가 자동으로 닫히도록 합니다.
+2. **PR 제목:** : 제목은 `type(scope) : 내용 (#issue_number)`로 통일하여 작업 성격이 한 눈에 보이게끔 합니다.
+    - 예: `feat(FE): 메인 배너 슬라이더 구현 (#12)`
+3. **이슈 연결:** 내용(Description)에 `Closes #이슈번호`를 반드시 적어서, 머지될 때 이슈가 자동으로 닫히도록 합니다.
     - 예: `Closes #12`
-3. **리뷰 요청:** Reviewers에 팀원을 지정하고 코드 리뷰를 요청합니다.
-4. **Merge:** 최소 1명 이상의 승인(Approve)을 받은 후 `Merge Commit`을 진행합니다.
+4. **리뷰 요청:** Reviewers에 팀원을 지정하고 코드 리뷰를 요청합니다.
+5. **Merge:** 최소 1명 이상의 승인(Approve)을 받은 후 `Merge Commit`을 진행합니다.
