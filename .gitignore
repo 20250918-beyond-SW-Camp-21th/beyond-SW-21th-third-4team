@@ -48,7 +48,7 @@ bin/
 !**/src/test/**/build/
 
 # Local Env
-src/main/resources/application-local.yml
+**/application-local.yml
 
 # ==========================================
 # FRONTEND (Vue.js / Node)
