@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Builder
-@Table(name = "tbl_user")
+@Table(name = "users")
 public class User extends BaseTimeEntity {
 
     @Id
@@ -19,11 +19,14 @@ public class User extends BaseTimeEntity {
     private Long id;
 
     // 로그인용 아이디
-    @Column(name = "user_id",unique = true,nullable = false)
-    private String userId;
+    @Column(name = "login_id",unique = true,nullable = false)
+    private String loginId;
 
     @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
+    private String name;
 
     @Column(nullable = false)
     private String phone;
