@@ -2,16 +2,5 @@ spring:
   application:
     name: backend
 
-  datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://dev.macacolabs.site:5050/insilence
-    username: team4
-    password: team4
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        format_sql: true
-        show_sql: true
+  profiles:
+    active: local
