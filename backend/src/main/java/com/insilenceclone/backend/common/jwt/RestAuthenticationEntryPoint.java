@@ -1,5 +1,7 @@
 package com.insilenceclone.backend.common.jwt;
 
+import com.insilenceclone.backend.common.exception.BusinessException;
+import com.insilenceclone.backend.common.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
@@ -19,14 +21,19 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        String code = "A001";
-        String message = "인증이 필요합니다.";
+        ErrorCode errorCode = ErrorCode.AUTH_UNAUTHORIZED;
 
-        Throwable cause = authException.getCause();
-        if (cause instanceof com.insilenceclone.backend.common.exception.BusinessException be) {
-            code = be.getErrorCode().getCode();
-            message = be.getErrorCode().getMessage();
+
+        // cause 체인을 끝까지 따라가며 BusinessException 찾기
+        Throwable t = authException;
+        while (t != null) {
+            if (t instanceof BusinessException be) {
+                errorCode = be.getErrorCode();
+                break;
+            }
+            t = t.getCause();
         }
+
 
         String timestamp = java.time.LocalDateTime.now().toString();
         int status = HttpServletResponse.SC_UNAUTHORIZED;
@@ -34,8 +41,8 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         String jsonResponse = "{"
                 + "\"timestamp\":\"" + timestamp + "\","
                 + "\"status\":" + status + ","
-                + "\"code\":\"" + code + "\","
-                + "\"message\":\"" + message + "\""
+                + "\"code\":\"" + errorCode.getCode() + "\","
+                + "\"message\":\"" + errorCode.getMessage() + "\""
                 + "}";
 
         response.getWriter().write(jsonResponse);
