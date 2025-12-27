@@ -17,7 +17,14 @@ public enum ErrorCode {
     AUTH_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "A001", "인증이 필요합니다."),
     AUTH_FORBIDDEN(HttpStatus.FORBIDDEN, "A002", "접근 권한이 없습니다."),
     AUTH_INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A003", "유효하지 않은 토큰입니다."),
-    AUTH_EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "A004", "토큰이 만료되었습니다.");
+    AUTH_EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "A004", "토큰이 만료되었습니다."),
+
+    // cart
+    CART_USER_ID_REQUIRED(HttpStatus.BAD_REQUEST,"CA001","userId는 필수입니다."),
+    CART_ID_REQUIRED(HttpStatus.BAD_REQUEST, "CA002", "cartId는 필수입니다."),
+    CART_PRODUCT_ID_REQUIRED(HttpStatus.BAD_REQUEST, "CA003", "productId는 필수입니다."),
+    CART_QUANTITY_INVALID(HttpStatus.BAD_REQUEST, "CA004", "quantity는 1 이상이어야 합니다.");
+
 
     private final HttpStatus status;
     private final String code;
