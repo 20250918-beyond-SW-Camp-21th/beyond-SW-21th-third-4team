@@ -24,8 +24,8 @@ public record SignUpRequestDto(
         @NotBlank(message = "name은 필수입니다.")
         @Size(min=2,max = 50, message = "name은 2~50자여야 합니다.")
         @Pattern(
-                regexp = "^[가-힣a-zA-Z]+$",
-                message = "name은 한글/영문만 입력할 수 있으며 공백, 숫자, 특수문자는 허용되지 않습니다."
+                regexp = "^[가-힣]+$",
+                message = "name은 한글만 입력할 수 있으며 공백, 숫자, 특수문자는 허용되지 않습니다."
         )
         String name,
 
