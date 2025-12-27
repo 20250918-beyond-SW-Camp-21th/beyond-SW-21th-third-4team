@@ -11,10 +11,14 @@ import java.util.Collections;
 @Getter
 public class CustomUser implements UserDetails {
 
-    private final User user;
+    private final Long id;
+    private final String loginId;
+    private final String password;
 
     public CustomUser(User user) {
-        this.user = user;
+        this.id = user.getId();
+        this.loginId = user.getLoginId();
+        this.password = user.getPassword();
     }
 
     @Override
@@ -24,13 +28,12 @@ public class CustomUser implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        // Spring Security에서 username으로 쓰는 값 = loginId
-        return user.getLoginId();
+        return loginId;
     }
 
     @Override
