@@ -1,0 +1,54 @@
+package com.insilenceclone.backend.domain.user.service;
+
+import com.insilenceclone.backend.common.exception.BusinessException;
+import com.insilenceclone.backend.common.exception.ErrorCode;
+import com.insilenceclone.backend.domain.user.dto.SignUpRequestDto;
+import com.insilenceclone.backend.domain.user.entity.User;
+import com.insilenceclone.backend.domain.user.repository.UserRepository;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.Period;
+
+@Service
+@RequiredArgsConstructor
+public class UserService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    public void signUp(SignUpRequestDto request) {
+
+        if(userRepository.existsByLoginId(request.loginId())){
+            throw new BusinessException(ErrorCode.USER_LOGIN_ID_DUPLICATED);
+        }
+
+        LocalDate today = LocalDate.now();
+
+        // 만 14세 이상 가입 조건
+        int age = Period.between(request.birthDate(), today).getYears();
+        if (age < 14) {
+            throw new BusinessException(ErrorCode.USER_UNDER_MIN_AGE);
+        }
+
+        String encodedPassword = passwordEncoder.encode(request.password());
+
+        User user = User.builder()
+                .loginId(request.loginId())
+                .password(encodedPassword)
+                .name(request.name())
+                .phone(request.phone())
+                .email(request.email())
+                .birthDate(request.birthDate())
+                .address(request.address())
+                .build();
+
+        userRepository.save(user);
+
+    }
+}
