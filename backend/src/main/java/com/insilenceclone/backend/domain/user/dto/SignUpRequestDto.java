@@ -16,8 +16,8 @@ public record SignUpRequestDto(
         @NotBlank(message = "password는 필수입니다.")
         @Size(min = 8, max = 20, message = "password는 8~20자여야 합니다.")
         @Pattern(
-                regexp = "^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]+$",
-                message = "password는 영문과 숫자를 모두 포함해야 합니다."
+                regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*()_+\\-={}\\[\\]:;\"'<>,.?/\\\\]+$",
+                message = "password는 영문과 숫자를 모두 포함해야 하며, 공백 없이 특수문자 사용이 가능합니다."
         )
         String password,
 
