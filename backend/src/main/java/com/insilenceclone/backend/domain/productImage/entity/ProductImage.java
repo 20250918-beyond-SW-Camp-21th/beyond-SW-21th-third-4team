@@ -34,19 +34,15 @@ public class ProductImage extends BaseTimeEntity {
     @Column(name = "sort_order", nullable = false)
     private int sortOrder;
 
-    @Column(name = "is_thumbnail", nullable = false)
-    private boolean isThumbnail;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     private ProductImageStatus status;
 
     public ProductImage(Long productId, String imageUrl,
-                        int sortOrder, boolean isThumbnail) {
+                        int sortOrder) {
         this.productId = productId;
         this.imageUrl = imageUrl;
         this.sortOrder = sortOrder;
-        this.isThumbnail = isThumbnail;
         this.status = ProductImageStatus.ACTIVE;
     }
 }
