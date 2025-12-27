@@ -1,6 +1,8 @@
 package com.insilenceclone.backend.domain.cart.entity;
 
 import com.insilenceclone.backend.common.entity.BaseTimeEntity;
+import com.insilenceclone.backend.common.exception.BusinessException;
+import com.insilenceclone.backend.common.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,9 +29,9 @@ public class CartItem extends BaseTimeEntity {
     private int quantity;           // 수량
 
     private CartItem(Long cartId, Long productId, int quantity) {
-        if (cartId == null) throw new IllegalArgumentException("cartId must not be null");
-        if (productId == null) throw new IllegalArgumentException("productId must not be null");
-        if (quantity <= 0) throw new IllegalArgumentException("quantity must be > 0");
+        if (cartId == null) { throw new BusinessException(ErrorCode.CART_ID_REQUIRED);}
+        if (productId == null) { throw new BusinessException(ErrorCode.CART_PRODUCT_ID_REQUIRED);}
+        if (quantity <= 0) {throw new BusinessException(ErrorCode.CART_QUANTITY_INVALID);}
 
         this.cartId = cartId;
         this.productId = productId;

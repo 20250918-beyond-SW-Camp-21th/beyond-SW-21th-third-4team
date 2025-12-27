@@ -1,6 +1,8 @@
 package com.insilenceclone.backend.domain.cart.entity;
 
 import com.insilenceclone.backend.common.entity.BaseTimeEntity;
+import com.insilenceclone.backend.common.exception.BusinessException;
+import com.insilenceclone.backend.common.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +20,10 @@ public class Cart extends BaseTimeEntity {
     private Long userId;
 
     private Cart(Long userId) {
+        if (userId == null) {
+            throw new BusinessException(ErrorCode.CART_USER_ID_REQUIRED);
+        }
+
         this.userId = userId;
     }
 
