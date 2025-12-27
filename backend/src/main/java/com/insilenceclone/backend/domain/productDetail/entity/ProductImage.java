@@ -1,7 +1,7 @@
-package com.insilenceclone.backend.domain.productImage.entity;
+package com.insilenceclone.backend.domain.productDetail.entity;
 
 import com.insilenceclone.backend.common.entity.BaseTimeEntity;
-import com.insilenceclone.backend.domain.productImage.enums.ProductImageStatus;
+import com.insilenceclone.backend.domain.productDetail.enums.ProductImageStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
