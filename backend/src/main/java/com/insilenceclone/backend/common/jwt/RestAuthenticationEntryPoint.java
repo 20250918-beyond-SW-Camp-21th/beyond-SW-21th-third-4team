@@ -1,12 +1,7 @@
 package com.insilenceclone.backend.common.jwt;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.insilenceclone.backend.common.exception.BusinessException;
-import com.insilenceclone.backend.common.exception.ErrorCode;
-import com.insilenceclone.backend.common.exception.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -16,24 +11,33 @@ import java.io.IOException;
 @Component
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response,
+    public void commence(HttpServletRequest request,
+                         HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
 
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        ErrorCode errorCode = ErrorCode.AUTH_UNAUTHORIZED;
+        String code = "A001";
+        String message = "인증이 필요합니다.";
 
         Throwable cause = authException.getCause();
-        if (cause instanceof BusinessException be) {
-            errorCode = be.getErrorCode();
+        if (cause instanceof com.insilenceclone.backend.common.exception.BusinessException be) {
+            code = be.getErrorCode().getCode();
+            message = be.getErrorCode().getMessage();
         }
 
-        ErrorResponse body = ErrorResponse.of(errorCode);
+        String timestamp = java.time.LocalDateTime.now().toString();
+        int status = HttpServletResponse.SC_UNAUTHORIZED;
 
-        response.getWriter().write(objectMapper.writeValueAsString(body));
+        String jsonResponse = "{"
+                + "\"timestamp\":\"" + timestamp + "\","
+                + "\"status\":" + status + ","
+                + "\"code\":\"" + code + "\","
+                + "\"message\":\"" + message + "\""
+                + "}";
+
+        response.getWriter().write(jsonResponse);
     }
 }
