@@ -1,10 +1,12 @@
 package com.insilenceclone.backend.common.jwt;
 
+import com.insilenceclone.backend.common.exception.BusinessException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,7 +34,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             // 1) 토큰 검증 (문제 있으면 예외 -> EntryPoint에서 401 처리)
-            jwtTokenProvider.validateToken(token);
+            try {
+                jwtTokenProvider.validateToken(token);
+            } catch (BusinessException e) {
+                // AuthenticationException으로 감싸서 EntryPoint로 보내기
+                // TODO(세현) : errorcode로 처리
+                throw new BadCredentialsException("JWT authentication failed", e);
+            }
+
 
             // 2) 토큰에서 loginId 추출
             String loginId = jwtTokenProvider.getUsernameFromJWT(token);

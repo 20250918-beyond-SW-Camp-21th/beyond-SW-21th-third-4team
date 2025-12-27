@@ -1,11 +1,12 @@
 package com.insilenceclone.backend.common.jwt;
 
+import com.insilenceclone.backend.common.exception.BusinessException;
+import com.insilenceclone.backend.common.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -67,14 +68,10 @@ public class JwtTokenProvider {
                     .build()
                     .parseSignedClaims(token);
 
-        } catch (SecurityException | MalformedJwtException e) {
-            throw new BadCredentialsException("Invalid JWT Token");
+        } catch (SecurityException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+            throw new BusinessException(ErrorCode.AUTH_INVALID_TOKEN);
         } catch (ExpiredJwtException e) {
-            throw new BadCredentialsException("Expired JWT Token");
-        } catch (UnsupportedJwtException e) {
-            throw new BadCredentialsException("Unsupported JWT Token");
-        } catch (IllegalArgumentException e) {
-            throw new BadCredentialsException("JWT Token claims empty");
+            throw new BusinessException(ErrorCode.AUTH_EXPIRED_TOKEN);
         }
 
     }
