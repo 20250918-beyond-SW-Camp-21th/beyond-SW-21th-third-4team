@@ -6,9 +6,7 @@ import lombok.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-@Builder
 @Table(name = "cart")
 public class Cart extends BaseTimeEntity {
 
@@ -19,5 +17,13 @@ public class Cart extends BaseTimeEntity {
     @Column(nullable = false, unique = true)
     private Long userId;
 
+    private Cart(Long userId) {
+        this.userId = userId;
+    }
+
+    // 회원가입 시 장바구니 생성
+    public static Cart create(Long userId) {
+        return new Cart(userId);
+    }
 
 }

@@ -7,9 +7,11 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
-@Table(name = "cartitem")
+@Table(name = "cartitem",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_cartitem_cart_product",
+                columnNames = {"cart_id", "product_id"}
+        ))
 public class CartItem extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +26,22 @@ public class CartItem extends BaseTimeEntity {
     @Column(nullable = false)
     private int quantity;           // 수량
 
-    @Column(name = "unit_price",nullable = false)
-    private int unitPrice;          // 제품 1개의 가격
+    private CartItem(Long cartId, Long productId, int quantity) {
+        if (cartId == null) throw new IllegalArgumentException("cartId must not be null");
+        if (productId == null) throw new IllegalArgumentException("productId must not be null");
+        if (quantity <= 0) throw new IllegalArgumentException("quantity must be > 0");
+
+        this.cartId = cartId;
+        this.productId = productId;
+        this.quantity = quantity;
+    }
+
+    public static CartItem create(Long cartId, Long productId, int quantity) {
+        return new CartItem(cartId, productId, quantity);
+    }
+
+    // 같은 상품 수량 증가
+    public void increaseQuantity() {
+        this.quantity ++;
+    }
 }
