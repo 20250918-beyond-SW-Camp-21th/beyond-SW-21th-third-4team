@@ -1,4 +1,4 @@
-package com.insilenceclone.backend.user.entity;
+package com.insilenceclone.backend.domain.user.entity;
 
 import com.insilenceclone.backend.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
