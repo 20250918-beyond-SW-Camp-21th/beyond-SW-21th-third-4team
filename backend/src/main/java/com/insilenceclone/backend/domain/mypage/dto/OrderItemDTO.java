@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class OrderItemResponse {
+public class OrderItemDTO {
 
     private Long id;
     private Long productId;
@@ -17,8 +17,8 @@ public class OrderItemResponse {
     private Long unitPrice;
     private Long totalPrice;
 
-    public static OrderItemResponse from(OrderItem orderItem) {
-        return OrderItemResponse.builder()
+    public static OrderItemDTO from(OrderItem orderItem) {
+        return OrderItemDTO.builder()
                 .id(orderItem.getId())
                 .productId(orderItem.getProductId())
                 .quantity(orderItem.getQuantity())

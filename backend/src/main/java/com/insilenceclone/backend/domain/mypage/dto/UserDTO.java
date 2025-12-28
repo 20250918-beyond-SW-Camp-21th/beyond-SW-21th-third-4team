@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class UserInfoResponse {
+public class UserDTO {
 
     private Long id;
     private String loginId;
@@ -21,8 +21,8 @@ public class UserInfoResponse {
     private LocalDate birthDate;
     private String address;
 
-    public static UserInfoResponse from(User user) {
-        return UserInfoResponse.builder()
+    public static UserDTO from(User user) {
+        return UserDTO.builder()
                 .id(user.getId())
                 .loginId(user.getLoginId())
                 .name(user.getName())

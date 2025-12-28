@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class OrderHistoryResponse {
+public class OrderDTO {
 
     private Long orderId;
     private Long totalPrice;
@@ -24,10 +24,10 @@ public class OrderHistoryResponse {
     private String deliveryMessage;
     private OrderStatus status;
     private LocalDateTime orderedAt;
-    private List<OrderItemResponse> items;
+    private List<OrderItemDTO> items;
 
-    public static OrderHistoryResponse of(Order order, List<OrderItemResponse> items) {
-        return OrderHistoryResponse.builder()
+    public static OrderDTO of(Order order, List<OrderItemDTO> items) {
+        return OrderDTO.builder()
                 .orderId(order.getId())
                 .totalPrice(order.getTotalPrice())
                 .address(order.getAddress())
