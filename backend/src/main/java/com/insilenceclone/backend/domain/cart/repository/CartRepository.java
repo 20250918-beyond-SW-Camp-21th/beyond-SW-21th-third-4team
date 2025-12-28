@@ -10,4 +10,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     // 유저 장바구니 조회
     Optional<Cart> findByUserId(Long userId);
 
+    boolean existsByUserId(Long userId);
+
 }
