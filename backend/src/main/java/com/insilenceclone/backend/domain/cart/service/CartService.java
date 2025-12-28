@@ -7,7 +7,6 @@ import com.insilenceclone.backend.domain.cart.entity.Cart;
 import com.insilenceclone.backend.domain.cart.entity.CartItem;
 import com.insilenceclone.backend.domain.cart.repository.CartItemRepository;
 import com.insilenceclone.backend.domain.cart.repository.CartRepository;
-import com.insilenceclone.backend.domain.product.ProductRepositoryTemp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
