@@ -38,12 +38,14 @@ public class CartItem extends BaseTimeEntity {
         this.quantity = quantity;
     }
 
+    // 카트에 아이템 추가
     public static CartItem create(Long cartId, Long productId, int quantity) {
         return new CartItem(cartId, productId, quantity);
     }
 
     // 같은 상품 수량 증가
-    public void increaseQuantity() {
-        this.quantity ++;
+    public void increaseQuantity(int amount) {
+        if (amount <= 0) {throw new BusinessException(ErrorCode.CART_QUANTITY_INVALID);}
+        this.quantity += amount;
     }
 }
