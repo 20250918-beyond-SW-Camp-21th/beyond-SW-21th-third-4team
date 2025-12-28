@@ -9,7 +9,6 @@ import com.insilenceclone.backend.domain.user.dto.response.TokenResponseDto;
 import com.insilenceclone.backend.domain.user.entity.User;
 import com.insilenceclone.backend.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.token.TokenService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

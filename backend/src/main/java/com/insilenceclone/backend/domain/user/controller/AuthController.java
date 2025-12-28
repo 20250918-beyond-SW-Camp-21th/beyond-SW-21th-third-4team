@@ -1,19 +1,12 @@
 package com.insilenceclone.backend.domain.user.controller;
 
-import com.insilenceclone.backend.common.exception.BusinessException;
-import com.insilenceclone.backend.common.exception.ErrorCode;
-import com.insilenceclone.backend.common.jwt.JwtTokenProvider;
 import com.insilenceclone.backend.common.response.ApiResponse;
 import com.insilenceclone.backend.domain.user.dto.request.LoginRequestDto;
 import com.insilenceclone.backend.domain.user.dto.request.SignUpRequestDto;
 import com.insilenceclone.backend.domain.user.dto.response.TokenResponseDto;
-import com.insilenceclone.backend.domain.user.entity.User;
-import com.insilenceclone.backend.domain.user.repository.UserRepository;
-import com.insilenceclone.backend.domain.user.security.CustomUser;
 import com.insilenceclone.backend.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+
     // 회원가입
     @PostMapping("/signup")
     public ApiResponse<Void> signup(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
