@@ -36,27 +36,4 @@ public class AuthController {
         TokenResponseDto token = userService.login(loginRequestDto);
         return ApiResponse.success(token);
     }
-
-    // ⚠️ 임시: 로그인 구현 전 테스트용 (나중에 꼭 삭제)
-    @PostMapping("/dev-token")
-    public ApiResponse<String> devToken(@RequestParam String loginId) {
-        User user = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_INPUT)); // 대충 처리
-
-        String token = jwtTokenProvider.createToken(user.getLoginId(), user.getId());
-        return ApiResponse.success(token);
-    }
-    /**
-     * ✅ 인증 확인 API (토큰 넣고 호출하면 현재 사용자 정보가 내려와야 함)
-     */
-    @GetMapping("/test/me")
-    public ApiResponse<MeResponse> me(@AuthenticationPrincipal CustomUser principal) {
-        // principal이 null이면 인증이 안 된 상태(=필터가 인증 객체 세팅 못함 or 토큰 없음)
-        if (principal == null) {
-            return ApiResponse.success(new MeResponse(null, null, false));
-        }
-        return ApiResponse.success(new MeResponse(principal.getId(), principal.getUsername(), true));
-    }
-
-    public record MeResponse(Long userId, String loginId, boolean authenticated) {}
 }
