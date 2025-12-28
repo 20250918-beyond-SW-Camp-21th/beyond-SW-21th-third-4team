@@ -4,7 +4,9 @@ import com.insilenceclone.backend.common.exception.BusinessException;
 import com.insilenceclone.backend.common.exception.ErrorCode;
 import com.insilenceclone.backend.common.jwt.JwtTokenProvider;
 import com.insilenceclone.backend.common.response.ApiResponse;
-import com.insilenceclone.backend.domain.user.dto.SignUpRequestDto;
+import com.insilenceclone.backend.domain.user.dto.request.LoginRequestDto;
+import com.insilenceclone.backend.domain.user.dto.request.SignUpRequestDto;
+import com.insilenceclone.backend.domain.user.dto.response.TokenResponseDto;
 import com.insilenceclone.backend.domain.user.entity.User;
 import com.insilenceclone.backend.domain.user.repository.UserRepository;
 import com.insilenceclone.backend.domain.user.security.CustomUser;
@@ -29,6 +31,11 @@ public class AuthController {
         return ApiResponse.success();
     }
 
+    @PostMapping("/login")
+    public ApiResponse<TokenResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
+        TokenResponseDto token = userService.login(loginRequestDto);
+        return ApiResponse.success(token);
+    }
 
     // ⚠️ 임시: 로그인 구현 전 테스트용 (나중에 꼭 삭제)
     @PostMapping("/dev-token")

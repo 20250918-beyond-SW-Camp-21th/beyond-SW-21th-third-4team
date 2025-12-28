@@ -2,11 +2,14 @@ package com.insilenceclone.backend.domain.user.service;
 
 import com.insilenceclone.backend.common.exception.BusinessException;
 import com.insilenceclone.backend.common.exception.ErrorCode;
-import com.insilenceclone.backend.domain.user.dto.SignUpRequestDto;
+import com.insilenceclone.backend.common.jwt.JwtTokenProvider;
+import com.insilenceclone.backend.domain.user.dto.request.LoginRequestDto;
+import com.insilenceclone.backend.domain.user.dto.request.SignUpRequestDto;
+import com.insilenceclone.backend.domain.user.dto.response.TokenResponseDto;
 import com.insilenceclone.backend.domain.user.entity.User;
 import com.insilenceclone.backend.domain.user.repository.UserRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.token.TokenService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +23,9 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
+    // 회원가입
     @Transactional
     public void signUp(SignUpRequestDto request) {
 
@@ -49,6 +54,20 @@ public class UserService {
                 .build();
 
         userRepository.save(user);
+    }
 
+    // 로그인
+    @Transactional(readOnly = true)
+    public TokenResponseDto login(LoginRequestDto request) {
+
+        User user = userRepository.findByLoginId(request.loginId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.AUTH_LOGIN_FAILED));
+
+        if(!passwordEncoder.matches(request.password(), user.getPassword())){
+            throw new BusinessException(ErrorCode.AUTH_LOGIN_FAILED);
+        }
+
+        String accessToken = jwtTokenProvider.createToken(user.getLoginId(),user.getId());
+        return new TokenResponseDto(accessToken);
     }
 }
