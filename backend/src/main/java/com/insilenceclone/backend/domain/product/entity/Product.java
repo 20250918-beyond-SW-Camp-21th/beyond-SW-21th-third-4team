@@ -21,8 +21,9 @@ public class Product {
     @Column(nullable = false, length = 100)
     private String name;
 
+    // 12.28 Integer -> Long으로 변경
     @Column(nullable = false)
-    private Integer price;
+    private Long price;
 
     @Column(nullable = false, length = 50)
     private String category;
@@ -34,7 +35,7 @@ public class Product {
     private String description;
 
     @Builder
-    public Product(String name, Integer price, String category, String imageUrl, String description) {
+    public Product(String name, Long price, String category, String imageUrl, String description) {
         this.name = name;
         this.price = price;
         this.category = category;
