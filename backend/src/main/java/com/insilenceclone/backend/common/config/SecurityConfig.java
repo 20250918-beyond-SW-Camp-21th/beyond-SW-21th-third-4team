@@ -59,6 +59,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
                          .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/v1/mypage/test/**").permitAll() // TODO: 로그인 기능 구현 후 제거
 
                         // 그 외 인증 필요
                         .anyRequest().authenticated()
