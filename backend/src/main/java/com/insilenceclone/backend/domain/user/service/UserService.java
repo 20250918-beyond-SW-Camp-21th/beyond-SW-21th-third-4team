@@ -3,6 +3,8 @@ package com.insilenceclone.backend.domain.user.service;
 import com.insilenceclone.backend.common.exception.BusinessException;
 import com.insilenceclone.backend.common.exception.ErrorCode;
 import com.insilenceclone.backend.common.jwt.JwtTokenProvider;
+import com.insilenceclone.backend.domain.cart.entity.Cart;
+import com.insilenceclone.backend.domain.cart.repository.CartRepository;
 import com.insilenceclone.backend.domain.user.dto.request.LoginRequestDto;
 import com.insilenceclone.backend.domain.user.dto.request.SignUpRequestDto;
 import com.insilenceclone.backend.domain.user.dto.response.TokenResponseDto;
@@ -23,6 +25,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final CartRepository cartRepository;
 
     // 회원가입
     @Transactional
@@ -52,7 +55,12 @@ public class UserService {
                 .address(request.address())
                 .build();
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        if(!cartRepository.existsByUserId(savedUser.getId())){
+            Cart cart = Cart.create(savedUser.getId());
+            cartRepository.save(cart);
+        }
     }
 
     // 로그인
