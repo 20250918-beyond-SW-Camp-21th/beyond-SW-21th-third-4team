@@ -23,7 +23,8 @@ public enum ErrorCode {
     // user
     USER_LOGIN_ID_DUPLICATED(HttpStatus.BAD_REQUEST, "U001", "이미 사용 중인 아이디입니다."),
     USER_UNDER_MIN_AGE(HttpStatus.BAD_REQUEST, "U002", "만 14세 이상만 가입할 수 있습니다."),
-    
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "U003", "사용자가 존재하지 않습니다."),
+
 
     // cart
     CART_USER_ID_REQUIRED(HttpStatus.BAD_REQUEST,"CA001","userId는 필수입니다."),
@@ -32,6 +33,9 @@ public enum ErrorCode {
     CART_QUANTITY_INVALID(HttpStatus.BAD_REQUEST, "CA004", "quantity는 1 이상이어야 합니다."),
     CART_NOT_FOUND(HttpStatus.NOT_FOUND, "C005", "장바구니가 없습니다."),
     CART_EMPTY(HttpStatus.NOT_FOUND, "C006", "장바구니가 비어있습니다."),
+
+    // Product
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "P001", "상품이 존재하지 않습니다."),
 
     // temp(임시)
     TEMP_PRODUCT_DOES_NOT_EXIST(HttpStatus.NOT_FOUND, "T001", "존재하지 않는 상품입니다.");
