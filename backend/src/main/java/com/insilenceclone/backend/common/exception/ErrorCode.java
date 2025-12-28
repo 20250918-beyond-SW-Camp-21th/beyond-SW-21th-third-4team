@@ -18,10 +18,12 @@ public enum ErrorCode {
     AUTH_FORBIDDEN(HttpStatus.FORBIDDEN, "A002", "접근 권한이 없습니다."),
     AUTH_INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A003", "유효하지 않은 토큰입니다."),
     AUTH_EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "A004", "토큰이 만료되었습니다."),
+    AUTH_LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "A005", "아이디 또는 비밀번호가 올바르지 않습니다."),
 
     // user
     USER_LOGIN_ID_DUPLICATED(HttpStatus.BAD_REQUEST, "U001", "이미 사용 중인 아이디입니다."),
     USER_UNDER_MIN_AGE(HttpStatus.BAD_REQUEST, "U002", "만 14세 이상만 가입할 수 있습니다."),
+    
 
     // cart
     CART_USER_ID_REQUIRED(HttpStatus.BAD_REQUEST,"CA001","userId는 필수입니다."),
