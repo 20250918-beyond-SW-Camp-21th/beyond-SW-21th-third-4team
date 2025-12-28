@@ -65,7 +65,7 @@ public class Order extends BaseTimeEntity {
         return this.totalPrice * MILEAGE_RATE / 100;
     }
 
-    public void updateTotalPrice(Long totalPrice) {
-        this.totalPrice = totalPrice;
+    public void addPrice(OrderItem orderItem) {
+        this.totalPrice += orderItem.calculateTotalPrice();
     }
 }

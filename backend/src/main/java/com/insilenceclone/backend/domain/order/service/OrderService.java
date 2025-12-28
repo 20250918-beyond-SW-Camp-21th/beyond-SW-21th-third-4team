@@ -6,7 +6,9 @@ import com.insilenceclone.backend.domain.cart.entity.Cart;
 import com.insilenceclone.backend.domain.cart.entity.CartItem;
 import com.insilenceclone.backend.domain.cart.repository.CartItemRepository;
 import com.insilenceclone.backend.domain.cart.repository.CartRepository;
-import com.insilenceclone.backend.domain.order.dto.request.OrderRequestDto;
+import com.insilenceclone.backend.domain.order.dto.request.OrderCartRequestDto;
+import com.insilenceclone.backend.domain.order.dto.request.OrderDeliveryDto;
+import com.insilenceclone.backend.domain.order.dto.request.OrderDirectRequestDto;
 import com.insilenceclone.backend.domain.order.entity.Order;
 import com.insilenceclone.backend.domain.order.entity.OrderItem;
 import com.insilenceclone.backend.domain.order.enums.OrderStatus;
@@ -14,7 +16,6 @@ import com.insilenceclone.backend.domain.order.repository.OrderItemRepository;
 import com.insilenceclone.backend.domain.order.repository.OrderRepository;
 import com.insilenceclone.backend.domain.product.ProductRepositoryTemp;
 import com.insilenceclone.backend.domain.product.entity.Product;
-import com.insilenceclone.backend.domain.user.entity.User;
 import com.insilenceclone.backend.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,63 +37,20 @@ public class OrderService {
     private final CartItemRepository  cartItemRepository;
     // TODO: ProductRepository 의존성 주입
 
-    /* 바로 구매 */
+    /* 바로 구매(단일 상품) */
     @Transactional
-    public Long createOrder(Long userId, OrderRequestDto requestDto) {
+    public Long createOrder(Long userId, OrderDirectRequestDto requestDto) {
+        // <상품ID, 수량>
+        Map<Long, Integer> productQuantityMap = new HashMap<>();
+        productQuantityMap.put(requestDto.getProductId(), requestDto.getCount());
 
-        // TODO: 임시 검증. 추후 USER_NOT_FOUND 에러코드 추가
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("회원 정보 없음"));
-
-        Order order = createBaseOrder(userId, requestDto);
-
-        Long totalPrice = 0L;
-
-        /* 주문 생성 했으니, 주문 상품 생성 */
-        for(OrderRequestDto.OrderProductDto productDto : requestDto.getProducts()) {
-            // TODO: 에러코드 추가되면 수정
-            Product product = productRepository.findById(productDto.getProductId()).orElseThrow(
-                    () -> new IllegalArgumentException("상품이 존재하지 않습니다.")
-            );
-
-            // TODO: 재고 감소 로직 (Optional)
-
-            OrderItem orderItem = OrderItem.builder()
-                    .orderId(order.getId())
-                    .productId(product.getId())
-                    .quantity(productDto.getCount())
-                    .unitPrice(product.getPrice())
-                    .build();
-
-            orderItemRepository.save(orderItem);
-
-            totalPrice += orderItem.calculateTotalPrice();
-        }
-
-        order.updateTotalPrice(totalPrice);
-
-        return order.getId();
+        return processOrder(userId, requestDto, productQuantityMap);
     }
 
     /* 장바구니 구매 */
     @Transactional
-    public Long createOrderFromCart(Long userId, OrderRequestDto requestDto) {
+    public Long createOrderFromCart(Long userId, OrderCartRequestDto requestDto) {
 
-        /*
-        * 흐름도
-        * 1. userId 유효성 검사
-        * 2. 장바구니를 CartRepository 사용하여 조회
-        * 3. Order 객체 생성
-        * 4. List 반복문을 돌려 OrderItem으로 이관
-        * 5. Order 저장
-        * 6. 장바구니 비우기 (deleteAll)
-        * */
-
-        // TODO: 에러코드 추가되면 수정
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("회원 정보 없음"));
-
-        // TODO : CartRepository 사용하여 조회
          Cart cart = cartRepository.findByUserId(userId).orElseThrow(
                  () -> new BusinessException(ErrorCode.CART_NOT_FOUND)
          );
@@ -103,51 +61,20 @@ public class OrderService {
              throw new BusinessException(ErrorCode.CART_EMPTY);
          }
 
-        List<Long> productIds = cartItemList.stream()
-                .map(CartItem::getProductId)
-                .toList();
+         // <상품ID, 수량>
+         Map<Long, Integer> productQuantityMap = new HashMap<>();
+         for(CartItem cartItem : cartItemList) {
+             productQuantityMap.put(cartItem.getProductId(), cartItem.getQuantity());
+         }
 
-        List<Product> productList = productRepository.findAllById(productIds);
+         Long orderId = processOrder(userId, requestDto, productQuantityMap);
+         // 기존 장바구니 삭제
+         cartItemRepository.deleteAll(cartItemList);
 
-        Map<Long, Product> productMap = new HashMap<>();
-        for (Product product : productList) {
-            productMap.put(product.getId(), product);
-        }
-
-        // Order 객체 생성
-        Order order = createBaseOrder(userId, requestDto);
-
-         Long totalPrice = 0L;
-
-        // Cart 객체 불러오기(장바구니를 OrderItem으로 이관)
-        for(CartItem cartItem : cartItemList) {
-            Product product = productMap.get(cartItem.getProductId());
-
-            // TODO: 에러코드 추가되면 수정
-            if (product == null) {
-                throw new IllegalArgumentException("상품 정보 없음");
-            }
-
-            OrderItem orderItem = OrderItem.builder()
-                    .orderId(order.getId())
-                    .productId(product.getId())
-                    .quantity(cartItem.getQuantity())
-                    .unitPrice(product.getPrice())
-                    .build();
-
-            orderItemRepository.save(orderItem);
-
-            totalPrice += orderItem.calculateTotalPrice();
-        }
-
-        order.updateTotalPrice(totalPrice);
-
-        cartItemRepository.deleteAll(cartItemList);
-
-        return order.getId();
+         return orderId;
     }
 
-    private Order createBaseOrder(Long userId, OrderRequestDto requestDto) {
+    private Order createBaseOrder(Long userId, OrderDeliveryDto requestDto) {
         Order order = Order.builder()
                 .userId(userId)
                 .address(requestDto.getAddress())
@@ -161,5 +88,47 @@ public class OrderService {
         orderRepository.save(order);
 
         return order;
+    }
+
+    /* 중복 제거 목적의 주문 처리 공통 메소드 : 바로 구매와 장바구니 구매의 로직을 하나로 통합 */
+    private Long processOrder(Long userId, OrderDeliveryDto deliveryDto, Map<Long, Integer> quantityMap) {
+        if (!userRepository.existsById(userId)) {
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        // Bulk 연산
+        List<Product> products = productRepository.findAllById(quantityMap.keySet());
+
+        // 요청한 상품 개수와 실제 DB 조회 개수(=ID의 개수)가 다르면 예외 처리
+        if (products.size() != quantityMap.size()) {
+            throw new BusinessException(ErrorCode.PRODUCT_NOT_FOUND);
+        }
+
+        // 조회된 리스트를 상품 ID와 그에 해당하는 상품의 맵으로 변경
+        Map<Long, Product> productMap = new HashMap<>();
+        for (Product product : products) {
+            productMap.put(product.getId(), product);
+        }
+
+        Order order = createBaseOrder(userId, deliveryDto);
+
+        // Orderitem 생성 및 저장
+        for(Long productId : quantityMap.keySet()) {
+            Product product = productMap.get(productId);
+            int quantity = quantityMap.get(productId);
+
+            // TODO: 재고 감소 로직
+
+            OrderItem orderItem = OrderItem.builder()
+                    .orderId(order.getId())
+                    .productId(product.getId())
+                    .quantity(quantity)
+                    .unitPrice(product.getPrice())
+                    .build();
+            orderItemRepository.save(orderItem);
+
+            order.addPrice(orderItem);
+        }
+        return order.getId();
     }
 }
