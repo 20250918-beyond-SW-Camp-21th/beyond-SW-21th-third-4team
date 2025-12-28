@@ -31,8 +31,10 @@ public enum ErrorCode {
     CART_PRODUCT_ID_REQUIRED(HttpStatus.BAD_REQUEST, "CA003", "productId는 필수입니다."),
     CART_QUANTITY_INVALID(HttpStatus.BAD_REQUEST, "CA004", "quantity는 1 이상이어야 합니다."),
     CART_NOT_FOUND(HttpStatus.NOT_FOUND, "C005", "장바구니가 없습니다."),
-    CART_EMPTY(HttpStatus.NOT_FOUND, "C006", "장바구니가 비어있습니다.");
+    CART_EMPTY(HttpStatus.NOT_FOUND, "C006", "장바구니가 비어있습니다."),
 
+    // temp(임시)
+    TEMP_PRODUCT_DOES_NOT_EXIST(HttpStatus.NOT_FOUND, "T001", "존재하지 않는 상품입니다.");
 
     private final HttpStatus status;
     private final String code;
