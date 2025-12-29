@@ -37,6 +37,9 @@ public enum ErrorCode {
     // Product
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "P001", "상품이 존재하지 않습니다."),
 
+    // Product Image
+    PRODUCT_IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "I001", "이미지가 존재하지 않습니다."),
+
     // temp(임시)
     TEMP_PRODUCT_DOES_NOT_EXIST(HttpStatus.NOT_FOUND, "T001", "존재하지 않는 상품입니다."),
 
