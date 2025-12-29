@@ -102,6 +102,7 @@ public class CartService {
                 .toList();
     }
 
+    @Transactional
     public void deleteItems(Long userId, CartItemsDeleteRequestDto request) {
 
         /*
@@ -120,5 +121,28 @@ public class CartService {
         }
 
         cartItemRepository.deleteByCartIdAndIdIn(cart.getId(), ids);
+    }
+
+    @Transactional
+    public void increaseQuantity(Long userId, Long cartItemId) {
+
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CART_NOT_FOUND));
+
+        CartItem cartItem = cartItemRepository.findByIdAndCartId(cartItemId,cart.getId())
+                .orElseThrow(()-> new BusinessException(ErrorCode.CART_ITEM_NOT_FOUND));
+
+        cartItem.increaseQuantity(1);
+    }
+
+    @Transactional
+    public void decreaseQuantity(Long userId, Long cartItemId) {
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CART_NOT_FOUND));
+
+        CartItem cartItem = cartItemRepository.findByIdAndCartId(cartItemId,cart.getId())
+                .orElseThrow(()-> new BusinessException(ErrorCode.CART_ITEM_NOT_FOUND));
+
+        cartItem.decreaseQuantity();
     }
 }
