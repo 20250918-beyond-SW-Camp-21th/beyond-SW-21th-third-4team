@@ -22,7 +22,6 @@ public class ProductController {
         return "main";
     }
 
-
     // ex. /products?category=OUTER
     @GetMapping("/products")
     public String list(@RequestParam(value = "category", required = false) String category, Model model) {

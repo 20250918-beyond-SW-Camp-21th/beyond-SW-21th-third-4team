@@ -9,12 +9,15 @@ import com.insilenceclone.backend.domain.cart.repository.CartRepository;
 import com.insilenceclone.backend.domain.order.dto.request.OrderCartRequestDto;
 import com.insilenceclone.backend.domain.order.dto.request.OrderDeliveryDto;
 import com.insilenceclone.backend.domain.order.dto.request.OrderDirectRequestDto;
+import com.insilenceclone.backend.domain.order.dto.response.OrderDetailResponseDto;
+import com.insilenceclone.backend.domain.order.dto.response.OrderItemDetailResponseDto;
 import com.insilenceclone.backend.domain.order.entity.Order;
 import com.insilenceclone.backend.domain.order.entity.OrderItem;
 import com.insilenceclone.backend.domain.order.enums.OrderStatus;
 import com.insilenceclone.backend.domain.order.repository.OrderItemRepository;
 import com.insilenceclone.backend.domain.order.repository.OrderRepository;
 import com.insilenceclone.backend.domain.product.entity.Product;
+import com.insilenceclone.backend.domain.product.repository.ProductRepositoryTemp;
 import com.insilenceclone.backend.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -129,5 +132,54 @@ public class OrderService {
             order.addPrice(orderItem);
         }
         return order.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public OrderDetailResponseDto getOrderDetail(Long userId, Long orderId) {
+        /*
+        * 1. 주문이 존재하는지 검증
+        * 2. 이 주문이 본인의 주문인지 검증
+        * 3. orderId로 주문 목록을 모두 가져옴
+        * 4. 상품 정보 조회
+        * 5. OrderItem을 OrderDetailItemDto로 변경
+        * */
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                () -> new BusinessException(ErrorCode.ORDER_NOT_FOUND)
+        );
+
+        if(!order.getUserId().equals(userId)) {
+            throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
+        }
+
+        List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderId);
+
+        // 상품 정보 Bulk 조회
+        List<Long> productIds = orderItems.stream()
+                .map(OrderItem::getProductId)
+                .toList();
+
+        List<Product> products = productRepository.findAllById(productIds);
+
+        // Map 사용
+        Map<Long, Product> productMap = new HashMap<>();
+        for (Product product : products) {
+            productMap.put(product.getId(), product);
+        }
+
+        List<OrderItemDetailResponseDto> itemDtos = orderItems.stream()
+                .map(item -> {
+                    Product product = productMap.get(item.getProductId());
+
+                    return OrderItemDetailResponseDto.builder()
+                            .productId(product.getId())
+                            .productName(product != null ? product.getName() : "(삭제된 상품입니다.)")
+                            .quantity(item.getQuantity())
+                            .unitPrice(item.getUnitPrice())
+                            .totalAmount(item.calculateTotalPrice())
+                            .build();
+                })
+                .toList();
+
+        return OrderDetailResponseDto.from(order, itemDtos);
     }
 }
