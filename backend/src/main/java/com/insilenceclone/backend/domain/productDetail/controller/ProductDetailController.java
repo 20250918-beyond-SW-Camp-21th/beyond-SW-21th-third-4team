@@ -1,12 +1,13 @@
 package com.insilenceclone.backend.domain.productDetail.controller;
 
+import com.insilenceclone.backend.common.response.ApiResponse;
+import com.insilenceclone.backend.domain.productDetail.controller.dto.ProductDetailResponse;
 import com.insilenceclone.backend.domain.productDetail.service.ProductDetailService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/product-details")
@@ -17,19 +18,10 @@ public class ProductDetailController {
 
     // 상품 상세 페이지 조회
     @GetMapping("/{productId}")
-    public void getDetail(@PathVariable Long productId) {
-        // TODO: 상품 상세 조회 호출
-    }
-
-    // 장바구니 담기
-    @PostMapping("/{productId}/cart")
-    public void addToCart(@PathVariable Long productId) {
-        // TODO: 장바구니 호출
-    }
-
-    // 바로 구매
-    @PostMapping("/{productId}/order")
-    public void order(@PathVariable Long productId) {
-        // TODO: 바로 구매 호출
+    public ApiResponse<ProductDetailResponse> getDetail(
+            @PathVariable Long productId
+    ) {
+        ProductDetailResponse response = service.getDetail(productId);
+        return ApiResponse.success(response);
     }
 }
