@@ -1,4 +1,4 @@
-package com.insilenceclone.backend.domain.productDetail.controller.dto.response;
+package com.insilenceclone.backend.domain.productDetail.controller.dto;
 
 import com.insilenceclone.backend.domain.product.entity.Product;
 
