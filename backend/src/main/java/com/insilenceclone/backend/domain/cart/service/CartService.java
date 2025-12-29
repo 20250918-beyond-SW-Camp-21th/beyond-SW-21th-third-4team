@@ -3,6 +3,7 @@ package com.insilenceclone.backend.domain.cart.service;
 import com.insilenceclone.backend.common.exception.BusinessException;
 import com.insilenceclone.backend.common.exception.ErrorCode;
 import com.insilenceclone.backend.domain.cart.dto.request.CartItemAddRequestDto;
+import com.insilenceclone.backend.domain.cart.dto.request.CartItemsDeleteRequestDto;
 import com.insilenceclone.backend.domain.cart.dto.response.CartItemResponseDto;
 import com.insilenceclone.backend.domain.cart.entity.Cart;
 import com.insilenceclone.backend.domain.cart.entity.CartItem;
@@ -101,4 +102,23 @@ public class CartService {
                 .toList();
     }
 
+    public void deleteItems(Long userId, CartItemsDeleteRequestDto request) {
+
+        /*
+        * 1. 유저의 장바구니를 찾는다.
+        * 2. userId, cartItemId 를 통해 삭제해야할 list를 찾음
+        * 3. 삭제*/
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CART_NOT_FOUND));
+
+        List<Long> ids = request.cartItemIds().stream().distinct().toList();
+
+        List<CartItem> cartItems = cartItemRepository.findByCartIdAndIdIn(cart.getId(),ids);
+
+        if(ids.size()!=cartItems.size()){
+            throw new BusinessException(ErrorCode.CART_ITEM_NOT_FOUND);
+        }
+
+        cartItemRepository.deleteByCartIdAndIdIn(cart.getId(), ids);
+    }
 }
