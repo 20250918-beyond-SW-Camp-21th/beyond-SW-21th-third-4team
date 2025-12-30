@@ -46,7 +46,11 @@ public enum ErrorCode {
 
     // Order
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "O001", "주문 정보가 존재하지 않습니다."),
-    ORDER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "O002", "주문 조회의 권한이 없습니다.");
+    ORDER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "O002", "주문 조회의 권한이 없습니다."),
+
+    // QnA
+    QNA_NOT_FOUND(HttpStatus.NOT_FOUND, "Q001", "게시글을 찾을 수 없습니다."),
+    QNA_NOT_PERMITTED(HttpStatus.FORBIDDEN, "Q002", "게시글 열람 권한이 없는 사용자입니다." );
 
     private final HttpStatus status;
     private final String code;

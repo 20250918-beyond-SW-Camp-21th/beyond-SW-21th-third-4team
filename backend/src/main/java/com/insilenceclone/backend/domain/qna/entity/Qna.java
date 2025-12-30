@@ -1,6 +1,9 @@
 package com.insilenceclone.backend.domain.qna.entity;
 
 import com.insilenceclone.backend.common.entity.BaseTimeEntity;
+import com.insilenceclone.backend.common.exception.BusinessException;
+import com.insilenceclone.backend.common.exception.ErrorCode;
+import com.insilenceclone.backend.domain.qna.controller.dto.request.QnaRequest;
 import com.insilenceclone.backend.domain.qna.enums.QnaType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -45,5 +48,16 @@ public class Qna extends BaseTimeEntity {
         this.content = content;
         this.userId = userId;
         this.productId = productId;
+    }
+
+    public void validateOwner(Long requestUserId) {
+
+        if(this.type == QnaType.NOTICE) {
+            return;
+        }
+
+        if(!this.userId.equals(requestUserId)){
+            throw new BusinessException(ErrorCode.QNA_NOT_PERMITTED);
+        }
     }
 }
