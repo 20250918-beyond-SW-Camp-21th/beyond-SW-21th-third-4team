@@ -115,7 +115,7 @@ If you encounter CORS errors, check:
 2. Browser console for specific error messages
 3. The CORS configuration in `backend/src/main/java/com/insilenceclone/backend/common/config/SecurityConfig.java`
 
-For a detailed explanation of the CORS changes, see: [`SECURITY_CONFIG_CHANGES.md`](../SECURITY_CONFIG_CHANGES.md)
+For a detailed explanation of the CORS changes, see: [`SECURITY_CONFIG_CHANGES.md`](../../SECURITY_CONFIG_CHANGES.md)
 
 ## Features Implemented
 

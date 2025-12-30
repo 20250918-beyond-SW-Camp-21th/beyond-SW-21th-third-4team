@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이쇼핑 :: INSILENCE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-size-xs: 10px;
+            --font-size-small: 11px;
+            --font-size-medium: 13px;
+            --font-size-large: 16px;
+            --color-primary: #000;
+            --color-secondary: #757575;
+            --color-border: #e0e0e0;
+            --color-bg: #fff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-primary);
+            font-size: var(--font-size-medium);
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: 'Noto Sans KR', sans-serif;
+            cursor: pointer;
+        }
+
+        /* Top Utility Bar */
+        .top-utility {
+            height: 32px;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 40px;
+            font-size: var(--font-size-small);
+        }
+
+        .top-utility-menu {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .top-utility-menu a,
+        .top-utility-menu button {
+            background: none;
+            border: none;
+            color: var(--color-secondary);
+            font-size: var(--font-size-small);
+            padding: 0;
+        }
+
+        .top-utility-menu a:hover,
+        .top-utility-menu button:hover {
+            color: var(--color-primary);
+        }
+
+        .divider {
+            color: var(--color-border);
+        }
+
+        /* Header */
+        header {
+            border-bottom: 1px solid var(--color-border);
+            background: var(--color-bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 40px;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 400;
+            letter-spacing: 3px;
+        }
+
+        /* Main Navigation */
+        .main-nav {
+            display: flex;
+            gap: 35px;
+            font-size: var(--font-size-medium);
+        }
+
+        .main-nav a {
+            color: var(--color-primary);
+            font-weight: 300;
+        }
+
+        .main-nav a:hover {
+            font-weight: 400;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .header-icons button {
+            background: none;
+            border: none;
+            font-size: var(--font-size-medium);
+            color: var(--color-primary);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 40px;
+            display: flex;
+            gap: 60px;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            min-width: 200px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 18px;
+        }
+
+        .sidebar-menu a,
+        .sidebar-menu button {
+            background: none;
+            border: none;
+            font-size: var(--font-size-medium);
+            color: var(--color-secondary);
+            font-weight: 300;
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu button:hover {
+            color: var(--color-primary);
+        }
+
+        .sidebar-menu a.active,
+        .sidebar-menu button.active {
+            color: var(--color-primary);
+            font-weight: 400;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 400;
+            margin-bottom: 50px;
+            letter-spacing: 1px;
+        }
+
+        /* Order Status Summary */
+        .order-status-summary {
+            border: 1px solid var(--color-border);
+            padding: 40px;
+            margin-bottom: 60px;
+        }
+
+        .summary-header {
+            font-size: var(--font-size-small);
+            color: var(--color-secondary);
+            margin-bottom: 25px;
+        }
+
+        .status-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .status-item {
+            flex: 1;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .status-item + .status-item {
+            border-left: 1px solid var(--color-border);
+        }
+
+        .status-label {
+            font-size: var(--font-size-small);
+            color: var(--color-secondary);
+            margin-bottom: 15px;
+        }
+
+        .status-count {
+            font-size: 24px;
+            font-weight: 300;
+            color: var(--color-primary);
+        }
+
+        /* Auth Section */
+        .auth-section {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 50px;
+            border: 1px solid var(--color-border);
+        }
+
+        .auth-section h2 {
+            font-size: var(--font-size-large);
+            font-weight: 400;
+            margin-bottom: 35px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: var(--font-size-small);
+            color: var(--color-secondary);
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--color-border);
+            background: var(--color-bg);
+            font-size: var(--font-size-medium);
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--color-primary);
+            color: var(--color-bg);
+            border: none;
+            padding: 14px;
+            font-size: var(--font-size-small);
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary:hover {
+            background: #333;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 400;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--color-primary);
+            letter-spacing: 1px;
+        }
+
+        /* User Info Grid */
+        .user-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .info-item label {
+            display: block;
+            font-size: var(--font-size-small);
+            color: var(--color-secondary);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .info-item .value {
+            font-size: var(--font-size-medium);
+            color: var(--color-primary);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .filter-tabs button {
+            background: transparent;
+            color: var(--color-secondary);
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 15px 25px;
+            font-size: var(--font-size-small);
+            letter-spacing: 0.5px;
+        }
+
+        .filter-tabs button:hover {
+            color: var(--color-primary);
+        }
+
+        .filter-tabs button.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+            font-weight: 400;
+        }
+
+        /* Orders Table */
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-top: 2px solid var(--color-primary);
+        }
+
+        .orders-table thead {
+            background: var(--color-bg-alt);
+        }
+
+        .orders-table th {
+            padding: 15px 10px;
+            font-size: var(--font-size-small);
+            font-weight: 400;
+            color: var(--color-primary);
+            text-align: center;
+            border-bottom: 1px solid var(--color-border);
+            letter-spacing: 0.5px;
+        }
+
+        .orders-table td {
+            padding: 20px 10px;
+            font-size: var(--font-size-small);
+            color: var(--color-primary);
+            text-align: center;
+            border-bottom: 1px solid var(--color-border);
+            vertical-align: middle;
+        }
+
+        .orders-table tbody tr:hover {
+            background: var(--color-bg-alt);
+        }
+
+        .order-date {
+            font-size: var(--font-size-small);
+            color: var(--color-secondary);
+        }
+
+        .order-product-info {
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        .order-product-name {
+            font-size: var(--font-size-medium);
+            font-weight: 400;
+            margin-bottom: 8px;
+            color: var(--color-primary);
+        }
+
+        .order-product-details {
+            font-size: var(--font-size-small);
+            color: var(--color-secondary);
+            line-height: 1.6;
+        }
+
+        .order-quantity {
+            font-size: var(--font-size-medium);
+        }
+
+        .order-price {
+            font-size: var(--font-size-medium);
+            font-weight: 400;
+        }
+
+        .order-status-cell {
+            font-size: var(--font-size-small);
+            font-weight: 400;
+        }
+
+        .order-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-action {
+            background: var(--color-bg);
+            color: var(--color-primary);
+            border: 1px solid var(--color-border);
+            padding: 8px 16px;
+            font-size: var(--font-size-xs);
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            width: 110px;
+            transition: all 0.2s;
+        }
+
+        .btn-action:hover {
+            background: var(--color-primary);
+            color: var(--color-bg);
+            border-color: var(--color-primary);
+        }
+
+        .btn-action.primary {
+            background: var(--color-primary);
+            color: var(--color-bg);
+            border-color: var(--color-primary);
+        }
+
+        .btn-action.primary:hover {
+            background: #333;
+        }
+
+        .btn-action:disabled {
+            background: var(--color-bg-alt);
+            color: var(--color-secondary);
+            border-color: var(--color-border);
+            cursor: not-allowed;
+        }
+
+        .no-orders {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--color-secondary);
+            font-size: var(--font-size-medium);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--color-border);
+            padding: 40px;
+            background: var(--color-bg);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            font-size: var(--font-size-small);
+        }
+
+        .footer-links a {
+            color: var(--color-secondary);
+        }
+
+        .footer-links a:hover {
+            color: var(--color-primary);
+        }
+
+        .footer-info {
+            font-size: var(--font-size-small);
+            color: var(--color-secondary);
+            line-height: 1.8;
+        }
+
+        .footer-info p {
+            margin-bottom: 5px;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .footer-social a {
+            color: var(--color-secondary);
+            font-size: var(--font-size-small);
+        }
+
+        /* Loading & Error */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--color-secondary);
+            font-size: var(--font-size-small);
+        }
+
+        .error {
+            background: transparent;
+            color: var(--color-primary);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--color-primary);
+            font-size: var(--font-size-small);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .top-utility,
+            .header-inner,
+            .container,
+            footer {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .main-nav {
+                display: none;
+            }
+
+            .container {
+                flex-direction: column;
+                gap: 40px;
+            }
+
+            .sidebar {
+                min-width: auto;
+            }
+
+            .status-grid {
+                flex-wrap: wrap;
+            }
+
+            .status-item {
+                flex: 1 1 calc(50% - 10px);
+            }
+
+            .user-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* Responsive Table */
+            .orders-table {
+                font-size: var(--font-size-xs);
+            }
+
+            .orders-table th,
+            .orders-table td {
+                padding: 10px 5px;
+            }
+
+            .order-product-info {
+                padding-left: 10px;
+            }
+
+            .order-product-name {
+                font-size: var(--font-size-small);
+            }
+
+            .order-product-details {
+                font-size: var(--font-size-xs);
+            }
+
+            .btn-action {
+                padding: 6px 10px;
+                width: 90px;
+                font-size: 9px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .orders-table thead {
+                display: none;
+            }
+
+            .orders-table,
+            .orders-table tbody,
+            .orders-table tr,
+            .orders-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .orders-table tr {
+                margin-bottom: 30px;
+                border: 1px solid var(--color-border);
+                padding: 20px;
+            }
+
+            .orders-table td {
+                text-align: left;
+                padding: 10px 0;
+                border-bottom: none;
+            }
+
+            .orders-table td::before {
+                content: attr(data-label);
+                font-weight: 400;
+                color: var(--color-secondary);
+                display: block;
+                margin-bottom: 5px;
+                font-size: var(--font-size-small);
+            }
+
+            .order-product-info {
+                padding-left: 0;
+            }
+
+            .order-actions {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+
+            .btn-action {
+                width: auto;
+                flex: 1;
+                min-width: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Utility Bar -->
+    <div class="top-utility">
+        <div class="top-utility-menu">
+            <button>KOREAN</button>
+            <span class="divider">|</span>
+            <button>고객센터</button>
+            <span class="divider">|</span>
+            <button>공지사항</button>
+            <span class="divider">|</span>
+            <button id="topLoginBtn">로그인</button>
+            <span class="divider">|</span>
+            <button>회원가입</button>
+            <span class="divider">|</span>
+            <button>장바구니 (0)</button>
+            <span class="divider">|</span>
+            <button>멤버십</button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-inner">
+            <a href="#" class="logo">INSILENCE</a>
+            <nav class="main-nav">
+                <a href="#">남성복</a>
+                <a href="#">여성복</a>
+                <a href="#">CLEARANCE</a>
+                <a href="#">컬렉션</a>
+                <a href="#">컨텐츠</a>
+                <a href="#">매장안내</a>
+            </nav>
+            <div class="header-icons">
+                <button>검색</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login Section -->
+    <div id="loginSection" class="auth-section">
+        <h2>로그인</h2>
+        <div id="loginError" class="error hidden"></div>
+        <div class="input-group">
+            <label>아이디</label>
+            <input type="text" id="loginId" placeholder="아이디를 입력하세요">
+        </div>
+        <div class="input-group">
+            <label>비밀번호</label>
+            <input type="password" id="password" placeholder="비밀번호를 입력하세요">
+        </div>
+        <button class="btn-primary" onclick="login()">로그인</button>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent" class="hidden">
+        <div class="container">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <h2 class="sidebar-title">MY SHOPPING</h2>
+                <ul class="sidebar-menu">
+                    <li><button class="active">주문내역</button></li>
+                    <li><button>회원정보</button></li>
+                    <li><button>관심상품</button></li>
+                    <li><button>마일리지</button></li>
+                    <li><button>예치금</button></li>
+                    <li><button>1:1 문의</button></li>
+                    <li><button>쿠폰 (0)</button></li>
+                    <li><button>게시물관리</button></li>
+                    <li><button>배송주소록</button></li>
+                </ul>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <h1 class="page-title">주문내역</h1>
+
+                <!-- Order Status Summary -->
+                <div class="order-status-summary">
+                    <div class="summary-header">최근 3개월 기준</div>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <div class="status-label">입금전</div>
+                            <div class="status-count" id="statusAwaitingPayment">0</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">배송준비중</div>
+                            <div class="status-count" id="statusPreparing">0</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">배송중</div>
+                            <div class="status-count" id="statusShipping">0</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">배송완료</div>
+                            <div class="status-count" id="statusDelivered">0</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">취소</div>
+                            <div class="status-count" id="statusCancelled">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Info Section -->
+                <div class="section">
+                    <h2 class="section-title">회원정보</h2>
+                    <div id="userInfoLoading" class="loading">로딩중...</div>
+                    <div id="userInfoError" class="error hidden"></div>
+                    <div id="userInfoContent" class="hidden">
+                        <div class="user-info-grid">
+                            <div class="info-item">
+                                <label>아이디</label>
+                                <div class="value" id="userLoginId">-</div>
+                            </div>
+                            <div class="info-item">
+                                <label>이름</label>
+                                <div class="value" id="userName">-</div>
+                            </div>
+                            <div class="info-item">
+                                <label>전화번호</label>
+                                <div class="value" id="userPhone">-</div>
+                            </div>
+                            <div class="info-item">
+                                <label>이메일</label>
+                                <div class="value" id="userEmail">-</div>
+                            </div>
+                            <div class="info-item">
+                                <label>생년월일</label>
+                                <div class="value" id="userBirthDate">-</div>
+                            </div>
+                            <div class="info-item">
+                                <label>주소</label>
+                                <div class="value" id="userAddress">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Section -->
+                <div class="section">
+                    <h2 class="section-title">주문 목록</h2>
+
+                    <div class="filter-tabs">
+                        <button class="active" onclick="filterOrders(null)">전체 주문</button>
+                        <button onclick="filterOrders('active')">진행중</button>
+                        <button onclick="filterOrders('completed')">완료</button>
+                        <button onclick="filterOrders('cancelled')">취소</button>
+                    </div>
+
+                    <div id="ordersLoading" class="loading">주문 내역을 불러오는 중...</div>
+                    <div id="ordersError" class="error hidden"></div>
+                    <div id="ordersContent" class="hidden">
+                        <table class="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>주문일자</th>
+                                    <th>상품정보</th>
+                                    <th>수량</th>
+                                    <th>주문금액</th>
+                                    <th>주문상태</th>
+                                    <th>처리</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersList">
+                                <!-- Orders will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">이용약관</a>
+                <a href="#">개인정보처리방침</a>
+            </div>
+            <div class="footer-info">
+                <p><strong>AMBIENT CO.LTD.</strong></p>
+                <p>고객센터: 1670-0133 (평일 10:00-18:00, 점심 11:30-12:30)</p>
+                <p>서울시 성동구 상원1길 26 서울숲 에이타워 15층</p>
+                <p>사업자등록번호: 217-86-00349 | 통신판매업신고: 2016-서울성동-00425</p>
+                <p>이메일: cs@insilence.co.kr</p>
+                <p style="margin-top: 15px;">© 2024 AMBIENT</p>
+            </div>
+            <div class="footer-social">
+                <a href="#">Instagram</a>
+                <a href="#">YouTube</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Configuration
+        const API_BASE_URL = 'http://localhost:8080/api/v1';
+        let authToken = localStorage.getItem('authToken');
+        let currentFilter = null;
+        let allOrders = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            if (authToken) {
+                showMainContent();
+                loadUserInfo();
+                loadOrders();
+            }
+            updateTopLoginButton();
+        });
+
+        function updateTopLoginButton() {
+            const topLoginBtn = document.getElementById('topLoginBtn');
+            if (authToken) {
+                topLoginBtn.textContent = '로그아웃';
+                topLoginBtn.onclick = logout;
+            } else {
+                topLoginBtn.textContent = '로그인';
+                topLoginBtn.onclick = () => {
+                    showLoginSection();
+                };
+            }
+        }
+
+        function showLoginSection() {
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('mainContent').classList.add('hidden');
+        }
+
+        // Login function
+        async function login() {
+            const loginId = document.getElementById('loginId').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+
+            if (!loginId || !password) {
+                showError(errorDiv, '아이디와 비밀번호를 입력하세요');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ loginId, password })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    authToken = result.data.accessToken;
+                    localStorage.setItem('authToken', authToken);
+                    hideError(errorDiv);
+                    showMainContent();
+                    updateTopLoginButton();
+                    loadUserInfo();
+                    loadOrders();
+                } else {
+                    showError(errorDiv, result.error.message || '로그인 실패');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError(errorDiv, '서버 연결 실패');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            authToken = null;
+            localStorage.removeItem('authToken');
+            allOrders = [];
+            showLoginSection();
+            updateTopLoginButton();
+            document.getElementById('loginId').value = '';
+            document.getElementById('password').value = '';
+            resetOrderStatusSummary();
+        }
+
+        // Show main content
+        function showMainContent() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+        }
+
+        // Load user info
+        async function loadUserInfo() {
+            const loadingDiv = document.getElementById('userInfoLoading');
+            const errorDiv = document.getElementById('userInfoError');
+            const contentDiv = document.getElementById('userInfoContent');
+
+            showLoading(loadingDiv);
+            hideError(errorDiv);
+            contentDiv.classList.add('hidden');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/mypage/user-info`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    displayUserInfo(result.data);
+                    hideLoading(loadingDiv);
+                    contentDiv.classList.remove('hidden');
+                } else {
+                    hideLoading(loadingDiv);
+                    showError(errorDiv, result.error.message || '회원 정보를 불러올 수 없습니다');
+                }
+            } catch (error) {
+                console.error('Load user info error:', error);
+                hideLoading(loadingDiv);
+                showError(errorDiv, '서버 연결 실패');
+            }
+        }
+
+        // Display user info
+        function displayUserInfo(user) {
+            document.getElementById('userLoginId').textContent = user.loginId || '-';
+            document.getElementById('userName').textContent = user.name || '-';
+            document.getElementById('userPhone').textContent = user.phone || '-';
+            document.getElementById('userEmail').textContent = user.email || '-';
+            document.getElementById('userBirthDate').textContent = user.birthDate || '-';
+            document.getElementById('userAddress').textContent = user.address || '등록된 주소 없음';
+        }
+
+        // Load orders
+        async function loadOrders(statusFilter = null) {
+            const loadingDiv = document.getElementById('ordersLoading');
+            const errorDiv = document.getElementById('ordersError');
+            const contentDiv = document.getElementById('ordersContent');
+
+            showLoading(loadingDiv);
+            hideError(errorDiv);
+            contentDiv.classList.add('hidden');
+
+            const url = statusFilter
+                ? `${API_BASE_URL}/mypage/orders?status=${statusFilter}`
+                : `${API_BASE_URL}/mypage/orders`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    allOrders = result.data;
+                    displayOrders(result.data);
+                    updateOrderStatusSummary(result.data);
+                    hideLoading(loadingDiv);
+                    contentDiv.classList.remove('hidden');
+                } else {
+                    hideLoading(loadingDiv);
+                    showError(errorDiv, result.error.message || '주문 내역을 불러올 수 없습니다');
+                }
+            } catch (error) {
+                console.error('Load orders error:', error);
+                hideLoading(loadingDiv);
+                showError(errorDiv, '서버 연결 실패');
+            }
+        }
+
+        // Update order status summary
+        function updateOrderStatusSummary(orders) {
+            const summary = {
+                'PAYMENT_COMPLETED': 0,
+                'PREPARING': 0,
+                'SHIPPING': 0,
+                'DELIVERED': 0,
+                'CANCELLED': 0
+            };
+
+            orders.forEach(order => {
+                if (summary.hasOwnProperty(order.status)) {
+                    summary[order.status]++;
+                }
+            });
+
+            document.getElementById('statusAwaitingPayment').textContent = summary['PAYMENT_COMPLETED'];
+            document.getElementById('statusPreparing').textContent = summary['PREPARING'];
+            document.getElementById('statusShipping').textContent = summary['SHIPPING'];
+            document.getElementById('statusDelivered').textContent = summary['DELIVERED'];
+            document.getElementById('statusCancelled').textContent = summary['CANCELLED'];
+        }
+
+        function resetOrderStatusSummary() {
+            document.getElementById('statusAwaitingPayment').textContent = '0';
+            document.getElementById('statusPreparing').textContent = '0';
+            document.getElementById('statusShipping').textContent = '0';
+            document.getElementById('statusDelivered').textContent = '0';
+            document.getElementById('statusCancelled').textContent = '0';
+        }
+
+        // Display orders
+        function displayOrders(orders) {
+            const ordersList = document.getElementById('ordersList');
+
+            if (orders.length === 0) {
+                ordersList.innerHTML = '<tr><td colspan="6" class="no-orders">주문 내역이 없습니다</td></tr>';
+                return;
+            }
+
+            ordersList.innerHTML = orders.map(order => {
+                const totalQuantity = order.items ? order.items.reduce((sum, item) => sum + item.quantity, 0) : 1;
+                const productInfo = order.items && order.items.length > 0
+                    ? `상품 ID: ${order.items[0].productId}${order.items.length > 1 ? ` 외 ${order.items.length - 1}건` : ''}`
+                    : `주문번호 ${order.orderId}`;
+
+                return `
+                    <tr>
+                        <td class="order-date" data-label="주문일자">${formatDateTime(order.orderedAt)}</td>
+                        <td class="order-product-info" data-label="상품정보">
+                            <div class="order-product-name">${productInfo}</div>
+                            <div class="order-product-details">
+                                수령인: ${order.receiverName}<br>
+                                배송지: ${order.address}
+                            </div>
+                        </td>
+                        <td class="order-quantity" data-label="수량">${totalQuantity}</td>
+                        <td class="order-price" data-label="주문금액">${formatPrice(order.totalPrice)}원</td>
+                        <td class="order-status-cell" data-label="주문상태">${getStatusText(order.status)}</td>
+                        <td data-label="처리">
+                            <div class="order-actions">
+                                <button class="btn-action primary" onclick="viewOrderDetail(${order.orderId})">주문상세</button>
+                                ${getActionButtons(order.status)}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Get action buttons based on order status
+        function getActionButtons(status) {
+            const buttons = [];
+
+            if (status === 'SHIPPING' || status === 'DELIVERED') {
+                buttons.push('<button class="btn-action" onclick="trackShipping()">배송조회</button>');
+            }
+
+            if (status === 'PAYMENT_COMPLETED' || status === 'PREPARING') {
+                buttons.push('<button class="btn-action" onclick="cancelOrder()">취소신청</button>');
+            }
+
+            if (status === 'DELIVERED') {
+                buttons.push('<button class="btn-action" onclick="requestExchange()">교환신청</button>');
+                buttons.push('<button class="btn-action" onclick="requestReturn()">반품신청</button>');
+                buttons.push('<button class="btn-action" onclick="writeReview()">리뷰작성</button>');
+            }
+
+            return buttons.join('');
+        }
+
+        // View order detail - FUNCTIONAL
+        function viewOrderDetail(orderId) {
+            // Create a new page or modal for order details
+            window.location.href = `order-detail.html?orderId=${orderId}`;
+        }
+
+        // Placeholder functions for non-implemented features
+        function trackShipping() {
+            alert('배송조회 기능은 준비중입니다.');
+        }
+
+        function cancelOrder() {
+            alert('취소신청 기능은 준비중입니다.');
+        }
+
+        function requestExchange() {
+            alert('교환신청 기능은 준비중입니다.');
+        }
+
+        function requestReturn() {
+            alert('반품신청 기능은 준비중입니다.');
+        }
+
+        function writeReview() {
+            alert('리뷰작성 기능은 준비중입니다.');
+        }
+
+        // Filter orders
+        function filterOrders(status) {
+            currentFilter = status;
+
+            // Update active button
+            document.querySelectorAll('.filter-tabs button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            loadOrders(status);
+        }
+
+        // Helper functions
+        function getStatusClass(status) {
+            const statusMap = {
+                'PAYMENT_COMPLETED': 'status-active',
+                'PREPARING': 'status-active',
+                'SHIPPING': 'status-active',
+                'DELIVERED': 'status-completed',
+                'CANCELLED': 'status-cancelled'
+            };
+            return statusMap[status] || 'status-active';
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'PAYMENT_COMPLETED': '결제완료',
+                'PREPARING': '배송준비중',
+                'SHIPPING': '배송중',
+                'DELIVERED': '배송완료',
+                'CANCELLED': '취소'
+            };
+            return statusMap[status] || status;
+        }
+
+        function formatDateTime(dateTimeStr) {
+            if (!dateTimeStr) return '-';
+            const date = new Date(dateTimeStr);
+            return date.toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+        }
+
+        function formatPrice(price) {
+            return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        function showLoading(element) {
+            element.classList.remove('hidden');
+        }
+
+        function hideLoading(element) {
+            element.classList.add('hidden');
+        }
+
+        function showError(element, message) {
+            element.textContent = message;
+            element.classList.remove('hidden');
+        }
+
+        function hideError(element) {
+            element.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
