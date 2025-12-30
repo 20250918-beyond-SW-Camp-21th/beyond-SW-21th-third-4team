@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -36,4 +37,13 @@ public class Qna extends BaseTimeEntity {
     private Long userId;
 
     private Long productId;
+
+    @Builder
+    public Qna(QnaType type, String title, String content, Long userId, Long productId) {
+        this.type = type;
+        this.title = title;
+        this.content = content;
+        this.userId = userId;
+        this.productId = productId;
+    }
 }
