@@ -109,8 +109,7 @@ public class CartService {
         * 1. 유저의 장바구니를 찾는다.
         * 2. userId, cartItemId 를 통해 삭제해야할 list를 찾음
         * 3. 삭제*/
-        Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.CART_NOT_FOUND));
+        Cart cart = getCartOrThrow(userId);
 
         List<Long> ids = request.cartItemIds().stream().distinct().toList();
 
@@ -126,23 +125,30 @@ public class CartService {
     @Transactional
     public void increaseQuantity(Long userId, Long cartItemId) {
 
-        Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.CART_NOT_FOUND));
-
-        CartItem cartItem = cartItemRepository.findByIdAndCartId(cartItemId,cart.getId())
-                .orElseThrow(()-> new BusinessException(ErrorCode.CART_ITEM_NOT_FOUND));
+        Cart cart = getCartOrThrow(userId);
+        CartItem cartItem = getCartItemOrThrow(cartItemId,cart.getId());
 
         cartItem.increaseQuantity(1);
     }
 
     @Transactional
     public void decreaseQuantity(Long userId, Long cartItemId) {
-        Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.CART_NOT_FOUND));
-
-        CartItem cartItem = cartItemRepository.findByIdAndCartId(cartItemId,cart.getId())
-                .orElseThrow(()-> new BusinessException(ErrorCode.CART_ITEM_NOT_FOUND));
+        Cart cart = getCartOrThrow(userId);
+        CartItem cartItem = getCartItemOrThrow(cartItemId,cart.getId());
 
         cartItem.decreaseQuantity();
     }
+
+    private Cart getCartOrThrow(Long userId){
+
+        return cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CART_NOT_FOUND));
+    }
+
+    private CartItem getCartItemOrThrow(Long cartItemId, Long cartId){
+
+        return cartItemRepository.findByIdAndCartId(cartItemId,cartId)
+                .orElseThrow(()-> new BusinessException(ErrorCode.CART_ITEM_NOT_FOUND));
+    }
+
 }
