@@ -9,7 +9,7 @@ import com.insilenceclone.backend.domain.cart.entity.Cart;
 import com.insilenceclone.backend.domain.cart.entity.CartItem;
 import com.insilenceclone.backend.domain.cart.repository.CartItemRepository;
 import com.insilenceclone.backend.domain.cart.repository.CartRepository;
-import com.insilenceclone.backend.domain.product.ProductRepositoryTemp;
+import com.insilenceclone.backend.domain.product.repository.ProductRepositoryTemp;
 import com.insilenceclone.backend.domain.product.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -102,14 +102,14 @@ public class CartService {
                 .toList();
     }
 
+    @Transactional
     public void deleteItems(Long userId, CartItemsDeleteRequestDto request) {
 
         /*
         * 1. 유저의 장바구니를 찾는다.
         * 2. userId, cartItemId 를 통해 삭제해야할 list를 찾음
         * 3. 삭제*/
-        Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.CART_NOT_FOUND));
+        Cart cart = getCartOrThrow(userId);
 
         List<Long> ids = request.cartItemIds().stream().distinct().toList();
 
@@ -121,4 +121,34 @@ public class CartService {
 
         cartItemRepository.deleteByCartIdAndIdIn(cart.getId(), ids);
     }
+
+    @Transactional
+    public void increaseQuantity(Long userId, Long cartItemId) {
+
+        Cart cart = getCartOrThrow(userId);
+        CartItem cartItem = getCartItemOrThrow(cartItemId,cart.getId());
+
+        cartItem.increaseQuantity(1);
+    }
+
+    @Transactional
+    public void decreaseQuantity(Long userId, Long cartItemId) {
+        Cart cart = getCartOrThrow(userId);
+        CartItem cartItem = getCartItemOrThrow(cartItemId,cart.getId());
+
+        cartItem.decreaseQuantity();
+    }
+
+    private Cart getCartOrThrow(Long userId){
+
+        return cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CART_NOT_FOUND));
+    }
+
+    private CartItem getCartItemOrThrow(Long cartItemId, Long cartId){
+
+        return cartItemRepository.findByIdAndCartId(cartItemId,cartId)
+                .orElseThrow(()-> new BusinessException(ErrorCode.CART_ITEM_NOT_FOUND));
+    }
+
 }

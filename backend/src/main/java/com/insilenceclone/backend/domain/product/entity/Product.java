@@ -35,7 +35,12 @@ public class Product {
     private String description;
 
     @Builder
-    public Product(String name, Long price, String category, String imageUrl, String description) {
+    public Product(String name
+            , Long price
+            , String category
+            , String imageUrl
+            , String description) {
+
         this.name = name;
         this.price = price;
         this.category = category;

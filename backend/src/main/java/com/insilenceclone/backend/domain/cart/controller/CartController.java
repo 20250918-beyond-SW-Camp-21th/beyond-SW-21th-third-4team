@@ -41,4 +41,22 @@ public class CartController {
         cartService.deleteItems(user.getId(),request);
         return ApiResponse.success();
     }
+
+    @PatchMapping("/{cartItemId}/increase")
+    public ApiResponse<Void> increaseQuantity(
+            @AuthenticationPrincipal CustomUser user,
+            @PathVariable Long cartItemId
+    ) {
+        cartService.increaseQuantity(user.getId(), cartItemId);
+        return ApiResponse.success();
+    }
+
+    @PatchMapping("/{cartItemId}/decrease")
+    public ApiResponse<Void> decreaseQuantity(
+            @AuthenticationPrincipal CustomUser user,
+            @PathVariable Long cartItemId
+    ) {
+        cartService.decreaseQuantity(user.getId(), cartItemId);
+        return ApiResponse.success();
+    }
 }
