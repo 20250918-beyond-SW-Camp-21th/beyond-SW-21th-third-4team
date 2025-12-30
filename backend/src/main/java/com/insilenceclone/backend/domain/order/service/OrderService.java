@@ -17,7 +17,7 @@ import com.insilenceclone.backend.domain.order.enums.OrderStatus;
 import com.insilenceclone.backend.domain.order.repository.OrderItemRepository;
 import com.insilenceclone.backend.domain.order.repository.OrderRepository;
 import com.insilenceclone.backend.domain.product.entity.Product;
-import com.insilenceclone.backend.domain.product.repository.ProductRepositoryTemp;
+import com.insilenceclone.backend.domain.product.repository.ProductRepository;
 import com.insilenceclone.backend.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
-    private final ProductRepositoryTemp productRepository;
+    private final ProductRepository productRepository;
     private final OrderItemRepository orderItemRepository;
     private final CartRepository cartRepository;
     private final CartItemRepository  cartItemRepository;
@@ -180,7 +180,7 @@ public class OrderService {
                     Product product = productMap.get(item.getProductId());
 
                     return OrderItemDetailResponseDto.builder()
-                            .productId(product.getId())
+                            .productId(item.getProductId())
                             .productName(product != null ? product.getName() : "(삭제된 상품입니다.)")
                             .quantity(item.getQuantity())
                             .unitPrice(item.getUnitPrice())
