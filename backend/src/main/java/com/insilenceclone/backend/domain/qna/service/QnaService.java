@@ -1,9 +1,11 @@
 package com.insilenceclone.backend.domain.qna.service;
 
+import com.insilenceclone.backend.domain.qna.controller.dto.request.OrderCreateRequest;
 import com.insilenceclone.backend.domain.qna.controller.dto.request.QnaRequest;
 import com.insilenceclone.backend.domain.qna.controller.dto.response.QnaListResponse;
 import com.insilenceclone.backend.domain.qna.controller.dto.response.QnaResponse;
 import com.insilenceclone.backend.domain.qna.entity.Qna;
+import com.insilenceclone.backend.domain.qna.executor.QnaExecutor;
 import com.insilenceclone.backend.domain.qna.usecase.reader.QnaReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,8 +19,12 @@ import java.util.List;
 public class QnaService {
 
     private final QnaReader reader;
+    private final QnaExecutor executor;
 
     // 게시글 작성
+    public QnaResponse createQna(OrderCreateRequest req) {
+        return executor.create(req);
+    }
 
     // 게시글 목록 조회 (공지사항 선행, 최신순 정렬)
     public List<QnaListResponse> getQnaList() {
