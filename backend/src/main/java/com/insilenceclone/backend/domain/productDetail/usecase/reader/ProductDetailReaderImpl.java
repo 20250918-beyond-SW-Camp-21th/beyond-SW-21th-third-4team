@@ -2,7 +2,7 @@ package com.insilenceclone.backend.domain.productDetail.usecase.reader;
 
 import com.insilenceclone.backend.common.exception.BusinessException;
 import com.insilenceclone.backend.common.exception.ErrorCode;
-import com.insilenceclone.backend.domain.product.ProductRepositoryTemp;
+import com.insilenceclone.backend.domain.product.repository.ProductRepositoryTemp;
 import com.insilenceclone.backend.domain.productDetail.controller.dto.ProductDetailResponse;
 import com.insilenceclone.backend.domain.productDetail.entity.ProductImage;
 import com.insilenceclone.backend.domain.productDetail.enums.ProductImageStatus;
