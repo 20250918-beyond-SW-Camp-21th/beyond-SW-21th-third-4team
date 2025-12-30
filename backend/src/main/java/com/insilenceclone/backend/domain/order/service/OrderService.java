@@ -57,7 +57,16 @@ public class OrderService {
                  () -> new BusinessException(ErrorCode.CART_NOT_FOUND)
          );
 
-         List<CartItem> cartItemList = cartItemRepository.findByCartId(cart.getId());
+         // 선택된 cartItemIds를 중복 제거하여 받아옴
+         List<Long> cartItemUnique = requestDto.getCartItemIds().stream().distinct().toList();
+
+         // cart에 선택하고자 하는 item이 포함 되어 있는 CartItemList를 가져옴
+         List<CartItem> cartItemList = cartItemRepository.findByCartIdAndIdIn(cart.getId(), cartItemUnique);
+
+         // 중복 제거된 CartItem의 개수와 장바구니에 포함된 개수가 같은지 검증
+         if(cartItemList.size() != cartItemUnique.size()) {
+             throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
+         }
 
          if(cartItemList.isEmpty()) {
              throw new BusinessException(ErrorCode.CART_EMPTY);

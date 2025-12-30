@@ -2,6 +2,7 @@ package com.insilenceclone.backend.domain.cart.controller;
 
 import com.insilenceclone.backend.common.response.ApiResponse;
 import com.insilenceclone.backend.domain.cart.dto.request.CartItemAddRequestDto;
+import com.insilenceclone.backend.domain.cart.dto.request.CartItemsDeleteRequestDto;
 import com.insilenceclone.backend.domain.cart.dto.response.CartItemResponseDto;
 import com.insilenceclone.backend.domain.cart.service.CartService;
 import com.insilenceclone.backend.domain.user.security.CustomUser;
@@ -32,5 +33,30 @@ public class CartController {
     public ApiResponse<List<CartItemResponseDto>> getMyCartItem(@AuthenticationPrincipal CustomUser user) {
         List<CartItemResponseDto> myCart = cartService.viewMyCartItems(user.getId());
         return ApiResponse.success(myCart);
+    }
+
+    @PostMapping("/items/delete")
+    public ApiResponse<Void> deleteCartItems(@AuthenticationPrincipal CustomUser user,
+                                             @Valid @RequestBody CartItemsDeleteRequestDto request) {
+        cartService.deleteItems(user.getId(),request);
+        return ApiResponse.success();
+    }
+
+    @PatchMapping("/{cartItemId}/increase")
+    public ApiResponse<Void> increaseQuantity(
+            @AuthenticationPrincipal CustomUser user,
+            @PathVariable Long cartItemId
+    ) {
+        cartService.increaseQuantity(user.getId(), cartItemId);
+        return ApiResponse.success();
+    }
+
+    @PatchMapping("/{cartItemId}/decrease")
+    public ApiResponse<Void> decreaseQuantity(
+            @AuthenticationPrincipal CustomUser user,
+            @PathVariable Long cartItemId
+    ) {
+        cartService.decreaseQuantity(user.getId(), cartItemId);
+        return ApiResponse.success();
     }
 }

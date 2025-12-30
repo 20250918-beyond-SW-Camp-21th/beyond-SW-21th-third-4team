@@ -48,4 +48,11 @@ public class CartItem extends BaseTimeEntity {
         if (amount <= 0) {throw new BusinessException(ErrorCode.CART_QUANTITY_INVALID);}
         this.quantity += amount;
     }
+
+    public void decreaseQuantity() {
+        if (this.quantity <= 1) {
+            return; // 최소 1 유지: 변경 없음
+        }
+        this.quantity -= 1;
+    }
 }
