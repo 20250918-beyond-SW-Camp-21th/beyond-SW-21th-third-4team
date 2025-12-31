@@ -138,30 +138,8 @@ import { ref, onMounted } from 'vue';
 import http from '../../api/http';
 
 const mainMenus = ref([
-  {
-    name: '남성복',
-    link: '/men',
-    showSub: false,
-    subItems: [
-      { name: 'ALL', link: '/men/all' },
-      { name: 'BEST', link: '/men/best' },
-      { name: 'OUTER', link: '/men/outer' },
-      { name: 'TOP', link: '/men/top' },
-      { name: 'BOTTOM', link: '/men/bottom' },
-    ]
-  },
-  {
-    name: '여성복',
-    link: '/women',
-    showSub: false,
-    subItems: [
-      { name: 'ALL', link: '/women/all' },
-      { name: 'BEST', link: '/women/best' },
-      { name: 'OUTER', link: '/women/outer' },
-      { name: 'TOP', link: '/women/top' },
-      { name: 'BOTTOM', link: '/women/bottom' },
-    ]
-  },
+  { name: '남성복', link: '/men', subItems: null },
+  { name: '여성복', link: '/women', subItems: null },
   { name: 'CLEARANCE', link: '/clearance', subItems: null },
   { name: '컬렉션', link: '/collection', subItems: null },
   { name: '컨텐츠', link: '/contents', subItems: null },
@@ -306,7 +284,6 @@ a {
   transform: translateX(-50%);
   background: #fff;
   border: 1px solid #000;
-  padding: 10px 0;
   min-width: 100px;
   display: flex;
   flex-direction: column;
