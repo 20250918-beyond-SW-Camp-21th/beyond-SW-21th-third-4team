@@ -46,7 +46,7 @@ public class Order extends BaseTimeEntity {
     private String deliveryMessage;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private OrderStatus status;
 
     @Builder
