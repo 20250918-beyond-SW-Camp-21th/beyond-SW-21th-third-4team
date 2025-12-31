@@ -7,7 +7,7 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         // TODO: routes 추가
-        ...memberRoutes,
+        ...mainRoutes,
         ...memberRoutes
     ]
 })
