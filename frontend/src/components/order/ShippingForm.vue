@@ -188,7 +188,10 @@
 
             <!-- Product List -->
             <div class="product-list">
-                <div v-for="(item, index) in products" :key="index" class="product-item">
+                <div v-if="products.length === 0" class="empty-list">
+                    주문할 상품이 없습니다.
+                </div>
+                <div v-else v-for="(item, index) in products" :key="index" class="product-item">
                     <!-- Image -->
                     <div class="p-image">
                         <img :src="item.image" :alt="item.name" />
@@ -333,23 +336,36 @@ defineExpose({
 });
 
 /* [2. Product List Data (Mock)] */
-const products = [
-  {
-    name: '칼라 플라이트 다운 푸퍼 BLACK',
-    option: 'M',
-    quantity: 1,
-    price: 248000,
-    image: 'https://insilence.co.kr/web/product/tiny/202311/382e75e9f1935395ce62858546b41214.jpg' 
-  },
-  {
-    name: '칼라 플라이트 다운 푸퍼 KHAKI',
-    option: 'S',
-    quantity: 1,
-    price: 248000,
-    image: 'https://insilence.co.kr/web/product/tiny/202311/55ba7034335c91df94362140bb0639e3.jpg'
-  }
-];
-const shippingFee = 0;
+/* [2. Product List Data (API Fetch)] */
+const products = ref([]);
+const shippingFee = ref(0);
+
+const fetchCartItems = async () => {
+    try {
+        const response = await http.get('/cart/my');
+        if (response.data && response.data.data) {
+            const cartItems = response.data.data;
+            products.value = cartItems.map(item => ({
+                name: item.productName || item.name || '상품명 없음',
+                option: item.optionName || item.option || '옵션 없음',
+                quantity: item.quantity || item.qty || 1,
+                price: item.price || item.productPrice || 0,
+                image: item.imageUrl || item.image || item.thumbnail || 'https://via.placeholder.com/90x100?text=No+Image' 
+            }));
+            
+            // 배송비 계산 (예: 5만원 이상 무료)
+            const total = products.value.reduce((sum, p) => sum + (p.price * p.quantity), 0);
+            shippingFee.value = total >= 50000 ? 0 : 3000;
+        }
+    } catch (error) {
+        console.error("장바구니 조회 실패:", error);
+    }
+};
+
+onMounted(() => {
+  fetchUserInfo();
+  fetchCartItems();
+});
 </script>
 
 <style scoped>
@@ -668,6 +684,13 @@ const shippingFee = 0;
 
 .product-list {
     padding: 0 20px;
+}
+.empty-list {
+    padding: 40px 0;
+    text-align: center;
+    color: #999;
+    font-size: 12px;
+    border-bottom: 1px dotted #e8e8e8;
 }
 .product-item {
     display: flex;
