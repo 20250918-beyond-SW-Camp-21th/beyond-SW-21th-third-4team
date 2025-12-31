@@ -31,9 +31,14 @@ const onSubmit = async () => {
     // ✅ 로그인 성공 → 메인으로
     router.push('/')
   } catch (e) {
-    // 너희 실패 응답 구조: { success:false, data:null, error:{ status, message, code, timestamp } }
-    const message = e?.response?.data?.error?.message
-    errorMsg.value = message || '로그인에 실패했습니다.'
+    const message = e?.response?.data?.error?.message || '로그인에 실패했습니다.'
+
+    // ✅ 1) 클론 사이트처럼 브라우저 alert
+    alert(message)
+
+    // ✅ 2) 확인 누른 뒤 입력값 초기화 (클론 사이트 느낌)
+    loginId.value = ''
+    password.value = ''
   } finally {
     loading.value = false
   }
