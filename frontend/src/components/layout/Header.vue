@@ -1,54 +1,111 @@
 <template>
   <header id="header_wrap_outer">
     <div id="header_wrap">
-
-      <nav class="nav">
-        <ul>
+      
+      <!-- [좌측] 카테고리 메뉴 -->
+      <nav class="left_menu">
+        <!-- 데스크탑 메뉴 -->
+        <ul class="visible-desktop">
           <li
-              v-for="(menu, index) in mainMenus"
-              :key="index"
-              class="menu_item"
-              :class="{ 'highlight': menu.name === 'CLEARANCE' }"
-              @mouseenter="menu.showSub = true"
-              @mouseleave="menu.showSub = false"
+            v-for="(menu, index) in mainMenus"
+            :key="index"
+            class="menu_item"
+            :class="{ 'highlight': menu.name === 'CLEARANCE' }"
+            @mouseenter="menu.showSub = true"
+            @mouseleave="menu.showSub = false"
           >
             <router-link :to="menu.link">
               {{ menu.name }}
             </router-link>
 
-            <div v-if="menu.subItems" class="sub_cate_wrap" v-show="menu.showSub">
-              <ul class="middle_cate">
-                <li v-for="(sub, subIndex) in menu.subItems" :key="subIndex">
-                  <router-link :to="sub.link">{{ sub.name }}</router-link>
-                </li>
-              </ul>
-            </div>
+            <!-- 서브메뉴 드롭다운 -->
+            <transition name="fade">
+              <div v-if="menu.subItems" class="sub_cate_wrap" v-show="menu.showSub">
+                <ul class="middle_cate">
+                  <li v-for="(sub, subIndex) in menu.subItems" :key="subIndex">
+                    <router-link :to="sub.link">{{ sub.name }}</router-link>
+                  </li>
+                </ul>
+              </div>
+            </transition>
           </li>
-
+          
           <li class="menu_item search_item">
             <a href="#" @click.prevent="openSearchModal">검색</a>
           </li>
         </ul>
+
+        <!-- 모바일 메뉴 (햄버거 + 검색 아이콘) -->
+        <ul class="visible-mobile">
+          <li class="icon_item hamburger">
+            <a href="#" @click.prevent="toggleMobileMenu">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </a>
+          </li>
+          <li class="icon_item search_icon">
+            <a href="#" @click.prevent="openSearchModal">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </a>
+          </li>
+        </ul>
       </nav>
 
+      <!-- [중앙] 로고 (절대 중앙 정렬) -->
       <div class="logo">
         <router-link to="/">
           <img src="https://insilence.co.kr/img/logo_black.png" alt="INSILENCE">
         </router-link>
       </div>
 
-      <div class="header_right">
-        <ul>
-          <li><a href="#"><i class="xi-globus"></i></a></li>
-
+      <!-- [우측] 유틸리티 메뉴 -->
+      <div class="right_menu">
+        <!-- 데스크탑 메뉴 -->
+        <ul class="visible-desktop">
+          <li class="icon_item">
+            <a href="#">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+            </a>
+          </li>
           <li><router-link to="/help">고객센터</router-link></li>
           <li><router-link to="/login">계정</router-link></li>
           <li>
             <router-link to="/cart">
-              쇼핑백
+              쇼핑백<span v-if="cartCount > 0">({{ cartCount }})</span>
             </router-link>
           </li>
           <li><router-link to="/membership">멤버쉽</router-link></li>
+        </ul>
+
+        <!-- 모바일 메뉴 (계정 + 장바구니 아이콘) -->
+        <ul class="visible-mobile">
+           <li class="icon_item">
+             <router-link to="/login">
+               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                 <circle cx="12" cy="7" r="4"></circle>
+               </svg>
+             </router-link>
+           </li>
+           <li class="icon_item">
+             <router-link to="/cart">
+               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                 <circle cx="9" cy="21" r="1"></circle>
+                 <circle cx="20" cy="21" r="1"></circle>
+                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+               </svg>
+             </router-link>
+           </li>
         </ul>
       </div>
 
@@ -57,7 +114,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import http from '../../api/http';
 
 const mainMenus = ref([
   {
@@ -68,6 +126,8 @@ const mainMenus = ref([
       { name: 'ALL', link: '/men/all' },
       { name: 'BEST', link: '/men/best' },
       { name: 'OUTER', link: '/men/outer' },
+      { name: 'TOP', link: '/men/top' },
+      { name: 'BOTTOM', link: '/men/bottom' },
     ]
   },
   {
@@ -77,6 +137,9 @@ const mainMenus = ref([
     subItems: [
       { name: 'ALL', link: '/women/all' },
       { name: 'BEST', link: '/women/best' },
+      { name: 'OUTER', link: '/women/outer' },
+      { name: 'TOP', link: '/women/top' },
+      { name: 'BOTTOM', link: '/women/bottom' },
     ]
   },
   { name: 'CLEARANCE', link: '/clearance', subItems: null },
@@ -85,13 +148,37 @@ const mainMenus = ref([
   { name: '매장안내', link: '/store', subItems: null },
 ]);
 
-const openSearchModal = () => {
-  console.log("검색창 열기");
+// 장바구니 카운트 (초기값 0)
+const cartCount = ref(0);
+
+// 장바구니 개수 조회 Fetch 함수
+const fetchCartCount = async () => {
+  try {
+    const response = await http.get('/cart/my');
+    if (response.data && response.data.data) {
+      cartCount.value = response.data.data.length;
+    }
+  } catch (error) {
+    console.error('장바구니 조회 실패 (비로그인 상태일 수 있음):', error);
+  }
 };
+
+onMounted(() => {
+  fetchCartCount();
+});
+
+const openSearchModal = () => {
+  console.log("검색 모달 열기");
+};
+
+const toggleMobileMenu = () => {
+  console.log("모바일 사이드 메뉴 열기");
+};
+
 </script>
 
 <style scoped>
-/* 기본 설정 */
+/* [초기화 & 기본] */
 * {
   box-sizing: border-box;
 }
@@ -102,12 +189,17 @@ ul, li {
   margin: 0;
 }
 
+a {
+  text-decoration: none;
+  color: #000;
+  transition: color 0.2s;
+}
+
+/* [레이아웃] 헤더 래퍼 */
 #header_wrap_outer {
   width: 100%;
   background-color: #fff;
-  /* 하단 선이 필요 없다면 제거하세요 */
-  /* border-bottom: 1px solid #eee; */
-  position: fixed; /* 헤더 상단 고정 (선택 사항) */
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
@@ -115,72 +207,132 @@ ul, li {
 
 #header_wrap {
   display: flex;
-  justify-content: space-between; /* 양쪽 끝으로 밀어내기 */
+  justify-content: space-between;
   align-items: center;
-  height: 70px; /* 높이 적절히 조정 */
-  width: 100%; /* 화면 꽉 차게 */
-  padding: 0 50px; /* 좌우 여백을 충분히 줌 */
+  height: 60px;
+  padding: 0 40px;
   position: relative;
 }
 
-/* --- 왼쪽 메뉴 & 오른쪽 메뉴 공통 --- */
-.nav ul, .header_right ul {
+/* [공통] 메뉴 스타일 */
+.left_menu ul, .right_menu ul {
   display: flex;
-  gap: 35px; /* 메뉴 사이 간격 넓힘 */
+  gap: 25px;
   align-items: center;
 }
 
-/* 폰트 스타일 (원본과 비슷하게) */
-a {
-  text-decoration: none;
-  color: #000;
-  font-size: 13px;
-  font-weight: 700; /* 조금 굵게 */
-  font-family: 'Pretendard', sans-serif; /* 웹폰트가 있다면 적용 */
-  letter-spacing: -0.5px;
+.menu_item a, .right_menu a {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  font-family: 'Pretendard', sans-serif;
+  cursor: pointer;
 }
 
-/* --- 중앙 로고 --- */
+/* [로고] 절대 중앙 정렬 */
 .logo {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); /* 정확히 정중앙 배치 */
-  z-index: 10;
+  transform: translate(-50%, -50%);
+  z-index: 20;
 }
 
 .logo img {
-  height: 22px; /* 로고 크기 조정 (원본 비율 유지) */
-  display: block; /* 이미지 하단 여백 제거 */
+  height: 18px;
+  display: block;
 }
 
-/* --- 강조 (CLEARANCE) --- */
+/* [강조] CLEARANCE */
 .highlight a {
   color: #ff0000;
 }
 
-/* --- 지구본 아이콘 --- */
-.xi-globus {
-  font-size: 20px;
-  vertical-align: sub; /* 위치 미세 조정 */
-}
-
-/* --- 드롭다운 (숨김/표시) --- */
+/* [드롭다운] */
 .sub_cate_wrap {
   position: absolute;
-  top: 70px; /* 헤더 높이만큼 */
+  top: 60px;
   left: 0;
-  width: 100vw; /* 화면 전체 너비 */
+  width: 100vw;
   background: #fff;
+  padding: 15px 0;
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
-  padding: 20px 0;
-  z-index: 90;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
 }
 
 .middle_cate {
   display: flex;
-  justify-content: center;
   gap: 30px;
+}
+
+.middle_cate a {
+  font-size: 11px;
+  font-weight: 400;
+  color: #555;
+}
+
+.middle_cate a:hover {
+  text-decoration: underline;
+  color: #000;
+}
+
+/* [트랜지션] */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+/* [아이콘] */
+.icon_item svg {
+  vertical-align: middle;
+  stroke: #000;
+}
+
+/* [반응형] 모바일/데스크탑 노출 여부 */
+.visible-mobile {
+  display: none !important;
+}
+
+/* [미디어 쿼리] 모바일 (< 1024px) */
+@media (max-width: 1024px) {
+  /* 노출 토글 */
+  .visible-desktop {
+    display: none !important;
+  }
+  .visible-mobile {
+    display: flex !important;
+    align-items: center;
+    gap: 15px !important;
+  }
+
+  /* 레이아웃 조정 */
+  #header_wrap {
+    height: 50px; /* 모바일 헤더 높이 축소 */
+    padding: 0 20px; /* 좌우 여백 축소 */
+  }
+
+  .logo img {
+    height: 16px; /* 로고 크기 미세 축소 */
+  }
+  
+  /* 좌/우 메뉴 간격 조정 */
+  .left_menu ul, .right_menu ul {
+    gap: 15px; 
+  }
+  
+  /* 아이콘 크기 미세 조정 */
+  .hamburger svg {
+    width: 24px;
+    height: 24px;
+  }
+  .search_icon svg {
+    width: 20px;
+    height: 20px;
+  }
 }
 </style>
