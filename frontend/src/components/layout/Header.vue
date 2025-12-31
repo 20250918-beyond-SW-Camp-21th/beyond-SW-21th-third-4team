@@ -77,8 +77,28 @@
               </svg>
             </a>
           </li>
-          <li><router-link to="/help">고객센터</router-link></li>
-          <li><router-link to="/login">계정</router-link></li>
+          <li class="relative_item" @mouseenter="showCustomerSub = true" @mouseleave="showCustomerSub = false">
+            <router-link to="/help">고객센터</router-link>
+            <!-- 고객센터 드롭다운 -->
+            <transition name="fade">
+              <ul v-show="showCustomerSub" class="mini_dropdown">
+                <li v-for="item in customerItems" :key="item.name">
+                  <router-link :to="item.link">{{ item.name }}</router-link>
+                </li>
+              </ul>
+            </transition>
+          </li>
+          <li class="relative_item" @mouseenter="showAccountSub = true" @mouseleave="showAccountSub = false">
+            <router-link to="/login">계정</router-link>
+            <!-- 계정 드롭다운 -->
+            <transition name="fade">
+              <ul v-show="showAccountSub" class="mini_dropdown">
+                <li v-for="item in accountItems" :key="item.name">
+                  <router-link :to="item.link">{{ item.name }}</router-link>
+                </li>
+              </ul>
+            </transition>
+          </li>
           <li>
             <router-link to="/cart">
               쇼핑백<span v-if="cartCount > 0">({{ cartCount }})</span>
@@ -118,35 +138,30 @@ import { ref, onMounted } from 'vue';
 import http from '../../api/http';
 
 const mainMenus = ref([
-  {
-    name: '남성복',
-    link: '/men',
-    showSub: false,
-    subItems: [
-      { name: 'ALL', link: '/men/all' },
-      { name: 'BEST', link: '/men/best' },
-      { name: 'OUTER', link: '/men/outer' },
-      { name: 'TOP', link: '/men/top' },
-      { name: 'BOTTOM', link: '/men/bottom' },
-    ]
-  },
-  {
-    name: '여성복',
-    link: '/women',
-    showSub: false,
-    subItems: [
-      { name: 'ALL', link: '/women/all' },
-      { name: 'BEST', link: '/women/best' },
-      { name: 'OUTER', link: '/women/outer' },
-      { name: 'TOP', link: '/women/top' },
-      { name: 'BOTTOM', link: '/women/bottom' },
-    ]
-  },
+  { name: '남성복', link: '/men', subItems: null },
+  { name: '여성복', link: '/women', subItems: null },
   { name: 'CLEARANCE', link: '/clearance', subItems: null },
   { name: '컬렉션', link: '/collection', subItems: null },
   { name: '컨텐츠', link: '/contents', subItems: null },
   { name: '매장안내', link: '/store', subItems: null },
 ]);
+
+// [고객센터] 서브메뉴 데이터
+const showCustomerSub = ref(false);
+const customerItems = [
+  { name: '공지사항', link: '/notice' },
+  { name: '질문과답변', link: '/qna' },
+  { name: '소재별 케어', link: '/care' },
+];
+
+// [계정] 서브메뉴 데이터
+const showAccountSub = ref(false);
+const accountItems = [
+  { name: '로그인', link: '/login' },
+  { name: '회원가입', link: '/signup' },
+  { name: '마이 페이지', link: '/mypage' },
+  { name: '주문조회', link: '/orders' },
+];
 
 // 장바구니 카운트 (초기값 0)
 const cartCount = ref(0);
@@ -248,7 +263,55 @@ a {
   color: #ff0000;
 }
 
+/* [강조] CLEARANCE */
+.highlight a {
+  color: #ff0000;
+}
+
 /* [드롭다운] */
+/* [미니 드롭다운] - 고객센터, 계정 등 */
+.relative_item {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.mini_dropdown {
+  position: absolute;
+  top: 30px; /* 텍스트 바로 아래 */
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 1px solid #000;
+  min-width: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  z-index: 100;
+}
+
+.mini_dropdown li {
+  width: 100%;
+  text-align: left; /* 왼쪽 정렬 */
+}
+
+.mini_dropdown a {
+  display: block;
+  padding: 3px 15px; /* 상하 간격 매우 좁게 */
+  font-size: 11px; /* 기존폰트 유지 */
+  color: #000;
+  font-weight: 400;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.mini_dropdown a:hover {
+  text-decoration: underline;
+  background-color: transparent; /* 배경색 변경 없음 */
+}
+
+/* [대형 드롭다운 - 기존 유지] */
 .sub_cate_wrap {
   position: absolute;
   top: 60px;
