@@ -148,7 +148,7 @@
         </div>
         
         <div class="input-row no-border">
-          <div class="input-cell full px-2 py-3">
+          <div class="input-cell full" style="padding: 15px 20px;">
              <select v-model="form.deliveryMessage" class="full-width square-input message-select">
               <option value="">-- 메시지 선택 (선택사항) --</option>
               <option value="배송 전 연락주세요">배송 전 연락주세요</option>
