@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { getToken, removeToken} from "../utils/token.js"
+import router from "../router/index.js";
 
 const API_PREFIX = '/api/v1'
 
@@ -31,10 +32,9 @@ http.interceptors.response.use(
     (err) => {
         if (err.response?.status === 401) {
             removeToken()
-            // window.location.href = '/login'
-            // 라우터 세팅 후
-            // router.push('/login')
+            router.push('/')
         }
+
         return Promise.reject(err)
     }
 )
