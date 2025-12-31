@@ -45,7 +45,7 @@ const onSubmit = async () => {
 }
 
 const goSignup = () => {
-  router.push('/signup')
+  router.push('/signup/terms')
 }
 </script>
 
