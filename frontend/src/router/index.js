@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import {mainRoutes} from "./routes/main.routes.js"
-import {memberRoutes} from "./routes/member.routes.js";
+import { mainRoutes } from "./routes/main.routes.js"
+import { memberRoutes } from "./routes/member.routes.js";
+import { orderRoutes } from "./routes/order.routes.js";
 // TODO: router import
 
 const router = createRouter({
@@ -8,7 +9,8 @@ const router = createRouter({
     routes: [
         // TODO: routes 추가
         ...mainRoutes,
-        ...memberRoutes
+        ...memberRoutes,
+        ...orderRoutes
     ]
 })
 
