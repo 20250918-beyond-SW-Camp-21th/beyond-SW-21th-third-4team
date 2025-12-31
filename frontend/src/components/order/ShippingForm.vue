@@ -21,98 +21,118 @@
       <div class="shipping-options">
         <label class="radio-label">
           <input type="radio" value="same" v-model="shippingOption" @change="handleOptionChange" />
-          <span class="radio-custom"></span>
+          <span class="custom-radio"></span>
           회원 정보와 동일
         </label>
         <label class="radio-label">
           <input type="radio" value="new" v-model="shippingOption" @change="handleOptionChange" />
-          <span class="radio-custom"></span>
+          <span class="custom-radio"></span>
           새로운 배송지
         </label>
       </div>
 
       <!-- 입력 폼 -->
-      <div class="input-group">
-        <label>받는사람 <span class="required">*</span></label>
-        <input type="text" v-model="form.receiverName" class="full-width" />
-      </div>
-
-      <div class="input-group address-group">
-        <label>주소 <span class="required">*</span></label>
-        <div class="address-inputs">
-          <div class="zipcode-row">
-            <input type="text" v-model="form.zipcode" placeholder="우편번호" />
-            <button type="button" class="btn-search">주소검색</button>
+      <div class="form-table">
+        <div class="input-row">
+          <div class="label-cell">
+            <span class="required">*</span>받는사람
           </div>
-          <input type="text" v-model="form.basicAddress" placeholder="기본주소" class="full-width" />
-          <input type="text" v-model="form.detailAddress" placeholder="나머지 주소" class="full-width" />
+          <div class="input-cell px-2">
+            <input type="text" v-model="form.receiverName" class="full-width square-input" />
+          </div>
         </div>
-      </div>
 
-      <div class="input-group phone-group">
-        <label>일반전화 <span class="required">*</span></label>
-        <div class="phone-inputs">
-          <select v-model="form.tel1">
-            <option value="02">02</option>
-            <option value="031">031</option>
-            <option value="032">032</option>
-          </select>
-          <span class="dash">-</span>
-          <input type="text" v-model="form.tel2" />
-          <span class="dash">-</span>
-          <input type="text" v-model="form.tel3" />
+        <div class="input-row address-row">
+          <div class="label-cell">
+            <span class="required">*</span>주소
+          </div>
+          <div class="input-cell column-cell px-2">
+            <div class="flex-row mb-2">
+              <input type="text" v-model="form.zipcode" placeholder="우편번호" class="square-input width-150" readonly />
+              <button type="button" class="btn-search square-btn">주소검색</button>
+            </div>
+            <input type="text" v-model="form.basicAddress" placeholder="기본주소" class="full-width square-input mb-2" readonly />
+            <input type="text" v-model="form.detailAddress" placeholder="나머지 주소" class="full-width square-input" />
+          </div>
         </div>
-      </div>
 
-      <div class="input-group phone-group">
-        <label>휴대전화 <span class="required">*</span></label>
-        <div class="phone-inputs">
-          <select v-model="form.phone1">
-            <option value="010">010</option>
-            <option value="011">011</option>
-            <option value="016">016</option>
-          </select>
-          <span class="dash">-</span>
-          <input type="text" v-model="form.phone2" />
-          <span class="dash">-</span>
-          <input type="text" v-model="form.phone3" />
+        <div class="input-row">
+          <div class="label-cell">
+            <span class="required">*</span>일반전화
+          </div>
+          <div class="input-cell flex-row px-2">
+            <select v-model="form.tel1" class="square-input width-80">
+              <option value="02">02</option>
+              <option value="031">031</option>
+              <option value="032">032</option>
+            </select>
+            <span class="dash">-</span>
+            <input type="text" v-model="form.tel2" class="square-input flex-1" />
+            <span class="dash">-</span>
+            <input type="text" v-model="form.tel3" class="square-input flex-1" />
+          </div>
         </div>
-      </div>
 
-      <div class="input-group email-group">
-        <label>이메일 <span class="required">*</span></label>
-        <div class="email-inputs">
-          <input type="text" v-model="form.emailId" />
-          <span class="at">@</span>
-          <input type="text" v-model="form.emailDomain" />
-          <select @change="handleEmailDomainChange" v-model="selectedEmailDomain">
-            <option value="manual">직접입력</option>
-            <option value="naver.com">naver.com</option>
-            <option value="gmail.com">gmail.com</option>
-            <option value="nate.com">nate.com</option>
-          </select>
+        <div class="input-row">
+          <div class="label-cell">
+            <span class="required">*</span>휴대전화
+          </div>
+          <div class="input-cell flex-row px-2">
+            <select v-model="form.phone1" class="square-input width-80">
+              <option value="010">010</option>
+              <option value="011">011</option>
+              <option value="016">016</option>
+            </select>
+            <span class="dash">-</span>
+            <input type="text" v-model="form.phone2" class="square-input flex-1" />
+            <span class="dash">-</span>
+            <input type="text" v-model="form.phone3" class="square-input flex-1" />
+          </div>
         </div>
-      </div>
 
-      <div class="input-group message-group">
-        <select v-model="form.deliveryMessage" class="full-width message-select">
-          <option value="">-- 메시지 선택 (선택사항) --</option>
-          <option value="배송 전 연락주세요">배송 전 연락주세요</option>
-          <option value="부재 시 경비실에 맡겨주세요">부재 시 경비실에 맡겨주세요</option>
-          <option value="부재 시 문 앞에 놓아주세요">부재 시 문 앞에 놓아주세요</option>
-          <option value="direct">직접 입력</option>
-        </select>
-        <textarea
-          v-if="form.deliveryMessage === 'direct'"
-          v-model="form.customMessage"
-          placeholder="배송 메시지를 입력해주세요."
-          class="full-width mt-2"
-        ></textarea>
+        <div class="input-row" style="border-bottom: 1px solid #eee;">
+          <div class="label-cell">
+            <span class="required">*</span>이메일
+          </div>
+          <div class="input-cell email-cell px-2">
+            <input type="text" v-model="form.emailId" class="square-input" />
+            <span class="at">@</span>
+            <template v-if="selectedEmailDomain === 'manual'">
+               <input type="text" v-model="form.emailDomain" class="square-input" placeholder="직접입력" />
+            </template>
+            <!-- 2단 구조 요구사항: 도메인 선택 (선택 시 값 입력됨) -->
+            <select @change="handleEmailDomainChange" v-model="selectedEmailDomain" class="square-input">
+              <option value="manual">직접입력</option>
+              <option value="naver.com">naver.com</option>
+              <option value="gmail.com">gmail.com</option>
+              <option value="nate.com">nate.com</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="input-row no-border">
+          <div class="input-cell full px-2 py-3">
+             <select v-model="form.deliveryMessage" class="full-width square-input message-select">
+              <option value="">-- 메시지 선택 (선택사항) --</option>
+              <option value="배송 전 연락주세요">배송 전 연락주세요</option>
+              <option value="부재 시 경비실에 맡겨주세요">부재 시 경비실에 맡겨주세요</option>
+              <option value="부재 시 문 앞에 놓아주세요">부재 시 문 앞에 놓아주세요</option>
+              <option value="direct">직접 입력</option>
+            </select>
+            <textarea
+              v-if="form.deliveryMessage === 'direct'"
+              v-model="form.customMessage"
+              placeholder="배송 메시지를 입력해주세요."
+              class="full-width square-input mt-2"
+            ></textarea>
+          </div>
+        </div>
       </div>
 
       <div class="save-checkbox">
-        <label>
+        <label class="checkbox-label">
           <input type="checkbox" />
+          <span class="custom-checkbox"></span>
           기본 배송지로 저장
         </label>
       </div>
@@ -172,14 +192,12 @@ const handleOptionChange = async () => {
       const u = userInfo.value;
       form.receiverName = u.name || '';
       
-      // 주소 파싱 (예: "(12345) 서울 ... 상세")
-      // 백엔드에서 주소가 어떻게 오는지에 따라 파싱 로직 조정 필요
-      // 여기서는 단순하게 처리 (우편번호 파싱 시도)
+      // 주소 파싱
       let addr = u.address || '';
       const zipMatch = addr.match(/^\(?(\d{5})\)?\s*(.*)$/);
       if (zipMatch) {
         form.zipcode = zipMatch[1];
-        form.basicAddress = zipMatch[2]; // 상세주소 분리 어려움, 기본주소에 통으로 넣음
+        form.basicAddress = zipMatch[2]; 
         form.detailAddress = ''; 
       } else {
         form.zipcode = '';
@@ -187,20 +205,17 @@ const handleOptionChange = async () => {
         form.detailAddress = '';
       }
 
-      // 전화번호 파싱 (010-1234-5678)
+      // 전화번호 파싱
       if (u.phone) {
         const phones = u.phone.split('-');
         if (phones.length === 3) {
           form.phone1 = phones[0];
           form.phone2 = phones[1];
           form.phone3 = phones[2];
-        } else {
-            // 형식이 다르면 앞 3자리만이라도..
-            if(u.phone.length >= 10) {
-                 form.phone1 = u.phone.substring(0,3);
-                 form.phone2 = u.phone.substring(3,7);
-                 form.phone3 = u.phone.substring(7);
-            }
+        } else if(u.phone.length >= 10) {
+             form.phone1 = u.phone.substring(0,3);
+             form.phone2 = u.phone.substring(3,7);
+             form.phone3 = u.phone.substring(7);
         }
       }
 
@@ -210,7 +225,6 @@ const handleOptionChange = async () => {
         if (emails.length === 2) {
           form.emailId = emails[0];
           form.emailDomain = emails[1];
-          // 도메인 자동 선택 로직
           if (['naver.com', 'gmail.com', 'nate.com'].includes(emails[1])) {
             selectedEmailDomain.value = emails[1];
           } else {
@@ -220,7 +234,6 @@ const handleOptionChange = async () => {
       }
     }
   } else {
-    // 초기화
     resetForm();
   }
 };
@@ -245,11 +258,11 @@ const handleEmailDomainChange = () => {
   if (selectedEmailDomain.value !== 'manual') {
     form.emailDomain = selectedEmailDomain.value;
   } else {
-    form.emailDomain = ''; // 직접 입력 전환 시 초기화? or 유지? -> 보통 빈값으로
+    form.emailDomain = ''; 
   }
 };
 
-// [Logic] DTO 생성 (부모 컴포넌트에서 호출)
+// [Logic] DTO 생성
 const getOrderDeliveryDto = () => {
   if (!validate()) return null;
 
@@ -276,22 +289,34 @@ const validate = () => {
   return true;
 };
 
-// 외부 사용 함수 노출
 defineExpose({
   getOrderDeliveryDto
 });
 </script>
 
 <style scoped>
+/* [Global Box Sizing] */
+* {
+  box-sizing: border-box;
+}
+
 .shipping-form-container {
-  max-width: 800px;
+  max-width: 1000px; 
   margin: 0 auto;
   font-family: 'Pretendard', sans-serif;
+  padding-right: 20px; /* 우측 여백 확보 */
 }
+
+/* ... existing styles ... */
+
+.px-2 { padding-left: 10px; padding-right: 10px; }
+.py-3 { padding-top: 15px; padding-bottom: 15px; }
+.mb-2 { margin-bottom: 12px; } /* 간격 확대 (8px -> 12px) */
+
 
 .form-header h2 {
   text-align: center;
-  font-size: 14px;
+  font-size: 13px; /* 14 -> 13 */
   margin-bottom: 20px;
 }
 
@@ -310,7 +335,7 @@ defineExpose({
 }
 
 .section-title h3 {
-  font-size: 13px;
+  font-size: 12px; /* 13 -> 12 */
   font-weight: bold;
   margin: 0;
 }
@@ -324,136 +349,248 @@ defineExpose({
   flex: 1;
   text-align: center;
   padding: 12px 0;
-  font-size: 13px;
+  font-size: 12px; /* 13 -> 12 */
   cursor: pointer;
   background: #f9f9f9;
   color: #999;
+  border-right: 1px solid #eee;
+}
+.tab:last-child {
+  border-right: none;
 }
 
 .tab.active {
   background: #fff;
   color: #000;
   font-weight: bold;
-  border-bottom: 1px solid #fff; /* 하단 보더 가림 */
+  border-bottom: 1px solid #fff; 
+  margin-bottom: -1px; /* 선 가림 */
 }
 
 .shipping-options {
   padding: 20px;
   display: flex;
   gap: 20px;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid #eee;
 }
 
+/* [Custom Radio Button] */
 .radio-label {
   display: flex;
   align-items: center;
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
+  font-weight: 700;
+  position: relative;
+  /* padding-left: 25px; input hide 후 custom으로 대체 */
 }
 
 .radio-label input {
-  margin-right: 5px;
+  display: none; /* 기본 라디오 숨김 */
 }
 
-.input-group {
-  display: flex;
-  align-items: flex-start; /* 상단 정렬 */
+.custom-radio {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  margin-right: 8px;
+  position: relative;
+  display: inline-block;
+  background-color: #f9f9f9; /* 기본 회색 배경 */
+}
+
+/* Checked State for Radio */
+.radio-label input:checked + .custom-radio {
+  border: 5px solid #000; /* 검은색 테두리 두껍게 */
+  background-color: #fff; /* 내부는 파이 모양처럼 보이게? or just circle */
+  border: 1px solid #000; /* 외곽선 */
+}
+
+.radio-label input:checked + .custom-radio::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background: #000;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* [Custom Checkbox] */
+.save-checkbox {
   padding: 15px 20px;
-  border-bottom: 1px solid #f5f5f5;
-}
-
-.input-group label {
-  width: 120px;
-  font-size: 13px;
-  font-weight: bold;
-  padding-top: 10px; /* 인풋과 높이 맞춤 */
-}
-
-.required {
-  color: #0078ff; /* 파란색 별 */
-}
-
-.input-group input[type="text"],
-.input-group select,
-.input-group textarea {
-  border: 1px solid #ddd;
-  padding: 8px 10px;
-  font-size: 13px;
-  height: 36px;
-  box-sizing: border-box;
-}
-
-.full-width {
-  flex: 1;
-}
-
-/* 주소 인풋 그룹 */
-.address-inputs {
-  flex: 1;
+  font-size: 11px;
+  color: #666;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  /* border-top: 1px solid #eee;  [수정] 선 제거 (이메일 밑으로 이동) */
 }
 
-.zipcode-row {
+.checkbox-label {
   display: flex;
-  gap: 5px;
-}
-
-.zipcode-row input {
-  width: 150px;
-}
-
-.btn-search {
-  background: #fff;
-  border: 1px solid #ddd;
-  padding: 0 15px;
-  font-size: 12px;
+  align-items: center;
   cursor: pointer;
 }
 
-/* 전화번호 인풋 그룹 */
-.phone-inputs {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+.checkbox-label input {
+  display: none; /* 기본 체크박스 숨김 */
 }
 
-.phone-inputs select {
-  width: 150px;
+.custom-checkbox {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #ddd;
+  margin-right: 8px;
+  display: inline-block;
+  position: relative;
+  background-color: #fff;
+  border-radius: 0; /* Square styling */
 }
 
-.phone-inputs input {
-  flex: 1;
+/* Checked State for Checkbox */
+.checkbox-label input:checked + .custom-checkbox {
+  border-color: #000;
+  background-color: #000; /* 검은색 배경 */
 }
 
-.dash {
-  color: #ddd;
+.checkbox-label input:checked + .custom-checkbox::after {
+  content: '✔'; /* 심플 체크 문자 or CSS draw */
+  color: #fff;
+  font-size: 11px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-/* 이메일 인풋 그룹 */
-.email-inputs {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
+</style>
 
-.email-inputs input {
-  flex: 1;
-}
-
-.email-inputs select {
-  width: 150px;
-}
-
-.at {
-  color: #666;
-}
-
-.message-select {
+<style scoped>
+/* [Form Table Layout] */
+.form-table {
   width: 100%;
+}
+
+.input-row {
+  display: flex;
+  /* border-bottom: 1px solid #eee;  [수정] 선 제거 */
+  min-height: 60px; /* [수정] 행 높이 넉넉하게 (52px -> 60px) */
+  align-items: center; /* 수직 중앙 정렬 확실하게 */
+}
+.input-row.no-border {
+  border-bottom: none;
+}
+.input-row.address-row {
+  height: auto;
+  min-height: 160px; 
+  align-items: flex-start; /* 주소는 상단 정렬 */
+  padding-top: 10px;
+}
+
+/* [Label Cell] */
+.label-cell {
+  width: 140px; /* 고정 너비 */
+  background: #fff;
+  font-size: 12px; /* 13 -> 12 */
+  font-weight: 700;
+  color: #333;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  position: relative;
+  /* border-bottom 제거로 인해 높이 맞춤 필요 없음 */
+}
+
+.required {
+  color: #0078ff;
+  font-size: 13px; /* 14 -> 13 */
+  margin-right: 2px;
+  position: relative;
+  top: 2px; /* 위치 미세 조정 */
+}
+
+/* [Input Cell] */
+.input-cell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 5px 0; /* 패딩 조정 */
+}
+.input-cell.flex-row {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+/* [Generic Flex Row] */
+.flex-row {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.input-cell.column-cell {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+.input-cell.email-cell {
+  gap: 5px;
+}
+.input-cell.full {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+/* [Square Styles] */
+.square-input, .square-btn, .message-select {
+  border-radius: 0 !important; /* [포인트] 직각 처리 */
+  border: 1px solid #ddd;
+  height: 37px; /* [수정] 높이 확대 (32px -> 45px -> 37px) */
+  padding: 0 10px;
+  font-size: 12px; /* 13 -> 12 */
+  outline: none;
+  font-family: 'Pretendard', sans-serif;
+  box-sizing: border-box; /* 확실하게 지정 */
+  vertical-align: middle; /* flex 안 쓸 경우 대비 */
+}
+
+.square-input:focus, .message-select:focus, textarea.square-input:focus {
+  border-color: #333; /* [포인트] 포커스 시 검은색/진회색 */
+}
+
+.square-btn {
+  background: #fff;
+  border: 1px solid #333; /* [포인트] 버튼 테두리 */
+  color: #333;
+  cursor: pointer;
+  height: 37px; /* input과 동일한 높이 강제 */
+  line-height: 35px; /* height(37) - border(2) = 35px */
+  padding: 0 20px;
+  font-weight: 500;
+  font-size: 12px; /* 13 -> 12 */
+  box-sizing: border-box;
+  display: inline-flex; /* 텍스트 수직 정렬 용이 */
+  align-items: center;
+  justify-content: center;
+}
+
+/* [Alignments & Spacing] */
+.px-2 { padding-left: 10px; padding-right: 10px; }
+.py-3 { padding-top: 15px; padding-bottom: 15px; }
+.mb-2 { margin-bottom: 12px; }
+.full-width { width: 100%; }
+.width-150 { width: 150px; }
+.width-80 { width: 80px; }
+.flex-1 { flex: 1; }
+
+.dash, .at {
+  color: #999;
+  margin: 0 5px;
+  font-size: 11px; /* 12 -> 11 */
 }
 
 .mt-2 {
@@ -461,16 +598,5 @@ defineExpose({
   height: 80px !important;
   resize: none;
 }
-
-.save-checkbox {
-  padding: 15px 20px;
-  font-size: 12px;
-  color: #666;
-  display: flex;
-  align-items: center;
-}
-
-.save-checkbox input {
-  margin-right: 5px;
-}
 </style>
+
