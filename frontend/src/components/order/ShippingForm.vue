@@ -680,6 +680,11 @@ onMounted(() => {
 .product-list-container {
     margin-top: -1px; /* [수정] 위 섹션과 연결되도록 겹침 처리 */
 }
+
+/* [New] Override section-title border for product list */
+.product-list-container .section-title {
+    border-bottom: none;
+}
 /* Re-use form-box, section-title styles from above */
 
 .product-list {
@@ -704,10 +709,20 @@ onMounted(() => {
 .p-image { width: 90px; margin-right: 20px; flex-shrink: 0; }
 .p-image img { width: 100%; vertical-align: middle; border: 1px solid #e8e8e8; }
 .p-info { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-top: 5px; }
-.p-name { font-size: 12px; color: #353535; margin: 0 0 15px; line-height: 1.4; }
-.p-option { color: #707070; margin: 0 0 15px; }
-.p-qty { color: #353535; margin: 0 0 15px; }
-.p-price { font-weight: 700; color: #000; margin: 0; }
+/* [수정] 상품명 폰트/스타일: 선 추가 및 폰트 조정 */
+.p-name { 
+    font-size: 12px; 
+    color: #353535; 
+    margin: 0 0 10px; /* 간격 줄임 */
+    line-height: 1.4; 
+    padding-bottom: 10px; /* 선과의 간격 */
+    border-bottom: 1px solid #e8e8e8; /* [포인트] 상품명 밑에 선 추가 */
+    width: 100%; /* 전체 너비 */
+}
+
+.p-option { color: #707070; margin: 0 0 10px; font-size: 11px; } /* 폰트 사이즈/간격 미세조정 */
+.p-qty { color: #353535; margin: 0 0 10px; font-size: 11px; }
+.p-price { font-weight: 700; color: #000; margin: 0; font-size: 12px; }
 
 .shipping-fee-area {
     background: #fbfbfb;
