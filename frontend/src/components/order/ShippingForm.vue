@@ -678,7 +678,7 @@ onMounted(() => {
 
 /* --- [Product List Custom Styles] --- */
 .product-list-container {
-    margin-top: 50px; /* Spacing from Shipping Form */
+    margin-top: -1px; /* [수정] 위 섹션과 연결되도록 겹침 처리 */
 }
 /* Re-use form-box, section-title styles from above */
 
