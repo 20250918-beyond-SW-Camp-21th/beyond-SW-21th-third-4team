@@ -92,6 +92,7 @@ public class CartService {
                 .map(ci -> {
                     Product p = productMap.get(ci.getProductId());
                     return new CartItemResponseDto(
+                            ci.getId(),
                             p.getId(),
                             p.getName(),
                             p.getPrice(),

@@ -42,7 +42,7 @@ public class CartController {
         return ApiResponse.success();
     }
 
-    @PatchMapping("/{cartItemId}/increase")
+    @PostMapping("/{cartItemId}/increase")
     public ApiResponse<Void> increaseQuantity(
             @AuthenticationPrincipal CustomUser user,
             @PathVariable Long cartItemId
@@ -51,7 +51,7 @@ public class CartController {
         return ApiResponse.success();
     }
 
-    @PatchMapping("/{cartItemId}/decrease")
+    @PostMapping("/{cartItemId}/decrease")
     public ApiResponse<Void> decreaseQuantity(
             @AuthenticationPrincipal CustomUser user,
             @PathVariable Long cartItemId
