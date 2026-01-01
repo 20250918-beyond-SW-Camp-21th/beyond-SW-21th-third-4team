@@ -4,20 +4,21 @@
       <h2>주문서 작성</h2>
     </div>
 
+    <!-- [SECTION 1] 배송지 정보 입력 (User's Exact Div Layout) -->
     <div class="form-box">
-      <!-- 배송지 헤더 -->
+      <!-- 섹션 타이틀 -->
       <div class="section-title">
         <h3>배송지</h3>
         <span class="toggle-icon">^</span>
       </div>
 
-      <!-- 탭 (Visual Only) -->
+      <!-- 탭 -->
       <div class="tabs">
         <div class="tab inactive">최근 배송지</div>
         <div class="tab active">직접입력</div>
       </div>
 
-      <!-- 옵션 선택 (회원 정보와 동일 / 새로운 배송지) -->
+      <!-- 옵션 선택 -->
       <div class="shipping-options">
         <label class="radio-label">
           <input type="radio" value="same" v-model="shippingOption" @change="handleOptionChange" />
@@ -49,7 +50,7 @@
           <div class="input-cell column-cell px-2">
             <div class="flex-row mb-2">
               <input type="text" v-model="form.zipcode" placeholder="우편번호" class="square-input width-150" readonly />
-              <button type="button" class="btn-search square-btn">주소검색</button>
+              <button type="button" @click="handleAddressSearch" class="btn-search square-btn">주소검색</button>
             </div>
             <input type="text" v-model="form.basicAddress" placeholder="기본주소" class="full-width square-input mb-2" readonly />
             <input type="text" v-model="form.detailAddress" placeholder="나머지 주소" class="full-width square-input" />
@@ -65,11 +66,39 @@
               <option value="02">02</option>
               <option value="031">031</option>
               <option value="032">032</option>
+              <option value="033">033</option>
+              <option value="041">041</option>
+              <option value="042">042</option>
+              <option value="043">043</option>
+              <option value="044">044</option>
+              <option value="051">051</option>
+              <option value="052">052</option>
+              <option value="053">053</option>
+              <option value="054">054</option>
+              <option value="055">055</option>
+              <option value="061">061</option>
+              <option value="062">062</option>
+              <option value="063">063</option>
+              <option value="064">064</option>
+              <option value="0502">0502</option>
+              <option value="0503">0503</option>
+              <option value="0504">0504</option>
+              <option value="0505">0505</option>
+              <option value="0506">0506</option>
+              <option value="0507">0507</option>
+              <option value="070">070</option>
+              <option value="010">010</option>
+              <option value="011">011</option>
+              <option value="016">016</option>
+              <option value="017">017</option>
+              <option value="018">018</option>
+              <option value="019">019</option>
+              <option value="0508">0508</option>
             </select>
             <span class="dash">-</span>
-            <input type="text" v-model="form.tel2" class="square-input flex-1" />
+            <input type="text" v-model="form.tel2" class="square-input flex-1" maxlength="4" />
             <span class="dash">-</span>
-            <input type="text" v-model="form.tel3" class="square-input flex-1" />
+            <input type="text" v-model="form.tel3" class="square-input flex-1" maxlength="4" />
           </div>
         </div>
 
@@ -82,15 +111,18 @@
               <option value="010">010</option>
               <option value="011">011</option>
               <option value="016">016</option>
+              <option value="017">017</option>
+              <option value="018">018</option>
+              <option value="019">019</option>
             </select>
             <span class="dash">-</span>
-            <input type="text" v-model="form.phone2" class="square-input flex-1" />
+            <input type="text" v-model="form.phone2" class="square-input flex-1" maxlength="4" />
             <span class="dash">-</span>
-            <input type="text" v-model="form.phone3" class="square-input flex-1" />
+            <input type="text" v-model="form.phone3" class="square-input flex-1" maxlength="4" />
           </div>
         </div>
 
-        <div class="input-row" style="border-bottom: 1px solid #eee;">
+        <div class="input-row">
           <div class="label-cell">
             <span class="required">*</span>이메일
           </div>
@@ -100,23 +132,30 @@
             <template v-if="selectedEmailDomain === 'manual'">
                <input type="text" v-model="form.emailDomain" class="square-input" placeholder="직접입력" />
             </template>
-            <!-- 2단 구조 요구사항: 도메인 선택 (선택 시 값 입력됨) -->
             <select @change="handleEmailDomainChange" v-model="selectedEmailDomain" class="square-input">
               <option value="manual">직접입력</option>
               <option value="naver.com">naver.com</option>
-              <option value="gmail.com">gmail.com</option>
+              <option value="daum.net">daum.net</option>
               <option value="nate.com">nate.com</option>
+              <option value="hotmail.com">hotmail.com</option>
+              <option value="yahoo.com">yahoo.com</option>
+              <option value="empas.com">empas.com</option>
+              <option value="korea.com">korea.com</option>
+              <option value="dreamwiz.com">dreamwiz.com</option>
+              <option value="gmail.com">gmail.com</option>
             </select>
           </div>
         </div>
         
         <div class="input-row no-border">
-          <div class="input-cell full px-2 py-3">
+          <div class="input-cell full" style="padding: 15px 20px;">
              <select v-model="form.deliveryMessage" class="full-width square-input message-select">
               <option value="">-- 메시지 선택 (선택사항) --</option>
               <option value="배송 전 연락주세요">배송 전 연락주세요</option>
               <option value="부재 시 경비실에 맡겨주세요">부재 시 경비실에 맡겨주세요</option>
               <option value="부재 시 문 앞에 놓아주세요">부재 시 문 앞에 놓아주세요</option>
+              <option value="빠른 배송 부탁드립니다.">빠른 배송 부탁드립니다.</option>
+              <option value="택배함에 보관해 주세요.">택배함에 보관해 주세요.</option>
               <option value="direct">직접 입력</option>
             </select>
             <textarea
@@ -137,6 +176,44 @@
         </label>
       </div>
     </div>
+    
+    <!-- [SECTION 2] 주문 상품 리스트 (Product List added as requested) -->
+    <div class="product-list-container">
+        <div class="form-box">
+            <!-- Section Title -->
+            <div class="section-title">
+                <h3>주문상품</h3>
+                <span class="toggle-icon">^</span>
+            </div>
+
+            <!-- Product List -->
+            <div class="product-list">
+                <div v-if="products.length === 0" class="empty-list">
+                    주문할 상품이 없습니다.
+                </div>
+                <div v-else v-for="(item, index) in products" :key="index" class="product-item">
+                    <!-- Image -->
+                    <div class="p-image">
+                        <img :src="item.image" :alt="item.name" />
+                    </div>
+                    <!-- Info -->
+                    <div class="p-info">
+                        <p class="p-name">{{ item.name }}</p>
+                        <p class="p-option">[옵션: {{ item.option }}]</p>
+                        <p class="p-qty">수량: {{ item.quantity }}개</p>
+                        <p class="p-price">KRW {{ item.price.toLocaleString() }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipping Fee -->
+            <div class="shipping-fee-area">
+                <span class="label">배송비</span>
+                <span class="price">KRW {{ shippingFee.toLocaleString() }} ({{ shippingFee === 0 ? '무료' : '유료' }})</span>
+            </div>
+        </div>
+    </div>
+
   </div>
 </template>
 
@@ -144,7 +221,7 @@
 import { reactive, ref, onMounted } from 'vue';
 import http from '../../api/http';
 
-// [State] 배송지 정보
+/* [1. Shipping Info Logic] */
 const form = reactive({
   receiverName: '',
   zipcode: '',
@@ -158,14 +235,10 @@ const form = reactive({
   customMessage: ''
 });
 
-// [State] UI 옵션
-const shippingOption = ref('new'); // 'same' | 'new'
+const shippingOption = ref('new');
 const selectedEmailDomain = ref('manual');
-
-// [State] 회원 정보 (API Fetch)
 const userInfo = ref(null);
 
-// [Logic] 회원 정보 조회
 const fetchUserInfo = async () => {
   try {
     const response = await http.get('/mypage/user-info');
@@ -181,18 +254,16 @@ onMounted(() => {
   fetchUserInfo();
 });
 
-// [Logic] 옵션 변경 핸들러 (회원 정보와 동일 / 새로운 배송지)
+const handleAddressSearch = () => {
+    alert("주소 검색 기능은 현재 구현 중입니다.");
+};
+
 const handleOptionChange = async () => {
   if (shippingOption.value === 'same') {
-    if (!userInfo.value) {
-      await fetchUserInfo(); // 없을 경우 재시도
-    }
-
+    if (!userInfo.value) await fetchUserInfo();
     if (userInfo.value) {
       const u = userInfo.value;
       form.receiverName = u.name || '';
-      
-      // 주소 파싱
       let addr = u.address || '';
       const zipMatch = addr.match(/^\(?(\d{5})\)?\s*(.*)$/);
       if (zipMatch) {
@@ -204,32 +275,17 @@ const handleOptionChange = async () => {
         form.basicAddress = addr;
         form.detailAddress = '';
       }
-
-      // 전화번호 파싱
       if (u.phone) {
-        const phones = u.phone.split('-');
-        if (phones.length === 3) {
-          form.phone1 = phones[0];
-          form.phone2 = phones[1];
-          form.phone3 = phones[2];
-        } else if(u.phone.length >= 10) {
-             form.phone1 = u.phone.substring(0,3);
+         if(u.phone.length > 9) {
              form.phone2 = u.phone.substring(3,7);
              form.phone3 = u.phone.substring(7);
-        }
+         }
       }
-
-      // 이메일 파싱
       if (u.email) {
         const emails = u.email.split('@');
-        if (emails.length === 2) {
-          form.emailId = emails[0];
-          form.emailDomain = emails[1];
-          if (['naver.com', 'gmail.com', 'nate.com'].includes(emails[1])) {
-            selectedEmailDomain.value = emails[1];
-          } else {
-            selectedEmailDomain.value = 'manual';
-          }
+        if(emails.length === 2) {
+             form.emailId = emails[0];
+             form.emailDomain = emails[1];
         }
       }
     }
@@ -238,7 +294,6 @@ const handleOptionChange = async () => {
   }
 };
 
-// [Logic] 폼 초기화
 const resetForm = () => {
   form.receiverName = '';
   form.zipcode = '';
@@ -253,7 +308,6 @@ const resetForm = () => {
   selectedEmailDomain.value = 'manual';
 };
 
-// [Logic] 이메일 도메인 변경
 const handleEmailDomainChange = () => {
   if (selectedEmailDomain.value !== 'manual') {
     form.emailDomain = selectedEmailDomain.value;
@@ -262,10 +316,7 @@ const handleEmailDomainChange = () => {
   }
 };
 
-// [Logic] DTO 생성
 const getOrderDeliveryDto = () => {
-  if (!validate()) return null;
-
   const fullAddress = `(${form.zipcode}) ${form.basicAddress} ${form.detailAddress}`;
   const fullPhone = `${form.phone1}-${form.phone2}-${form.phone3}`;
   const fullEmail = `${form.emailId}@${form.emailDomain}`;
@@ -280,21 +331,45 @@ const getOrderDeliveryDto = () => {
   };
 };
 
-// [Logic] 유효성 검사
-const validate = () => {
-  if (!form.receiverName.trim()) { alert('받는사람 이름을 입력해주세요.'); return false; }
-  if (!form.zipcode.trim() || !form.basicAddress.trim()) { alert('주소를 입력해주세요.'); return false; }
-  if (!form.phone2.trim() || !form.phone3.trim()) { alert('휴대전화 번호를 입력해주세요.'); return false; }
-  if (!form.emailId.trim() || !form.emailDomain.trim()) { alert('이메일을 입력해주세요.'); return false; }
-  return true;
-};
-
 defineExpose({
   getOrderDeliveryDto
+});
+
+/* [2. Product List Data (Mock)] */
+/* [2. Product List Data (API Fetch)] */
+const products = ref([]);
+const shippingFee = ref(0);
+
+const fetchCartItems = async () => {
+    try {
+        const response = await http.get('/cart/my');
+        if (response.data && response.data.data) {
+            const cartItems = response.data.data;
+            products.value = cartItems.map(item => ({
+                name: item.productName || item.name || '상품명 없음',
+                option: item.optionName || item.option || '옵션 없음',
+                quantity: item.quantity || item.qty || 1,
+                price: item.price || item.productPrice || 0,
+                image: item.imageUrl || item.image || item.thumbnail || 'https://via.placeholder.com/90x100?text=No+Image' 
+            }));
+            
+            // 배송비 계산 (예: 5만원 이상 무료)
+            const total = products.value.reduce((sum, p) => sum + (p.price * p.quantity), 0);
+            shippingFee.value = total >= 50000 ? 0 : 3000;
+        }
+    } catch (error) {
+        console.error("장바구니 조회 실패:", error);
+    }
+};
+
+onMounted(() => {
+  fetchUserInfo();
+  fetchCartItems();
 });
 </script>
 
 <style scoped>
+/* [User Provided Specific CSS] */
 /* [Global Box Sizing] */
 * {
   box-sizing: border-box;
@@ -338,6 +413,13 @@ defineExpose({
   font-size: 12px; /* 13 -> 12 */
   font-weight: bold;
   margin: 0;
+}
+
+/* Toggle Icon Style (Not in provided CSS but used in template) */
+.toggle-icon {
+    font-size: 10px;
+    cursor: pointer;
+    color: #999;
 }
 
 .tabs {
@@ -466,9 +548,7 @@ defineExpose({
   transform: translate(-50%, -50%);
 }
 
-</style>
 
-<style scoped>
 /* [Form Table Layout] */
 .form-table {
   width: 100%;
@@ -579,9 +659,6 @@ defineExpose({
 }
 
 /* [Alignments & Spacing] */
-.px-2 { padding-left: 10px; padding-right: 10px; }
-.py-3 { padding-top: 15px; padding-bottom: 15px; }
-.mb-2 { margin-bottom: 12px; }
 .full-width { width: 100%; }
 .width-150 { width: 150px; }
 .width-80 { width: 80px; }
@@ -598,5 +675,64 @@ defineExpose({
   height: 80px !important;
   resize: none;
 }
-</style>
 
+/* --- [Product List Custom Styles] --- */
+.product-list-container {
+    margin-top: -1px; /* [수정] 위 섹션과 연결되도록 겹침 처리 */
+}
+
+/* [New] Override section-title border for product list */
+.product-list-container .section-title {
+    border-bottom: none;
+}
+/* Re-use form-box, section-title styles from above */
+
+.product-list {
+    padding: 0 20px;
+}
+.empty-list {
+    padding: 40px 0;
+    text-align: center;
+    color: #999;
+    font-size: 12px;
+    border-bottom: 1px dotted #e8e8e8;
+}
+.product-item {
+    display: flex;
+    padding: 20px 0;
+    border-bottom: 1px dotted #e8e8e8;
+    align-items: flex-start;
+}
+.product-item:last-child {
+    border-bottom: 0;
+}
+.p-image { width: 90px; margin-right: 20px; flex-shrink: 0; }
+.p-image img { width: 100%; vertical-align: middle; border: 1px solid #e8e8e8; }
+.p-info { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-top: 5px; }
+/* [수정] 상품명 폰트/스타일: 선 추가 및 폰트 조정 */
+.p-name { 
+    font-size: 12px; 
+    color: #353535; 
+    margin: 0 0 10px; /* 간격 줄임 */
+    line-height: 1.4; 
+    padding-bottom: 10px; /* 선과의 간격 */
+    border-bottom: 1px solid #e8e8e8; /* [포인트] 상품명 밑에 선 추가 */
+    width: 100%; /* 전체 너비 */
+}
+
+.p-option { color: #707070; margin: 0 0 10px; font-size: 11px; } /* 폰트 사이즈/간격 미세조정 */
+.p-qty { color: #353535; margin: 0 0 10px; font-size: 11px; }
+.p-price { font-weight: 700; color: #000; margin: 0; font-size: 12px; }
+
+.shipping-fee-area {
+    background: #fbfbfb;
+    padding: 15px 20px;
+    border-top: 1px solid #e8e8e8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+}
+.shipping-fee-area .label { font-weight: normal; color: #353535; }
+.shipping-fee-area .price { font-weight: 700; color: #000; }
+</style>
