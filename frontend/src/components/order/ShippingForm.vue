@@ -232,16 +232,14 @@
                 </div>
             </div>
 
-            <!-- 2. Coupon (Split Layout) -->
-            <div class="coupon-section">
-                <!-- Top: Label and Amount -->
-                <div class="coupon-header">
-                    <div class="row-label">쿠폰 할인</div>
-                    <span class="price-text font-bold">KRW 0</span>
-                </div>
-                <!-- Bottom: Button and Subtext -->
-                <div class="coupon-actions">
-                     <button class="square-btn width-100">쿠폰 적용</button>
+            <!-- 2. Coupon (Horizontal Layout) -->
+            <div class="horizontal-row top-align">
+                <div class="row-label fixed-label">쿠폰 할인</div>
+                <div class="flex-column flex-1 align-end">
+                     <div class="flex-row items-center gap-10">
+                         <span class="price-text font-bold margin-right-10">KRW 0</span>
+                         <button class="square-btn width-100">쿠폰 적용</button>
+                     </div>
                      <div class="sub-text mt-2 text-blue">보유쿠폰 {{ couponCount }}개</div>
                 </div>
             </div>
@@ -853,12 +851,13 @@ onMounted(() => {
 }
 
 .info-box {
-    margin-top: 10px;
+    margin-top: 0 !important;
     background: #f9f9f9;
-    padding: 12px 15px;
+    padding: 15px 12px;
     font-size: 11px;
     color: #666;
-    width: 100%;
+    width: calc(100% + 90px); /* [수정] margin-left(-90px) 만큼 너비 보정하여 우측 끝 맞춤 */
+    margin-left: -90px; /* 사용자가 설정한 값 유지 */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -883,6 +882,10 @@ onMounted(() => {
     align-items: flex-start;
     padding-top: 10px; /* [수정] 15px -> 10px */
     padding-bottom: 10px;
+}
+
+.horizontal-row.top-align .row-label {
+    padding-top: 15px; /* [수정] 라벨을 입력창 텍스트 높이에 맞게 내림 */
 }
 
 .flex-column {
@@ -966,16 +969,24 @@ onMounted(() => {
     margin-top: 2px;
 }
 
-.info-box {
-    margin-top: 5px;
-    background: #f9f9f9;
-    padding: 15px 15px; /* [수정] 8px 12px -> 15px 15px (상하 확대) */
-    font-size: 11px;
-    color: #666;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
+/* Duplicate .info-box removed */
+
+/* Utility Classes for Coupon Alignment */
+.align-end {
+    align-items: flex-end;
+}
+.items-center {
     align-items: center;
+}
+.gap-10 {
+    gap: 10px;
+}
+.margin-right-10 {
+    margin-right: 15px; /* KRW와 버튼 사이 간격 */
+}
+.flex-row {
+    display: flex;
+    flex-direction: row;
 }
 
 </style>
