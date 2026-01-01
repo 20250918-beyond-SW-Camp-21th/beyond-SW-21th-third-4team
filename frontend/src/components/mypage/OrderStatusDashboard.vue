@@ -1,24 +1,28 @@
 <template>
   <div class="order-status-dashboard">
-    <div class="dashboard-header">
-      <h3>나의 주문처리 현황 <span class="period">(최근 3개월 기준)</span></h3>
+    <div class="title">
+      <h3>나의 주문처리 현황 <span class="desc">(최근 <em>3개월</em> 기준)</span></h3>
     </div>
 
-    <div class="status-container">
-      <div class="main-statuses">
-        <div v-for="status in orderStatuses" :key="status.key" class="status-item">
-          <div class="status-label">{{ status.label }}</div>
-          <div class="status-count">{{ status.count }}</div>
-        </div>
-      </div>
+    <div class="state">
+      <ul class="order">
+        <li v-for="status in orderStatuses" :key="status.key">
+          <a :href="`/myshop/order/list.html?order_status=${status.key.toLowerCase()}`">
+            <strong>{{ status.label }}</strong>
+            <span class="count"><span>{{ status.count }}</span></span>
+          </a>
+        </li>
+      </ul>
 
-      <div class="cs-statuses">
-        <div v-for="cs in csStatuses" :key="cs.key" class="cs-item">
-          <span class="bullet">·</span>
-          <span class="cs-label">{{ cs.label }} :</span>
-          <span class="cs-count">{{ cs.count }}</span>
-        </div>
-      </div>
+      <ul class="cs">
+        <li v-for="cs in csStatuses" :key="cs.key">
+          <a :href="`/myshop/order/list.html?order_status=${cs.key.toLowerCase()}`">
+            <span class="icoDot"></span>
+            <strong>{{ cs.label }} : </strong>
+            <span class="count"><span>{{ cs.count }}</span></span>
+          </a>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -34,9 +38,9 @@ const props = defineProps({
 })
 
 const orderStatuses = computed(() => [
-  { key: 'PENDING', label: '입금전', count: props.statusCounts.pending || 0 },
+  { key: 'ORDERED', label: '입금전', count: props.statusCounts.pending || 0 },
   { key: 'PREPARING', label: '배송준비중', count: props.statusCounts.preparing || 0 },
-  { key: 'SHIPPED', label: '배송중', count: props.statusCounts.shipped || 0 },
+  { key: 'SHIPPING', label: '배송중', count: props.statusCounts.shipped || 0 },
   { key: 'DELIVERED', label: '배송완료', count: props.statusCounts.delivered || 0 }
 ])
 
@@ -49,80 +53,125 @@ const csStatuses = computed(() => [
 
 <style scoped>
 .order-status-dashboard {
-  background: #fff;
-  border: 2px solid #000;
-  padding: 30px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
-.dashboard-header h3 {
-  font-size: 13px;
+.title {
+  margin-bottom: 12px;
+}
+
+.title h3 {
+  font-size: 12px;
   font-weight: 400;
   color: #000;
-  margin-bottom: 20px;
+  margin: 0;
+  line-height: 18px;
 }
 
-.dashboard-header .period {
-  font-size: 11px;
+.title .desc {
+  font-size: 10px;
   font-weight: 300;
   color: #757575;
 }
 
-.status-container {
-  border: 1px solid #e0e0e0;
-  padding: 25px 20px;
+.title em {
+  font-style: normal;
 }
 
-.main-statuses {
+.state {
+  background: #fff;
+  border: 2px solid #000;
+  padding: 24px;
+}
+
+.order {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
-  justify-content: space-around;
-  padding-bottom: 20px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #f0f0f0;
+  justify-content: space-between;
+  padding-bottom: 25px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.status-item {
+.order li {
   text-align: center;
   flex: 1;
+  position: relative;
 }
 
-.status-label {
+.order li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 40px;
+  background: #e0e0e0;
+}
+
+.order a {
+  text-decoration: none;
+  color: #000;
+  display: block;
+}
+
+.order strong {
   font-size: 11px;
-  color: #000;
-  margin-bottom: 12px;
+  color: #757575;
+  margin-bottom: 10px;
   font-weight: 300;
+  display: block;
 }
 
-.status-count {
-  font-size: 28px;
+.order .count {
+  font-size: 30px;
   color: #000;
-  font-weight: 300;
+  font-weight: 400;
+  display: block;
+  line-height: 1;
 }
 
-.cs-statuses {
+.cs {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
   justify-content: center;
   gap: 40px;
 }
 
-.cs-item {
+.cs li {
   font-size: 10px;
+  color: #757575;
+}
+
+.cs a {
+  text-decoration: none;
   color: #757575;
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.bullet {
+.icoDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #757575;
+  display: inline-block;
+}
+
+.cs strong {
+  font-weight: 300;
   font-size: 10px;
 }
 
-.cs-label {
-  font-weight: 300;
-}
-
-.cs-count {
+.cs .count {
   font-weight: 400;
   color: #000;
+  font-size: 10px;
 }
 </style>

@@ -73,9 +73,9 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import api from '@/services/api'
-import OrderCard from '@/components/mypage/OrderCard.vue'
-import OrderDetailModal from '@/components/mypage/OrderDetailModal.vue'
+import api from '../../../api/http.js'
+import OrderCard from '../../../components/mypage/OrderCard.vue'
+import OrderDetailModal from '../../../components/mypage/OrderDetailModal.vue'
 
 const route = useRoute()
 const router = useRouter()

@@ -1,25 +1,17 @@
 <template>
-  <div class="referral-section">
-    <h3 class="section-title">쇼핑몰 주소 복사하기</h3>
+  <div class="invite">
+    <h3>쇼핑몰 주소 복사하기</h3>
 
-    <div class="referral-input-group">
-      <input
-        type="text"
-        :value="referralUrl"
-        readonly
-        class="referral-input"
-      />
-      <button @click="copyUrl" class="copy-btn">주소복사</button>
+    <div class="inputBox">
+      <input type="text" :value="referralUrl" readonly>
+      <a href="#none" class="btnStrong" @click.prevent="copyUrl">주소복사</a>
     </div>
 
-    <div class="referral-info">
-      <span class="info-icon">ⓘ</span>
-      <div class="info-text">
-        <p>쇼핑몰 주소를 친구에게 보내 쇼핑몰에 초대해보세요.</p>
-        <p>가입즉시 친구에게는 3,000원의 적립금이 지급되고,</p>
-        <p>회원님에게는 친구가 가입즉시 3,000원의 적립금이 지급됩니다.</p>
-      </div>
-    </div>
+    <p class="ec-base-help">
+      쇼핑몰 주소를 친구에게 보내 쇼핑몰에 초대해보세요.<br>
+      가입즉시 친구에게는 <span class="notranslate">3,000원</span>의 적립금이 지급되고,<br>
+      회원님에게는 친구가 가입즉시 <span class="notranslate">3,000원</span>의 적립금이 지급됩니다.
+    </p>
   </div>
 </template>
 
@@ -49,27 +41,28 @@ function copyUrl() {
 </script>
 
 <style scoped>
-.referral-section {
+.invite {
   background: #fff;
   border: 1px solid #e0e0e0;
-  padding: 30px;
-  margin-bottom: 20px;
+  padding: 24px;
+  margin-bottom: 16px;
 }
 
-.section-title {
-  font-size: 13px;
+.invite h3 {
+  font-size: 12px;
   font-weight: 400;
   color: #000;
-  margin-bottom: 15px;
+  margin: 0 0 12px 0;
+  line-height: 18px;
 }
 
-.referral-input-group {
+.inputBox {
   display: flex;
   gap: 10px;
   margin-bottom: 15px;
 }
 
-.referral-input {
+.inputBox input {
   flex: 1;
   padding: 10px 15px;
   border: 1px solid #e0e0e0;
@@ -77,14 +70,15 @@ function copyUrl() {
   color: #757575;
   background: #fafafa;
   font-family: 'Noto Sans KR', sans-serif;
+  line-height: 18px;
 }
 
-.referral-input:focus {
+.inputBox input:focus {
   outline: none;
   border-color: #000;
 }
 
-.copy-btn {
+.btnStrong {
   padding: 10px 25px;
   background: #000;
   color: #fff;
@@ -94,36 +88,24 @@ function copyUrl() {
   cursor: pointer;
   white-space: nowrap;
   font-family: 'Noto Sans KR', sans-serif;
+  text-decoration: none;
+  line-height: 18px;
+  display: inline-block;
 }
 
-.copy-btn:hover {
+.btnStrong:hover {
   background: #333;
 }
 
-.referral-info {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 12px 15px;
-  background: #f5f5f5;
-  border-radius: 4px;
-}
-
-.info-icon {
-  font-size: 14px;
-  font-weight: bold;
+.ec-base-help {
+  font-size: 11px;
   color: #757575;
-  flex-shrink: 0;
-}
-
-.info-text {
-  font-size: 10px;
-  color: #757575;
-  line-height: 1.6;
+  line-height: 18px;
+  margin: 0;
   font-weight: 300;
 }
 
-.info-text p {
-  margin: 0;
+.notranslate {
+  font-weight: 300;
 }
 </style>

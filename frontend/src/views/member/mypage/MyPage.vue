@@ -1,8 +1,10 @@
 <template>
-  <div class="mypage">
-    <div class="mypage-container">
-      <h1 class="page-title">마이페이지</h1>
+  <div id="contents">
+    <div id="titleArea">
+      <h2>마이쇼핑</h2>
+    </div>
 
+    <div class="myshopMain">
       <!-- Loading State -->
       <div v-if="loading" class="loading">
         <div class="spinner"></div>
@@ -24,6 +26,10 @@
           :couponCount="couponCount"
         />
 
+        <ReferralSection
+          :userId="user?.id"
+        />
+
         <OrderStatusDashboard
           :statusCounts="orderStatusCounts"
         />
@@ -39,10 +45,11 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import api from '@/services/api'
-import UserGreeting from '@/components/mypage/UserGreeting.vue'
-import OrderStatusDashboard from '@/components/mypage/OrderStatusDashboard.vue'
-import QuickMenu from '@/components/mypage/QuickMenu.vue'
+import api from '../../../api/http.js'
+import UserGreeting from '../../../components/mypage/UserGreeting.vue'
+import OrderStatusDashboard from '../../../components/mypage/OrderStatusDashboard.vue'
+import ReferralSection from '../../../components/mypage/ReferralSection.vue'
+import QuickMenu from '../../../components/mypage/QuickMenu.vue'
 
 const router = useRouter()
 
@@ -62,18 +69,28 @@ async function fetchData() {
 
   try {
     // Fetch user info
-    const userResponse = await api.get('/api/users/me')
-    user.value = userResponse.data
+    const userResponse = await api.get('/mypage/user-info')
+    user.value = userResponse.data.data
 
-    // Fetch order status counts
-    const statusResponse = await api.get('/api/mypage/order-status-counts')
-    orderStatusCounts.value = statusResponse.data
+    // Fetch order history to count statuses
+    const ordersResponse = await api.get('/mypage/orders')
+    const orders = ordersResponse.data.data || []
 
-    // Fetch account info (mileage, deposits, coupons)
-    const accountResponse = await api.get('/api/mypage/account-info')
-    mileage.value = accountResponse.data.mileage || 0
-    deposits.value = accountResponse.data.deposits || 0
-    couponCount.value = accountResponse.data.couponCount || 0
+    // Calculate order status counts from orders
+    orderStatusCounts.value = {
+      pending: orders.filter(o => o.status === 'ORDERED' || o.status === 'PAYMENT_COMLETED').length,
+      preparing: orders.filter(o => o.status === 'PREPARING').length,
+      shipped: orders.filter(o => o.status === 'SHIPPING').length,
+      delivered: orders.filter(o => o.status === 'DELIVERED').length,
+      cancelled: orders.filter(o => o.status === 'CANCELLED').length,
+      exchanged: 0, // Not in current OrderStatus enum
+      returned: 0,  // Not in current OrderStatus enum
+    }
+
+    // Set account info (TODO: backend needs to add these fields to UserDTO)
+    mileage.value = 0
+    deposits.value = 0
+    couponCount.value = 0
 
   } catch (err) {
     console.error('Failed to fetch mypage data:', err)
@@ -94,24 +111,30 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.mypage {
-  min-height: 80vh;
-  padding: var(--layout-padding);
-  padding-top: 2rem;
-  padding-bottom: 4rem;
+#contents {
+  padding: var(--layout-padding, 0 40px);
+  padding-top: 80px;
+  min-height: calc(100vh - 80px);
 }
 
-.mypage-container {
-  max-width: 1200px;
+#titleArea {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+#titleArea h2 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+  line-height: 18px;
+}
+
+.myshopMain {
+  max-width: 550px;
   margin: 0 auto;
-}
-
-.page-title {
-  font-size: 24px;
-  font-weight: var(--font-weight-bold);
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #000;
+  padding-bottom: 3rem;
 }
 
 /* Loading State */
@@ -136,8 +159,9 @@ onMounted(() => {
 }
 
 .loading p {
-  font-size: var(--font-size-medium);
+  font-size: 11px;
   color: #666;
+  line-height: 18px;
 }
 
 /* Error State */
@@ -150,6 +174,7 @@ onMounted(() => {
   font-size: 14px;
   color: #dc3545;
   margin-bottom: 1rem;
+  line-height: 18px;
 }
 
 .error button {
@@ -157,9 +182,10 @@ onMounted(() => {
   background: #000;
   color: #fff;
   border: none;
-  font-size: var(--font-size-medium);
+  font-size: 11px;
   cursor: pointer;
   transition: opacity 0.2s;
+  line-height: 18px;
 }
 
 .error button:hover {
@@ -167,7 +193,12 @@ onMounted(() => {
 }
 
 @media (max-width: 1024px) {
-  .page-title {
+  #contents {
+    padding: 0 10px;
+    padding-top: 60px;
+  }
+
+  #titleArea h2 {
     font-size: 20px;
   }
 }
