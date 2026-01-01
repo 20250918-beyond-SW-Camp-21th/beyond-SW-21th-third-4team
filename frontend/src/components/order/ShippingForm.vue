@@ -223,36 +223,38 @@
                 <span class="toggle-icon">^</span>
             </div>
 
-            <!-- Discount Code -->
-            <div class="input-row">
-                <div class="label-cell">할인코드 적용</div>
-                <div class="input-cell flex-row px-2">
+            <!-- 1. Discount Code (Horizontal) -->
+            <div class="horizontal-row">
+                <div class="row-label fixed-label">할인코드 적용</div>
+                <div class="input-group">
                     <input type="text" v-model="discountCode" class="square-input flex-1" />
-                    <button class="square-btn">코드 적용</button>
+                    <button class="square-btn width-100">코드 적용</button>
                 </div>
             </div>
 
-            <!-- Coupon -->
-            <div class="input-row">
-                 <div class="label-cell">쿠폰 할인</div>
-                 <div class="input-cell column-cell px-2 full-width">
-                     <div class="flex-row full-width justify-between">
-                         <span class="price-text">KRW 0</span>
-                         <button class="square-btn width-80">쿠폰 적용</button>
-                     </div>
-                     <div class="sub-text text-right full-width mt-1">보유쿠폰 {{ couponCount }}개</div>
-                 </div>
+            <!-- 2. Coupon (Split Layout) -->
+            <div class="coupon-section">
+                <!-- Top: Label and Amount -->
+                <div class="coupon-header">
+                    <div class="row-label">쿠폰 할인</div>
+                    <span class="price-text font-bold">KRW 0</span>
+                </div>
+                <!-- Bottom: Button and Subtext -->
+                <div class="coupon-actions">
+                     <button class="square-btn width-100">쿠폰 적용</button>
+                     <div class="sub-text mt-2 text-blue">보유쿠폰 {{ couponCount }}개</div>
+                </div>
             </div>
 
-            <!-- Mileage -->
-            <div class="input-row">
-                 <div class="label-cell">마일리지</div>
-                 <div class="input-cell column-cell px-2 full-width">
-                     <div class="flex-row full-width">
-                         <input type="text" v-model="usedMileage" class="square-input flex-1" />
-                         <button class="square-btn width-80">전액 사용</button>
+            <!-- 3. Mileage (Horizontal) -->
+            <div class="horizontal-row top-align">
+                 <div class="row-label fixed-label">마일리지</div>
+                 <div class="flex-1 flex-column full-width">
+                     <div class="input-group">
+                         <input type="text" v-model="usedMileage" class="square-input flex-1" placeholder="" />
+                         <button class="square-btn width-100">전액 사용</button>
                      </div>
-                     <div class="sub-text text-right full-width mt-1">보유 잔액 {{ mileageBalance.toLocaleString() }}원</div>
+                     <div class="sub-text text-right mt-2 text-blue">보유 잔액 {{ mileageBalance.toLocaleString() }}원</div>
                      <div class="info-box">
                          1회 구매시 마일리지 최대 사용금액은 5,000원입니다.
                          <span class="toggle-arrow">∨</span>
@@ -260,15 +262,15 @@
                  </div>
             </div>
 
-            <!-- Deposit -->
-             <div class="input-row">
-                 <div class="label-cell">예치금</div>
-                 <div class="input-cell column-cell px-2 full-width">
-                     <div class="flex-row full-width">
-                         <input type="text" v-model="usedDeposit" class="square-input flex-1" />
-                         <button class="square-btn width-80">전액 사용</button>
+            <!-- 4. Deposit (Horizontal) -->
+             <div class="horizontal-row top-align">
+                 <div class="row-label fixed-label">예치금</div>
+                 <div class="flex-1 flex-column full-width">
+                     <div class="input-group">
+                         <input type="text" v-model="usedDeposit" class="square-input flex-1" placeholder="" />
+                         <button class="square-btn width-100">전액 사용</button>
                      </div>
-                     <div class="sub-text text-right full-width mt-1">보유 잔액 {{ depositBalance.toLocaleString() }}KRW</div>
+                     <div class="sub-text text-right mt-2 text-blue">보유 잔액 {{ depositBalance.toLocaleString() }}KRW</div>
                      <div class="info-box">
                          예치금은 사용제한 없이 언제든 결제가 가능합니다.
                          <span class="toggle-arrow">∨</span>
@@ -277,9 +279,9 @@
             </div>
 
             <!-- Applied Amount (Total Discount) -->
-            <div class="input-row no-border applied-amount-row">
-                <div class="label-cell">적용금액</div>
-                <div class="input-cell px-2 full-width text-right">
+            <div class="applied-amount-row no-border">
+                <div class="row-label">적용금액</div>
+                <div class="total-discount-wrapped">
                     <span class="total-discount-amount">-KRW 0</span>
                 </div>
             </div>
@@ -707,9 +709,9 @@ onMounted(() => {
 
 /* [Square Styles] */
 .square-input, .square-btn, .message-select {
-  border-radius: 0 !important; /* [포인트] 직각 처리 */
+  border-radius: 0 !important;
   border: 1px solid #ddd;
-  height: 37px; /* [수정] 높이 확대 (32px -> 45px -> 37px) */
+  height: 45px; /* [수정] 32px -> 45px (상하 확대) */
   padding: 0 10px;
   font-size: 12px; /* 13 -> 12 */
   outline: none;
@@ -724,12 +726,12 @@ onMounted(() => {
 
 .square-btn {
   background: #fff;
-  border: 1px solid #333; /* [포인트] 버튼 테두리 */
+  border: 1px solid #333;
   color: #333;
   cursor: pointer;
-  height: 37px; /* input과 동일한 높이 강제 */
-  line-height: 35px; /* height(37) - border(2) = 35px */
-  padding: 0 20px;
+  height: 45px; /* [수정] 32px -> 45px */
+  line-height: 43px; /* height(45) - border(2) = 43px */
+  padding: 0 15px;
   font-weight: 500;
   font-size: 12px; /* 13 -> 12 */
   box-sizing: border-box;
@@ -840,6 +842,9 @@ onMounted(() => {
    User image shows blue for coupon count, blue for mileage balance. */
 .sub-text {
     color: #4c80f1; 
+    height: auto !important; /* [수정] 강제 높이 초기화 */
+    line-height: normal; /* 줄간격 초기화 */
+    padding: 0; /* 패딩 초기화 */
 }
 
 .price-text {
@@ -865,18 +870,112 @@ onMounted(() => {
     cursor: pointer;
 }
 
-.applied-amount-row {
-    background: #fbfbfb; /* Background for applied amount similar to shipping fee area? Or just white. Ref image looks distinct. */
-    border-top: 1px solid #e8e8e8;
+/* New Layout Styles for Discount Section */
+.horizontal-row {
+    padding: 5px 15px; /* [수정] 10px -> 5px (공백 축소) */
+    border-bottom: 1px solid #eee;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
-.total-discount-amount {
-    color: #0078ff; /* Blue color for applied amount */
+.horizontal-row.top-align {
+    align-items: flex-start;
+    padding-top: 10px; /* [수정] 15px -> 10px */
+    padding-bottom: 10px;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.vertical-row {
+    padding: 12px 15px; /* [수정] 패딩 축소 (20px -> 12px 15px) */
+    border-bottom: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+}
+
+.row-label {
+    font-size: 11px; /* [수정] 폰트 사이즈 미세 축소 */
     font-weight: 700;
-    font-size: 12px;
-    width: 100%; /* Ensure text-right works */
+    color: #333;
+    margin-bottom: 6px; /* [수정] 간격 축소 (15px -> 6px) */
+    text-align: left;
 }
 
-/* Adjust mileage/deposit input placeholder logic if needed or styling */
-/* The user requested specificity. The reference shows '0' inside input. v-model covers this if initialized to 0. */
+.fixed-label {
+    width: 100px; /* [수정] 120px -> 100px (왼쪽 공간 늘림) */
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.width-100 {
+    width: 110px; /* As requested, slight increase for "전액 사용" */
+}
+
+/* Coupon Specific Layout */
+.coupon-section {
+    padding: 10px 15px;
+    padding-bottom: 8px; /* [수정] 하단 패딩 별도 축소 */
+    border-bottom: 1px solid #eee;
+}
+
+.coupon-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px; /* [수정] 6px -> 4px */
+}
+
+.coupon-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Right align button and text */
+}
+
+.text-blue {
+    color: #4c80f1;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.applied-amount-row {
+    background: #fbfbfb;
+    border-top: 1px solid #e8e8e8; /* Ensure separation if needed, though no-border class might override bottom */
+    padding: 12px 15px; /* [수정] 패딩 축소 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-discount-wrapped {
+    text-align: right;
+}
+
+.mt-2 {
+    margin-top: 2px;
+}
+
+.info-box {
+    margin-top: 5px;
+    background: #f9f9f9;
+    padding: 15px 15px; /* [수정] 8px 12px -> 15px 15px (상하 확대) */
+    font-size: 11px;
+    color: #666;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 </style>
