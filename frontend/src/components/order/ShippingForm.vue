@@ -843,6 +843,7 @@ onMounted(() => {
     height: auto !important; /* [수정] 강제 높이 초기화 */
     line-height: normal; /* 줄간격 초기화 */
     padding: 0; /* 패딩 초기화 */
+    margin-bottom: 20px;
 }
 
 .price-text {
@@ -876,12 +877,13 @@ onMounted(() => {
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-bottom: 5px;
 }
 
 .horizontal-row.top-align {
     align-items: flex-start;
-    padding-top: 10px; /* [수정] 15px -> 10px */
-    padding-bottom: 10px;
+    padding-top: 30px; /* [수정] 15px -> 10px */
+    padding-bottom: 30px;
 }
 
 .horizontal-row.top-align .row-label {
