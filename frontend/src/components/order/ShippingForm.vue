@@ -557,7 +557,7 @@ const couponCount = ref(0); // 기본값 0
 const mileageBalance = ref(0); // 기본값 0
 const depositBalance = ref(0); // 기본값 0
 const usedMileage = ref(''); // [수정] 기본값 0 -> 공란
-const usedDeposit = ref(0); // Changed from '' to 0 to avoid redeclaration and ensure syntactic correctness
+const usedDeposit = ref(''); // 기본값 빈 문자열
 const paymentMethod = ref('card'); // 기본값 카드
 const savePaymentInfo = ref(true); // Save Payment Info Checkbox (Default: true)
 
