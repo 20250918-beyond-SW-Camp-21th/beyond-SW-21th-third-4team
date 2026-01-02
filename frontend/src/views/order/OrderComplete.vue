@@ -70,6 +70,30 @@
           </div>
         </div>
 
+        <!-- 주문상품 -->
+        <div class="products-section">
+          <div class="section-header">
+            <span class="section-title">주문상품</span>
+          </div>
+          <div class="products-list">
+            <div class="product-item" v-for="(product, index) in products" :key="index">
+              <div class="product-image">
+                <img :src="product.image" :alt="product.name" />
+              </div>
+              <div class="product-info">
+                <p class="product-name">{{ product.name }}</p>
+                <p class="product-option">[옵션: {{ product.option }}]</p>
+                <p class="product-qty">수량: {{ product.quantity }}개</p>
+                <p class="product-price">KRW {{ (product.price * product.quantity).toLocaleString() }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="shipping-fee-row">
+            <span class="fee-label">배송비</span>
+            <span class="fee-value">KRW {{ shippingFee.toLocaleString() }}</span>
+          </div>
+        </div>
+
         <!-- 여기에 추가 섹션 작업 예정 -->
 
       </div>
@@ -98,6 +122,16 @@ const email = computed(() => route.query.email || '');
 const address = computed(() => route.query.address || '');
 const receiverPhone = computed(() => route.query.receiverPhone || '');
 const deliveryMessage = computed(() => route.query.deliveryMessage || '');
+
+// 주문 상품 데이터
+const products = computed(() => {
+  try {
+    return JSON.parse(route.query.products || '[]');
+  } catch {
+    return [];
+  }
+});
+const shippingFee = computed(() => Number(route.query.shippingFee) || 0);
 
 // 결제수단 - 입금자(주문자 이름 사용)
 const depositorName = receiverName;
@@ -307,6 +341,89 @@ const goToHome = () => {
   font-weight: 400;
   font-size: 11px;
   margin-left: 30px;
+}
+
+/* 주문상품 */
+.products-section {
+  padding: 0;
+  border-top: 1px solid #ddd;
+}
+
+.products-list {
+  padding: 20px;
+}
+
+.product-item {
+  display: flex;
+  gap: 20px;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.product-item:last-child {
+  border-bottom: none;
+}
+
+.product-image {
+  width: 90px;
+  height: 100px;
+  border: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.product-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.product-info {
+  flex: 1;
+}
+
+.product-name {
+  font-size: 11px;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.product-option {
+  font-size: 11px;
+  color: #888;
+  margin: 0 0 5px 0;
+}
+
+.product-qty {
+  font-size: 11px;
+  color: #888;
+  margin: 0 0 8px 0;
+}
+
+.product-price {
+  font-size: 11px;
+  color: #333;
+  font-weight: 500;
+  margin: 0;
+}
+
+.shipping-fee-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 20px;
+  margin: 0 20px 20px 20px;
+  background-color: #f8f8f8;
+  font-size: 11px;
+}
+
+.fee-label {
+  color: #888;
+}
+
+.fee-value {
+  color: #333;
 }
 
 /* 하단 버튼 */

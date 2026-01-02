@@ -677,7 +677,9 @@ const handleSubmit = async () => {
                     email: email,
                     address: fullAddress,
                     receiverPhone: receiverPhone,
-                    deliveryMessage: deliveryMsg || ''
+                    deliveryMessage: deliveryMsg || '',
+                    products: JSON.stringify(products.value),
+                    shippingFee: shippingFee.value
                 }
             });
         }
