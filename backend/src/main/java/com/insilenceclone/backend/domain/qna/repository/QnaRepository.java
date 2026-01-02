@@ -12,5 +12,4 @@ public interface QnaRepository extends JpaRepository<Qna,Long> {
 
     List<QnaListResponse> findAllByOrderByTypeAscIdDesc();
 
-    Long findUserIdByQnaId(Long userId);
 }

@@ -1,8 +1,13 @@
 <template>
-  <div class="product-detail-container">
+  <div class="product-detail-container" v-if="productData">
     <div class="image-section">
-      <div v-for="(img, index) in productImages" :key="index" class="image-wrapper">
-        <img :src="img" :alt="`상품 이미지 ${index + 1}`" />
+      <div class="image-wrapper">
+        <!-- 메인 썸네일 -->
+        <img :src="productData.imageUrl" :alt="productData.name" />
+      </div>
+      <!-- 상세 이미지들 -->
+      <div v-for="(img, index) in productData.detailImages" :key="index" class="image-wrapper">
+        <img :src="img" :alt="`상품 상세 이미지 ${index + 1}`" />
       </div>
     </div>
 
@@ -10,53 +15,57 @@
       <div class="sticky-content">
         <h1 class="product-title">{{ productData.name }}</h1>
 
-        <div class="price-box">
-          <span class="price-text">KRW {{ productData.price.toLocaleString() }}</span>
+        <div class="price-info">
+          <div class="current-price">
+            <span class="bold">KRW {{ productData.price.toLocaleString() }}</span>
+          </div>
         </div>
 
         <ul class="product-summary">
-          <li v-for="desc in productData.descriptions" :key="desc">{{ desc }}</li>
+          <!-- 설명 텍스트를 줄바꿈 기준으로 나누거나 그대로 표시 -->
+          <li v-for="(line, index) in descriptionLines" :key="index">{{ line }}</li>
         </ul>
 
-        <div class="option-group">
-          <span class="label">SIZE</span>
+        <div class="option-section">
+          <span class="option-label">SIZE</span>
           <div class="size-selector">
-            <button class="size-btn active">FREE</button>
+            <button class="size-item active">FREE</button>
           </div>
         </div>
 
-        <div class="option-group">
-          <span class="label">COLOR</span>
+        <div class="option-section">
+          <span class="option-label">Color</span>
           <div class="color-selector">
-            <button
-                v-for="color in productData.colors"
-                :key="color.id"
-                class="color-btn-wrapper"
-                :class="{ active: color.name === 'BLACK' }"
-                @click="goToColorProduct(color.id)"
-            >
-              <span class="color-dot" :style="{ backgroundColor: color.hex }"></span>
-            </button>
-            <span class="selected-color-name">BLACK</span>
+            <!-- 색상 선택 시 라우팅 이동 (임시 하드코딩) -->
+            <div
+              class="color-dot black"
+              :class="{ active: currentProductId == 1 }"
+              @click="changeColor(1)"
+            ></div>
+            <div
+              class="color-dot gray"
+              :class="{ active: currentProductId == 2 }"
+              @click="changeColor(2)"
+            ></div>
+            <span class="color-name">{{ currentColorName }}</span>
           </div>
         </div>
 
-        <div class="action-group">
+        <div class="action-buttons">
           <button class="btn-black" @click="handleBuy">구매하기</button>
           <button class="btn-naver">네이버 페이</button>
-          <div class="btn-half-group">
+          <div class="btn-split">
             <button class="btn-white">상품 문의하기</button>
             <button class="btn-white" @click="handleCart">장바구니 담기</button>
           </div>
         </div>
 
-        <div class="accordion-container">
-          <div v-for="(item, index) in accordions" :key="index" class="accordion-item">
-            <div class="accordion-header" @click="item.isOpen = !item.isOpen">
-              {{ item.title }}
-              <span class="icon">{{ item.isOpen ? '－' : '＋' }}</span>
+        <div class="accordion-list">
+          <div v-for="(item, index) in accordions" :key="index" class="accordion-group">
+            <div class="accordion-item" @click="item.isOpen = !item.isOpen">
+              {{ item.title }} <span>{{ item.isOpen ? '－' : '＋' }}</span>
             </div>
-            <div v-if="item.isOpen" class="accordion-body">
+            <div v-if="item.isOpen" class="accordion-content" style="white-space: pre-line;">
               {{ item.content }}
             </div>
           </div>
@@ -64,114 +73,216 @@
       </div>
     </div>
   </div>
+  <div v-else class="loading">
+    Loading...
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { fetchProductDetail } from '@/api/product';
+import { addCartItem } from '@/api/cart';
 
-const productData = {
-  name: '디테처블 칼라 캐시미어 블루종 BLACK',
-  price: 266400,
-  descriptions: [
-    '― 캐시미어 혼방 울 소재 사용',
-    '― 탈부착이 가능한 시어링 칼라',
-    '― 세미오버핏 실루엣',
-    '― 컴포템프 충전재 사용'
-  ],
-  colors: [
-    { id: 'black-01', name: 'BLACK', hex: '#000000' },
-    { id: 'gray-01', name: 'GRAY', hex: '#666666' }
-  ]
-};
+const route = useRoute();
+const router = useRouter();
 
-const productImages = ref([
-  'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&q=80&w=800',
-  'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&q=80&w=800'
-]);
+const productData = ref(null);
+const currentProductId = ref(null);
+
+// 상품 설명 파싱
+const descriptionLines = computed(() => {
+  if (!productData.value?.description) return [];
+  return productData.value.description.split('\n');
+});
+
+// 현재 색상 이름 (임시 로직)
+const currentColorName = computed(() => {
+  // 실제로는 API에서 색상 정보를 받아와야 함
+  if (currentProductId.value == 1) return 'BLACK';
+  if (currentProductId.value == 2) return 'GRAY';
+  return 'BLACK';
+});
 
 const accordions = ref([
-  { title: '제품 소재 정보', content: '겉감 : Wool 87%, Nylon 9%, Cashmere 4%', isOpen: false },
-  { title: '사이즈 정보', content: 'FREE: 총장 63 / 어깨 54 / 가슴 60', isOpen: false }
+  { title: '제품 소재 정보', isOpen: false, content: '겉감 : Wool 87%, Nylon 9%, Cashmere 4%\n안감 : Polyester 100%' },
+  { title: '사이즈', isOpen: false, content: 'FREE: 총장 63 / 어깨 54 / 가슴 60 / 소매 61' },
+  { title: '교환 및 반품', isOpen: false, content: '상품 수령일로부터 7일 이내에 가능합니다.' }
 ]);
 
-// 컬러 변경 시 실행될 함수 (나중에 DB 연동 후 router 활용)
-const goToColorProduct = (id) => {
-  console.log(`선택된 상품 ID: ${id} - 해당 상품 상세로 이동합니다.`);
-  // window.location.href = `/product/${id}`; // 또는 router.push
+// 데이터 로드 함수
+const loadProductData = async (id) => {
+  try {
+    const response = await fetchProductDetail(id);
+    productData.value = response.data;
+    currentProductId.value = id;
+  } catch (error) {
+    console.error('상품 정보를 불러오는데 실패했습니다.', error);
+    alert('상품 정보를 불러올 수 없습니다.');
+  }
 };
 
-const handleBuy = () => alert('구매 페이지로 이동합니다.');
-const handleCart = () => alert('장바구니에 담겼습니다.');
+// 초기 로드
+onMounted(() => {
+  const id = route.params.productId || 1; // 기본값 1
+  loadProductData(id);
+});
+
+// 라우트 변경 감지 (색상 변경 시)
+watch(() => route.params.productId, (newId) => {
+  if (newId) loadProductData(newId);
+});
+
+// 색상 변경 핸들러
+const changeColor = (id) => {
+  if (currentProductId.value === id) return;
+  router.push(`/product/${id}`);
+};
+
+// 구매하기 (주문서 작성 페이지로 이동)
+const handleBuy = () => {
+  if (!productData.value) return;
+
+  // 주문서 작성 페이지로 이동하며 상품 정보 전달
+  router.push({
+    path: '/order/checkout',
+    query: {
+      productId: productData.value.productId,
+      quantity: 1 // 수량 선택 기능이 없으므로 기본 1
+    }
+  });
+};
+
+// 장바구니 담기
+const handleCart = async () => {
+  if (!productData.value) return;
+
+  try {
+    await addCartItem(productData.value.productId, 1);
+    const confirmMove = confirm('장바구니에 담겼습니다. 장바구니로 이동하시겠습니까?');
+    if (confirmMove) {
+      router.push('/cart');
+    }
+  } catch (error) {
+    console.error('장바구니 담기 실패', error);
+    alert('장바구니 담기에 실패했습니다.');
+  }
+};
 </script>
 
 <style scoped>
 .product-detail-container {
   display: flex;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 60px 20px;
-  gap: 70px;
+  padding: 40px 20px;
+  gap: 80px;
 }
 
-.image-section { flex: 1.4; }
-.image-wrapper { width: 100%; margin-bottom: 15px; }
+.loading {
+  text-align: center;
+  padding: 100px;
+  font-size: 20px;
+}
+
+/* 좌측 이미지 */
+.image-section { flex: 1.5; }
+.image-wrapper { width: 100%; margin-bottom: 20px; }
 .image-wrapper img { width: 100%; display: block; }
 
+/* 우측 정보 고정 */
 .info-section { flex: 1; position: relative; }
-.sticky-content { position: sticky; top: 100px; }
+.sticky-content { position: sticky; top: 40px; }
 
-.product-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
-.price-box { margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
-.price-text { font-size: 15px; font-weight: 700; }
+/* 텍스트 디테일 */
+.product-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.original-price { font-size: 13px; text-decoration: line-through; color: #999; }
+.current-price { font-size: 15px; margin-bottom: 25px; }
+.bold { font-weight: 700; margin-right: 8px; }
+.discount { color: #ff0000; font-weight: 700; }
 
-.product-summary { list-style: none; padding: 0; margin-bottom: 40px; }
-.product-summary li { font-size: 13px; line-height: 1.8; color: #444; }
-
-.option-group { margin-bottom: 25px; }
-.label { display: block; font-size: 12px; font-weight: 800; margin-bottom: 12px; }
-
-/* 사이즈 버튼 */
-.size-btn {
-  width: 100px; height: 42px; border: 1px solid #000; background: #000; color: #fff;
-  font-size: 12px; cursor: pointer;
+.product-summary {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 40px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #333;
 }
 
-/* 컬러 버튼 (디자인 유지 + 클릭 가능 구조) */
-.color-selector { display: flex; align-items: center; gap: 12px; }
-
-.color-btn-wrapper {
-  background: none; border: none; padding: 0; cursor: pointer; display: flex;
-  align-items: center; justify-content: center;
+.option-section {
+  margin-bottom: 30px;
+}
+.option-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 10px;
 }
 
+.size-selector button {
+  border: 1px solid #ddd;
+  background: #fff;
+  padding: 8px 20px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.size-selector button.active {
+  border-color: #000;
+  font-weight: 700;
+}
+
+.color-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .color-dot {
-  width: 20px; height: 20px; border-radius: 50%; border: 1px solid #ddd;
-  transition: outline 0.1s ease;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1px solid #ddd;
 }
-
-.color-btn-wrapper.active .color-dot {
-  outline: 1px solid #000; outline-offset: 3px;
+.color-dot.active {
+  border: 2px solid #000; /* 선택된 색상 강조 */
 }
+.color-dot.black { background-color: #000; }
+.color-dot.gray { background-color: #888; }
+.color-name { font-size: 12px; margin-left: 5px; }
 
-.selected-color-name { font-size: 12px; margin-left: auto; font-weight: 600; }
-
-/* 액션 버튼 그룹 */
-.action-group { display: flex; flex-direction: column; gap: 8px; margin-top: 40px; }
-.btn-black { height: 55px; background: #000; color: #fff; border: none; font-weight: 700; cursor: pointer; }
-.btn-naver { height: 55px; background: #fff; color: #00c73c; border: 1px solid #00c73c; font-weight: 700; cursor: pointer; }
-.btn-half-group { display: flex; gap: 6px; }
-.btn-white { flex: 1; height: 48px; background: #fff; border: 1px solid #000; font-size: 12px; cursor: pointer; }
-
-/* 아코디언 */
-.accordion-container { margin-top: 50px; border-top: 1px solid #000; }
-.accordion-header {
-  padding: 18px 0; border-bottom: 1px solid #eee; display: flex;
-  justify-content: space-between; font-size: 13px; font-weight: 700; cursor: pointer;
+.action-buttons {
+  margin-top: 40px;
+  margin-bottom: 40px;
 }
-.accordion-body { padding: 15px 5px; font-size: 12px; line-height: 1.6; color: #666; white-space: pre-line; }
+.action-buttons button {
+  width: 100%;
+  height: 50px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+}
+.btn-black { background: #000; color: #fff; border: none; }
+.btn-naver { background: #2DB400; color: #fff; border: none; }
+.btn-split { display: flex; gap: 10px; }
+.btn-white { background: #fff; border: 1px solid #ddd; color: #000; }
 
-@media (max-width: 768px) {
-  .product-detail-container { flex-direction: column; }
-  .sticky-content { position: static; }
+.accordion-list { border-top: 1px solid #eee; }
+.accordion-item {
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 700;
+}
+.accordion-content {
+  padding: 10px 0 20px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #666;
+  border-bottom: 1px solid #eee;
 }
 </style>
