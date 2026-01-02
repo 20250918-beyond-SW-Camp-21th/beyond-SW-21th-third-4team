@@ -1,6 +1,6 @@
 package com.insilenceclone.backend.domain.qna.executor;
 
-import com.insilenceclone.backend.domain.qna.controller.dto.request.OrderCreateRequest;
+import com.insilenceclone.backend.domain.qna.controller.dto.request.QnaCreateRequest;
 import com.insilenceclone.backend.domain.qna.controller.dto.response.QnaResponse;
 import com.insilenceclone.backend.domain.qna.entity.Qna;
 import com.insilenceclone.backend.domain.qna.repository.QnaRepository;
@@ -15,7 +15,7 @@ public class QnaExecutorImpl implements QnaExecutor{
 
     private final QnaRepository repository;
     @Override
-    public QnaResponse create(OrderCreateRequest req) {
+    public QnaResponse create(QnaCreateRequest req) {
 
         Qna qna = req.toEntity();
 

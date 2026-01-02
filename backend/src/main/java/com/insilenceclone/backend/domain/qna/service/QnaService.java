@@ -1,6 +1,7 @@
 package com.insilenceclone.backend.domain.qna.service;
 
-import com.insilenceclone.backend.domain.qna.controller.dto.request.OrderCreateRequest;
+import com.insilenceclone.backend.domain.qna.controller.dto.request.QnaAnswerRequest;
+import com.insilenceclone.backend.domain.qna.controller.dto.request.QnaCreateRequest;
 import com.insilenceclone.backend.domain.qna.controller.dto.request.QnaRequest;
 import com.insilenceclone.backend.domain.qna.controller.dto.response.QnaListResponse;
 import com.insilenceclone.backend.domain.qna.controller.dto.response.QnaResponse;
@@ -22,7 +23,8 @@ public class QnaService {
     private final QnaExecutor executor;
 
     // 게시글 작성
-    public QnaResponse createQna(OrderCreateRequest req) {
+    @Transactional
+    public QnaResponse createQna(QnaCreateRequest req) {
         return executor.create(req);
     }
 
@@ -42,5 +44,11 @@ public class QnaService {
     }
 
     // 답변 작성
+    @Transactional
+    public void answerQna (QnaAnswerRequest req) {
 
+        Qna qna = reader.readEntityById(req.qnaId());
+
+        qna.writeAnswer(req.answer());
+    }
 }

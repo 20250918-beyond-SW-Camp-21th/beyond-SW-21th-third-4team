@@ -5,7 +5,7 @@ import com.insilenceclone.backend.domain.qna.enums.QnaType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record OrderCreateRequest(
+public record QnaCreateRequest(
         @NotBlank(message = "제목은 필수 입력 사항입니다.")
         String title,
         @NotBlank(message = "내용은 필수 입력 사항입니다.")

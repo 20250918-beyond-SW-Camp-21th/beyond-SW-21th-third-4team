@@ -12,4 +12,7 @@ public interface QnaReader {
     Qna readById(Long qnaId);
 
     List<QnaListResponse> readAllSorted();
+
+    // QnaReaderImpl 내부
+    Qna readEntityById(Long id);
 }
