@@ -45,6 +45,31 @@
           </div>
         </div>
 
+        <!-- 배송지 -->
+        <div class="shipping-section">
+          <div class="section-header">
+            <span class="section-title">배송지</span>
+          </div>
+          <div class="shipping-detail">
+            <div class="shipping-row">
+              <span class="shipping-label">받는사람</span>
+              <span class="shipping-value">{{ receiverName }}({{ email }})</span>
+            </div>
+            <div class="shipping-row">
+              <span class="shipping-label">주소</span>
+              <span class="shipping-value">{{ address }}</span>
+            </div>
+            <div class="shipping-row">
+              <span class="shipping-label">연락처</span>
+              <span class="shipping-value">{{ receiverPhone }}</span>
+            </div>
+            <div class="shipping-row">
+              <span class="shipping-label">배송요청</span>
+              <span class="shipping-value">{{ deliveryMessage }}</span>
+            </div>
+          </div>
+        </div>
+
         <!-- 여기에 추가 섹션 작업 예정 -->
 
       </div>
@@ -68,7 +93,14 @@ const router = useRouter();
 // query에서 주문 정보 가져오기
 const orderId = computed(() => route.query.orderId || '0');
 const amount = computed(() => route.query.amount || '0');
-const depositorName = computed(() => route.query.depositor || '주문자');
+const receiverName = computed(() => route.query.receiverName || '주문자');
+const email = computed(() => route.query.email || '');
+const address = computed(() => route.query.address || '');
+const receiverPhone = computed(() => route.query.receiverPhone || '');
+const deliveryMessage = computed(() => route.query.deliveryMessage || '');
+
+// 결제수단 - 입금자(주문자 이름 사용)
+const depositorName = receiverName;
 
 // 주문번호 포맷: 20260102-0000{orderId}
 const orderNumber = computed(() => {
@@ -181,6 +213,7 @@ const goToHome = () => {
 /* 결제수단 */
 .payment-section {
   padding: 0;
+  border-bottom: 1px solid #ddd;
 }
 
 .section-header {
@@ -238,6 +271,42 @@ const goToHome = () => {
 
 .receipt-btn:hover {
   background: #f9f9f9;
+}
+
+/* 배송지 */
+.shipping-section {
+  padding: 0;
+}
+
+.shipping-detail {
+  padding: 0;
+}
+
+.shipping-row {
+  display: flex;
+  padding: 20px 20px;
+  font-size: 12px;
+  line-height: 1.8;
+  border-bottom: 1px solid #eee;
+}
+
+.shipping-row:last-child {
+  border-bottom: none;
+}
+
+.shipping-label {
+  color: #888;
+  min-width: 80px;
+  font-weight: 400;
+  font-size: 11px;
+}
+
+.shipping-value {
+  flex: 1;
+  color: #333;
+  font-weight: 400;
+  font-size: 11px;
+  margin-left: 30px;
 }
 
 /* 하단 버튼 */

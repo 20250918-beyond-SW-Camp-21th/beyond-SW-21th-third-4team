@@ -663,12 +663,21 @@ const handleSubmit = async () => {
         if (response.status === 200 || response.status === 201) {
             const orderId = response.data.data;
             // 주문 완료 페이지로 리다이렉트
+            const receiverPhone = `${form.phone1}-${form.phone2}-${form.phone3}`;
+            const fullAddress = `${form.basicAddress} ${form.detailAddress}`.trim();
+            const deliveryMsg = form.deliveryMessage === 'direct' ? form.customMessage : form.deliveryMessage;
+            const email = `${form.emailId}@${form.emailDomain}`;
+            
             router.push({
                 path: '/order/complete',
                 query: {
                     orderId: orderId,
                     amount: finalPaymentAmount.value,
-                    depositor: form.receiverName
+                    receiverName: form.receiverName,
+                    email: email,
+                    address: fullAddress,
+                    receiverPhone: receiverPhone,
+                    deliveryMessage: deliveryMsg || ''
                 }
             });
         }
