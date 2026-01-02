@@ -94,7 +94,8 @@
             <transition name="fade">
               <ul v-show="showAccountSub" class="mini_dropdown">
                 <li v-for="item in accountItems" :key="item.name">
-                  <router-link :to="item.link">{{ item.name }}</router-link>
+                  <router-link v-if="item.link" :to="item.link">{{ item.name }}</router-link>
+                  <a v-else href="#" @click.prevent="item.action">{{ item.name }}</a>
                 </li>
               </ul>
             </transition>
@@ -134,8 +135,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import http from '../../api/http';
+import { getToken, removeToken } from '../../utils/token';
+
+const route = useRoute();
+const router = useRouter();
 
 const mainMenus = ref([
   { name: '남성복', link: '/men', subItems: null },
@@ -154,14 +160,47 @@ const customerItems = [
   { name: '소재별 케어', link: '/care' },
 ];
 
-// [계정] 서브메뉴 데이터
+// [계정] 서브메뉴 데이터 (로그인 여부에 따라 변경)
 const showAccountSub = ref(false);
-const accountItems = [
-  { name: '로그인', link: '/login' },
-  { name: '회원가입', link: '/signup' },
-  { name: '마이 페이지', link: '/mypage' },
-  { name: '주문조회', link: '/orders' },
-];
+const isLoggedIn = ref(false);
+
+const checkLoginStatus = () => {
+  isLoggedIn.value = !!getToken();
+};
+
+const handleLogout = () => {
+  removeToken();
+  isLoggedIn.value = false;
+  alert('로그아웃 되었습니다.');
+  // 메인으로 이동 또는 새로고침
+  if (route.path === '/') {
+      window.location.reload();
+  } else {
+      router.push('/');
+  }
+};
+
+const accountItems = computed(() => {
+  if (isLoggedIn.value) {
+    return [
+      { name: '로그아웃', action: handleLogout },
+      { name: '정보수정', link: '/mypage/profile' },
+      { name: '마이 페이지', link: '/mypage' },
+      { name: '주문조회', link: '/mypage/orders' },
+    ];
+  } else {
+    return [
+      { name: '로그인', link: '/login' },
+      { name: '회원가입', link: '/signup' },
+      { name: '마이 페이지', link: '/mypage' },
+      { name: '주문조회', link: '/mypage/orders' },
+    ];
+  }
+});
+
+watch(() => route.path, () => {
+  checkLoginStatus();
+});
 
 // 장바구니 카운트 (초기값 0)
 const cartCount = ref(0);
@@ -179,6 +218,7 @@ const fetchCartCount = async () => {
 };
 
 onMounted(() => {
+  checkLoginStatus();
   fetchCartCount();
 });
 
