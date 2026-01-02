@@ -52,7 +52,7 @@
               <input type="text" v-model="form.zipcode" placeholder="우편번호" class="square-input width-150" readonly />
               <button type="button" @click="handleAddressSearch" class="btn-search square-btn">주소검색</button>
             </div>
-            <input type="text" v-model="form.basicAddress" placeholder="기본주소" class="full-width square-input mb-2" readonly />
+            <input type="text" v-model="form.basicAddress" placeholder="기본주소" class="full-width square-input mb-2" />
             <input type="text" v-model="form.detailAddress" placeholder="나머지 주소" class="full-width square-input" />
           </div>
         </div>
@@ -511,7 +511,8 @@ const handleEmailDomainChange = () => {
 };
 
 const getOrderDeliveryDto = () => {
-  const fullAddress = `(${form.zipcode}) ${form.basicAddress} ${form.detailAddress}`;
+  // Zipcode is kept for display input only; actual address = basicAddress + detailAddress
+  const fullAddress = `${form.basicAddress} ${form.detailAddress}`.trim();
   const fullPhone = `${form.phone1}-${form.phone2}-${form.phone3}`;
   const fullEmail = `${form.emailId}@${form.emailDomain}`;
   const finalMessage = form.deliveryMessage === 'direct' ? form.customMessage : form.deliveryMessage;
@@ -540,7 +541,8 @@ const fetchCartItems = async () => {
         if (response.data && response.data.data) {
             const cartItems = response.data.data;
             products.value = cartItems.map(item => ({
-                productId: item.productId || item.id, // Capture Product ID
+                cartItemId: item.cartItemId || item.id, // Capture Cart Item ID for Order API
+                productId: item.productId, 
                 name: item.productName || item.name || '상품명 없음',
                 option: item.optionName || item.option || '옵션 없음',
                 quantity: item.quantity || item.qty || 1,
@@ -625,7 +627,7 @@ const rewardPoints = computed(() => {
 
 const handleSubmit = async () => {
     // 1. Validation
-    if (!form.receiverName || !form.phone2 || !form.phone3 || !form.basicAddress) {
+    if (!form.receiverName || !form.phone2 || !form.phone3 || !form.detailAddress) {
         alert("배송지 정보를 모두 입력해주세요.");
         return;
     }
@@ -633,32 +635,25 @@ const handleSubmit = async () => {
     // 2. Prepare Data
     const deliveryDto = getOrderDeliveryDto();
     
-    // Create Payload
+    // Create Payload for /api/v1/orders/cart
+    // Backend expects OrderCartRequestDto which extends OrderDeliveryDto
     const orderRequest = {
         receiverName: deliveryDto.receiverName,
         receiverPhone: deliveryDto.receiverPhone,
         address: deliveryDto.address,
         deliveryMessage: deliveryDto.deliveryMessage,
-        orderEmail: deliveryDto.email,
-        paymentMethod: paymentMethod.value,
-        totalAmount: finalPaymentAmount.value,
-        usedMileage: Number(usedMileage.value) || 0,
-        usedDeposit: Number(usedDeposit.value) || 0,
-        savePaymentInfo: savePaymentInfo.value,
-        orderItems: products.value.map(p => ({
-            productId: p.productId,
-            quantity: p.quantity,
-            optionName: p.option,
-            price: p.price
-        }))
+        email: deliveryDto.email, // Backend DTO expects 'email', not 'orderEmail'
+        cartItemIds: products.value.map(p => p.cartItemId), // Required: List of cartItemIds
+        // Payment Info is currently not handled by backend OrderService, 
+        // but we send the request to create the order.
     };
 
     // 3. API Call
     try {
-        const response = await http.post('/api/v1/orders', orderRequest);
+        // Changed endpoint to /api/v1/orders/cart (POST)
+        const response = await http.post('/api/v1/orders/cart', orderRequest);
         if (response.status === 200 || response.status === 201) {
-            alert("주문이 정상적으로 접수되었습니다.");
-            // 추후 주문 완료 페이지로 이동 로직 추가 예정
+            alert("주문이 정상적으로 접수되었습니다. (주문번호: " + response.data.data + ")");
             // router.push('/order/complete'); 
         }
     } catch (error) {
