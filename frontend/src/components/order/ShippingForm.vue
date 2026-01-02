@@ -276,12 +276,10 @@
                  </div>
             </div>
 
-            <!-- Applied Amount (Total Discount) -->
-            <div class="applied-amount-row no-border">
+            <!-- 4. Applied Amount -->
+            <div class="total-discount-wrapped">
                 <div class="row-label">적용금액</div>
-                <div class="total-discount-wrapped">
-                    <span class="total-discount-amount">-KRW 0</span>
-                </div>
+                <span class="price-text font-bold text-blue" style="font-size: 11px;">-KRW {{ totalDiscount.toLocaleString() }}</span>
             </div>
         </div>
     </div>
@@ -290,7 +288,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from 'vue';
+import { reactive, ref, onMounted, computed } from 'vue';
 import http from '../../api/http';
 
 /* [1. Shipping Info Logic] */
@@ -441,6 +439,12 @@ const mileageBalance = ref(0); // 기본값 0
 const depositBalance = ref(0); // 기본값 0
 const usedMileage = ref(''); // [수정] 기본값 0 -> 공란
 const usedDeposit = ref(''); // [수정] 기본값 0 -> 공란
+
+const totalDiscount = computed(() => {
+    const miles = Number(usedMileage.value) || 0;
+    const deposit = Number(usedDeposit.value) || 0;
+    return miles + deposit;
+});
 
 onMounted(() => {
   fetchUserInfo();
@@ -918,12 +922,13 @@ onMounted(() => {
 
 .input-group {
     display: flex;
-    gap: 10px;
+    gap: 0; /* [수정] 10px -> 0 (테두리 맞닿음) */
     width: 100%;
 }
 
 .width-100 {
-    width: 110px; /* As requested, slight increase for "전액 사용" */
+    width: 80px; /* [수정] 110px -> 80px (버튼 너비 축소, 입력창 확장) */
+    /* 테두리 겹침 방지 (선택사항, 테두리가 2줄로 보이면 border-left: 0 추가 고려) */
 }
 
 /* Coupon Specific Layout */
@@ -961,10 +966,18 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-top: 1px solid #e8e8e8;
 }
 
 .total-discount-wrapped {
-    text-align: right;
+    /* [수정] HTML 구조 변경에 따른 스타일 수정 */
+    background: #fbfbfb;
+    border-top: 1px solid #e8e8e8;
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 .mt-2 {
