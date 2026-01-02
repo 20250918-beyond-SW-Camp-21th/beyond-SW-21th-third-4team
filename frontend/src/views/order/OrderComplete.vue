@@ -119,14 +119,28 @@
           </div>
         </div>
 
-        <!-- 여기에 추가 섹션 작업 예정 -->
+        <!-- 적립 혜택 -->
+        <div class="reward-section">
+          <div class="section-header">
+            <span class="section-title">적립 혜택</span>
+          </div>
+          <div class="reward-detail">
+            <div class="reward-row">
+              <span class="reward-label">회원 마일리지</span>
+              <span class="reward-value">KRW {{ rewardPoints.toLocaleString() }}원</span>
+            </div>
+          </div>
+          <div class="reward-total-row">
+            <span class="reward-total-label">적립 예정금액</span>
+            <span class="reward-total-value">{{ rewardPoints.toLocaleString() }}원</span>
+          </div>
+          <!-- 하단 버튼 -->
+          <div class="action-buttons">
+            <button class="btn-secondary" @click="goToOrderList">주문확인하기</button>
+            <button class="btn-primary" @click="goToHome">쇼핑계속하기</button>
+          </div>
+        </div>
 
-      </div>
-
-      <!-- 하단 버튼 -->
-      <div class="action-buttons">
-        <button class="btn-secondary" @click="goToOrderList">주문내역 보기</button>
-        <button class="btn-primary" @click="goToHome">쇼핑 계속하기</button>
       </div>
     </div>
   </div>
@@ -163,6 +177,11 @@ const totalProductPrice = computed(() => {
 });
 const discount = computed(() => Number(route.query.discount) || 0);
 const finalAmount = computed(() => Number(route.query.amount) || 0);
+
+// 적립 마일리지 (총 상품가격의 1%)
+const rewardPoints = computed(() => {
+  return Math.floor(totalProductPrice.value * 0.01);
+});
 
 // 결제수단 - 입금자(주문자 이름 사용)
 const depositorName = receiverName;
@@ -232,7 +251,7 @@ const goToHome = () => {
 
 .complete-title {
   font-size: 11px;
-  font-weight: 400;
+  font-weight: 800;
   color: #333;
   margin: 0;
   line-height: 26px;
@@ -240,7 +259,7 @@ const goToHome = () => {
 
 .complete-subtitle {
   font-size: 11px;
-  font-weight: 400;
+  font-weight: 800;
   color: #333;
   margin: 0;
   line-height: 26px;
@@ -445,7 +464,7 @@ const goToHome = () => {
   justify-content: space-between;
   padding: 15px 20px;
   margin: 0 20px 20px 20px;
-  background-color: #f8f8f8;
+  background-color: #f4f4f4;
   font-size: 11px;
 }
 
@@ -490,7 +509,7 @@ const goToHome = () => {
   justify-content: space-between;
   padding: 15px 20px;
   margin: 0 20px 20px 20px;
-  background-color: #f8f8f8;
+  background-color: #f4f4f4;
   font-size: 12px;
 }
 
@@ -504,30 +523,78 @@ const goToHome = () => {
   font-weight: 900;
 }
 
+/* 적립 혜택 */
+.reward-section {
+  padding: 0;
+  border-top: 1px solid #ddd;
+}
+
+.reward-detail {
+  padding: 20px;
+}
+
+.reward-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 20px;
+  font-size: 11px;
+}
+
+.reward-label {
+  color: #888;
+  padding-left: 1px;
+}
+
+.reward-value {
+  color: #333;
+  padding-right: 1px;
+}
+
+.reward-total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 20px;
+  margin: 0 20px 5px 20px;
+  background-color: #f4f4f4;
+  font-size: 12px;
+}
+
+.reward-total-label {
+  color: #333;
+  font-weight: 700;
+}
+
+.reward-total-value {
+  color: #333;
+  font-weight: 900;
+}
+
 /* 하단 버튼 */
 .action-buttons {
   display: flex;
   gap: 10px;
   justify-content: center;
-  padding: 30px 0;
+  padding: 10px 20px 20px 20px;
 }
 
 .btn-secondary {
-  padding: 12px 40px;
-  border: 1px solid #000;
+  flex: 1;
+  padding: 15px 40px;
+  border: 1px solid #333;
   background: #fff;
-  font-size: 11px;
+  font-size: 12px;
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 400;
   cursor: pointer;
 }
 
 .btn-primary {
-  padding: 12px 40px;
+  flex: 1;
+  padding: 15px 40px;
   border: none;
-  background: #000;
+  background: #3a4a5a;
   color: #fff;
-  font-size: 11px;
+  font-size: 12px;
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 400;
   cursor: pointer;
@@ -538,6 +605,6 @@ const goToHome = () => {
 }
 
 .btn-primary:hover {
-  background: #333;
+  background: #2a3a4a;
 }
 </style>
