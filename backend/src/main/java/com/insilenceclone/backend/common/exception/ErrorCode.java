@@ -30,7 +30,7 @@ public enum ErrorCode {
     CART_USER_ID_REQUIRED(HttpStatus.BAD_REQUEST,"CA001","userId는 필수입니다."),
     CART_ID_REQUIRED(HttpStatus.BAD_REQUEST, "CA002", "cartId는 필수입니다."),
     CART_PRODUCT_ID_REQUIRED(HttpStatus.BAD_REQUEST, "CA003", "productId는 필수입니다."),
-    CART_QUANTITY_INVALID(HttpStatus.BAD_REQUEST, "CA004", "quantity는 1 이상이어야 합니다."),
+    CART_QUANTITY_INVALID(HttpStatus.BAD_REQUEST, "CA004", "quantity는 1이상 재고 이하여야합니다."),
     CART_NOT_FOUND(HttpStatus.NOT_FOUND, "CA005", "장바구니가 없습니다."),
     CART_EMPTY(HttpStatus.NOT_FOUND, "CA006", "장바구니가 비어있습니다."),
     CART_ITEM_NOT_SELECTED(HttpStatus.BAD_REQUEST, "CA007", "선택된 상품이 없습니다."),
