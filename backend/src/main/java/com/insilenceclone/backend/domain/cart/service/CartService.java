@@ -9,7 +9,7 @@ import com.insilenceclone.backend.domain.cart.entity.Cart;
 import com.insilenceclone.backend.domain.cart.entity.CartItem;
 import com.insilenceclone.backend.domain.cart.repository.CartItemRepository;
 import com.insilenceclone.backend.domain.cart.repository.CartRepository;
-import com.insilenceclone.backend.domain.product.repository.ProductRepositoryTemp;
+import com.insilenceclone.backend.domain.product.repository.ProductRepository;
 import com.insilenceclone.backend.domain.product.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,15 +27,15 @@ public class CartService {
     private final CartItemRepository cartItemRepository;
 
     // TODO: 임시 레포지토리 이므로 추후 수정
-    private final ProductRepositoryTemp productRepositoryTemp;
+    private final ProductRepository productRepository;
 
     @Transactional
     public void addCartItem(Long userId, CartItemAddRequestDto request) {
 
         // TODO: 임시 레포지토리, 에러코드 이므로 추후 수정
-        if(!productRepositoryTemp.existsById(request.productId()))
+        if(!productRepository.existsById(request.productId()))
         {
-            throw new BusinessException(ErrorCode.TEMP_PRODUCT_DOES_NOT_EXIST);
+            throw new BusinessException(ErrorCode.PRODUCT_NOT_FOUND);
         }
 
         Cart cart = cartRepository.findByUserId(userId)
@@ -83,7 +83,7 @@ public class CartService {
                 .distinct()
                 .toList();
 
-        List<Product> products = productRepositoryTemp.findAllById(productIds);
+        List<Product> products = productRepository.findAllById(productIds);
 
         Map<Long, Product> productMap = products.stream()
                 .collect(Collectors.toMap(Product::getId, p -> p));
