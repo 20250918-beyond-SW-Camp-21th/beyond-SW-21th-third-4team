@@ -310,6 +310,7 @@ a {
 
 /* [드롭다운] */
 /* [미니 드롭다운] - 고객센터, 계정 등 */
+/* [미니 드롭다운] - 고객센터, 계정 등 */
 .relative_item {
   position: relative;
   height: 100%;
@@ -319,31 +320,48 @@ a {
 
 .mini_dropdown {
   position: absolute;
-  top: 30px; /* 텍스트 바로 아래 */
+  top: 30px;
   left: 50%;
   transform: translateX(-50%);
   background: #fff;
   border: 1px solid #000;
-  min-width: 100px;
+  min-width: 110px; /* 너비 축소 */
   display: flex;
   flex-direction: column;
   gap: 0;
   z-index: 100;
+  padding: 10px 0 !important; /* 상하 패딩 축소 */
+  margin: 0 !important;
+  list-style: none !important;
 }
 
 .mini_dropdown li {
-  width: 100%;
-  text-align: left; /* 왼쪽 정렬 */
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  width: 100% !important;
+  text-align: center !important; /* 중앙 정렬 */
+  display: block !important;
+  min-height: auto !important;
+  height: auto !important;
+  line-height: normal !important;
 }
 
 .mini_dropdown a {
-  display: block;
-  padding: 3px 15px; /* 상하 간격 매우 좁게 */
-  font-size: 11px; /* 기존폰트 유지 */
-  color: #000;
-  font-weight: 400;
-  text-decoration: none;
-  white-space: nowrap;
+  display: block !important;
+  padding: 3px 0 !important; /* 항목 간격 더 배짝 붙임 */
+  font-size: 11px !important;
+  color: #000 !important;
+  font-weight: 400 !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  background-color: transparent !important;
+  line-height: 1.2 !important; /* 줄 간격도 줄임 */
+}
+
+.mini_dropdown a:hover {
+  text-decoration: underline !important;
+  background-color: transparent !important;
 }
 
 .mini_dropdown a:hover {
