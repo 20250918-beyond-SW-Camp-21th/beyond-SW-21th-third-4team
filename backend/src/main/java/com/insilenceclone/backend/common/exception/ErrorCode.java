@@ -50,7 +50,8 @@ public enum ErrorCode {
 
     // QnA
     QNA_NOT_FOUND(HttpStatus.NOT_FOUND, "Q001", "게시글을 찾을 수 없습니다."),
-    QNA_NOT_PERMITTED(HttpStatus.FORBIDDEN, "Q002", "게시글 열람 권한이 없는 사용자입니다." );
+    QNA_NOT_PERMITTED(HttpStatus.FORBIDDEN, "Q002", "게시글 열람 권한이 없는 사용자입니다." ),
+    QNA_ALREADY_ANSWERED(HttpStatus.CONFLICT, "Q003", "이미 답변이 완료된 질문입니다.");
 
     private final HttpStatus status;
     private final String code;

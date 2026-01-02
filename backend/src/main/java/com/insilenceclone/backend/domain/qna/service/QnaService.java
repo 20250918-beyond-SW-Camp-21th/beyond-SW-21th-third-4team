@@ -1,11 +1,14 @@
 package com.insilenceclone.backend.domain.qna.service;
 
+import com.insilenceclone.backend.common.exception.BusinessException;
+import com.insilenceclone.backend.common.exception.ErrorCode;
 import com.insilenceclone.backend.domain.qna.controller.dto.request.QnaAnswerRequest;
 import com.insilenceclone.backend.domain.qna.controller.dto.request.QnaCreateRequest;
 import com.insilenceclone.backend.domain.qna.controller.dto.request.QnaRequest;
 import com.insilenceclone.backend.domain.qna.controller.dto.response.QnaListResponse;
 import com.insilenceclone.backend.domain.qna.controller.dto.response.QnaResponse;
 import com.insilenceclone.backend.domain.qna.entity.Qna;
+import com.insilenceclone.backend.domain.qna.enums.QnaStatus;
 import com.insilenceclone.backend.domain.qna.executor.QnaExecutor;
 import com.insilenceclone.backend.domain.qna.usecase.reader.QnaReader;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +51,10 @@ public class QnaService {
     public void answerQna (QnaAnswerRequest req) {
 
         Qna qna = reader.readEntityById(req.qnaId());
+
+        if(qna.getStatus() == QnaStatus.ANSWERED) {
+            throw new BusinessException(ErrorCode.QNA_ALREADY_ANSWERED);
+        }
 
         qna.writeAnswer(req.answer());
     }
