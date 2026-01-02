@@ -56,8 +56,8 @@ public class MyPageService {
                 .filter(order -> {
                     switch (statusFilter.toLowerCase()) {
                         case "active":
-                            // 진행중인 주문: 결제완료, 배송준비중, 배송중
-                            return order.getStatus().name().equals("PAYMENT_COMLETED")
+                            // 진행중인 주문: 주문완료, 배송준비중, 배송중
+                            return order.getStatus().name().equals("ORDERED")
                                     || order.getStatus().name().equals("PREPARING")
                                     || order.getStatus().name().equals("SHIPPING");
                         case "completed":
