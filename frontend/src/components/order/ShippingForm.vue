@@ -168,11 +168,11 @@
         </div>
       </div>
 
-      <div class="save-checkbox">
-        <label class="checkbox-label">
-          <input type="checkbox" />
-          <span class="custom-checkbox"></span>
-          기본 배송지로 저장
+      <div class="save-checkbox" style="margin-top: 0px; padding-bottom: 20px; padding-left: 20px;">
+        <label class="checkbox-label" style="display: flex; align-items: center; cursor: pointer;">
+          <input type="checkbox" class="custom-checkbox-input" />
+          <span class="custom-checkbox-box"></span>
+          <span style="font-size: 11px; color: #353535; font-weight: 400;">기본 배송지로 저장</span>
         </label>
       </div>
     </div>
@@ -362,9 +362,25 @@
                         </label>
                     </div>
                 </div>
+
+                <!-- Payment Method Help Text -->
+                <div class="payment-help-box" v-if="currentHelpText.length > 0">
+                    <ul class="help-list">
+                        <li v-for="(text, index) in currentHelpText" :key="index" v-html="text"></li>
+                    </ul>
+            </div> <!-- Close payment-help-box -->
+
+            <!-- Save Payment Info Checkbox -->
+            <div class="save-payment-info" style="margin-top: 20px; padding: 0;">
+                <label class="checkbox-label" style="display: flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" v-model="savePaymentInfo" class="custom-checkbox-input">
+                    <span class="custom-checkbox-box"></span>
+                    <span style="font-size: 11px; color: #353535; font-weight: 400;">결제수단과 입력정보를 다음에도 사용</span>
+                </label>
             </div>
         </div>
     </div>
+</div>
 
   </div>
 </template>
@@ -520,8 +536,46 @@ const couponCount = ref(0); // 기본값 0
 const mileageBalance = ref(0); // 기본값 0
 const depositBalance = ref(0); // 기본값 0
 const usedMileage = ref(''); // [수정] 기본값 0 -> 공란
-const usedDeposit = ref(''); // [수정] 기본값 0 -> 공란
+const usedDeposit = ref(0); // Changed from '' to 0 to avoid redeclaration and ensure syntactic correctness
 const paymentMethod = ref('card'); // 기본값 카드
+const savePaymentInfo = ref(true); // Save Payment Info Checkbox (Default: true)
+
+/* Helper Text Logic */
+const helpTextMap = {
+    card: [
+        "최소 결제 가능 금액은 총 결제금액에서 배송비를 제외한 금액입니다.",
+        "소액 결제의 경우 PG사 정책에 따라 결제 금액 제한이 있을 수 있습니다."
+    ],
+    escrow: [
+        "최소 결제 가능 금액은 총 결제금액에서 배송비를 제외한 금액입니다.",
+        "소액 결제의 경우 PG사 정책에 따라 결제 금액 제한이 있을 수 있습니다."
+    ],
+    transfer: [
+        "최소 결제 가능 금액은 총 결제금액에서 배송비를 제외한 금액입니다.",
+        "소액 결제의 경우 PG사 정책에 따라 결제 금액 제한이 있을 수 있습니다."
+    ],
+    samsung: [
+        "최소 결제 가능 금액은 총 결제금액에서 배송비를 제외한 금액입니다.",
+        "소액 결제의 경우 PG사 정책에 따라 결제 금액 제한이 있을 수 있습니다."
+    ],
+    payco: [
+        "페이코(<a href='//www.payco.com' target='_blank'>www.payco.com</a>)에 회원가입 후, 최초 1회 카드 및 계좌 정보를 등록하셔야 사용 가능합니다."
+    ],
+    kakaopay: [
+        "카카오톡 앱을 설치한 후, 최초 1회 카드정보를 등록하셔야 사용 가능합니다.",
+        "인터넷 익스플로러는 8 이상에서만 결제 가능합니다.",
+        "카카오머니로 결제 시, 현금영수증 발급은 ㈜카카오페이에서 발급가능합니다."
+    ],
+    toss: [
+        "토스는 간편하게 지문 또는 비밀번호만으로 결제할 수 있는 빠르고 편리한 간편 결제 서비스입니다.",
+        "토스 결제 후 취소/반품 등이 발생할 경우 토스를 통한 신용카드 취소/토스머니 환불이 이루어집니다.",
+        "토스 이용가능 결제수단 : 국내 발행 신용/체크카드, 토스머니"
+    ]
+};
+
+const currentHelpText = computed(() => {
+    return helpTextMap[paymentMethod.value] || [];
+});
 
 const totalDiscount = computed(() => {
     const miles = Number(usedMileage.value) || 0;
@@ -924,6 +978,40 @@ onMounted(() => {
     border-top: none;
 }
 
+/* New style for payment method section title */
+.payment-method-section-container .section-title {
+    margin-top: 0 !important;
+}
+
+/* Payment Help Box */
+.payment-help-box {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #e8e8e8;
+    background-color: #fbfbfb; /* Matching the reference gray */
+    color: #707070;
+    font-size: 11px;
+}
+
+.help-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.help-list li {
+    padding-left: 10px;
+    position: relative;
+    line-height: 1.8;
+}
+
+.help-list li::before {
+    content: "-";
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
 .justify-between {
     justify-content: space-between;
 }
@@ -1130,6 +1218,41 @@ onMounted(() => {
 .flex-row {
     display: flex;
     flex-direction: row;
+}
+
+/* Custom Checkbox Styling */
+.custom-checkbox-input {
+    display: none; /* Hide default checkbox */
+}
+
+.custom-checkbox-box {
+    width: 20px;
+    height: 20px;
+    background-color: #ddd; /* Light gray usually, or #e0e0e0 */
+    border-radius: 4px; /* Rounded corners */
+    margin-right: 8px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+/* Checked State */
+.custom-checkbox-input:checked + .custom-checkbox-box {
+    background-color: #ddd; /* Keep gray or change if needed based on reference, looking at image it seems gray with white check */
+}
+
+/* Checkmark Icon (CSS) */
+.custom-checkbox-input:checked + .custom-checkbox-box::after {
+    content: '';
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    position: absolute;
+    top: 3px;
 }
 
 </style>
