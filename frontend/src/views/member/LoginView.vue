@@ -35,7 +35,7 @@ const onSubmit = async () => {
 
     // ✅ 1) 클론 사이트처럼 브라우저 alert
     alert(message)
-
+    router.replace('/login')
     // ✅ 2) 확인 누른 뒤 입력값 초기화 (클론 사이트 느낌)
     loginId.value = ''
     password.value = ''
