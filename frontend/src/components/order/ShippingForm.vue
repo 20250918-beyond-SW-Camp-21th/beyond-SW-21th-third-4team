@@ -378,6 +378,32 @@
                     <span style="font-size: 11px; color: #353535; font-weight: 400;">결제수단과 입력정보를 다음에도 사용</span>
                 </label>
             </div>
+
+            <!-- Reward Benefits Section -->
+            <div class="reward-section" style="border-top: 1px solid #eee; padding: 20px 20px 20px 5px; display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                <span style="font-size: 11px; font-weight: bold; color: #333;">적립 혜택</span>
+                <div style="display: flex; align-items: center;">
+                    <span style="font-size: 12px; font-weight: bold; margin-right: 5px;">{{ rewardPoints.toLocaleString() }}원</span>
+                    <span style="font-size: 10px; color: #999;">▼</span>
+                </div>
+            </div>
+
+            <!-- Payment Button -->
+            <div class="payment-button-area" style="margin: 0 -20px 20px -20px; width: calc(100% + 40px);">
+                <button type="button" @click="handleSubmit" style="width: 100%; background: #000; color: #fff; border: none; padding: 15px 0; font-size: 11px; cursor: pointer;">
+                    KRW {{ finalPaymentAmount.toLocaleString() }} 결제하기
+                </button>
+            </div>
+
+            <!-- Notice Message -->
+            <div class="payment-notice" style="padding: 0 20px 20px 5px; color: #555; font-size: 11px; line-height: 1.5;">
+                <div style="margin-bottom: 10px;">
+                    - 무이자할부가 적용되지 않은 상품과 무이자할부가 가능한 상품을 동시에 구매할 경우 전체 주문 상품 금액에 대해 무이자할부가 적용되지 않습니다. 무이자할부를 원하시는 경우 장바구니에서 무이자할부 상품만 선택하여 주문하여 주시기 바랍니다.
+                </div>
+                <div>
+                    - 최소 결제 가능 금액은 결제금액에서 배송비를 제외한 금액입니다.
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -514,6 +540,7 @@ const fetchCartItems = async () => {
         if (response.data && response.data.data) {
             const cartItems = response.data.data;
             products.value = cartItems.map(item => ({
+                productId: item.productId || item.id, // Capture Product ID
                 name: item.productName || item.name || '상품명 없음',
                 option: item.optionName || item.option || '옵션 없음',
                 quantity: item.quantity || item.qty || 1,
@@ -588,8 +615,57 @@ const totalProductPrice = computed(() => {
 });
 
 const finalPaymentAmount = computed(() => {
-    return totalProductPrice.value + shippingFee.value - totalDiscount.value;
+  return totalProductPrice.value + shippingFee.value - totalDiscount.value;
 });
+
+// Reward Points (1% of final payment amount)
+const rewardPoints = computed(() => {
+    return Math.floor(finalPaymentAmount.value * 0.01);
+});
+
+const handleSubmit = async () => {
+    // 1. Validation
+    if (!form.receiverName || !form.phone2 || !form.phone3 || !form.basicAddress) {
+        alert("배송지 정보를 모두 입력해주세요.");
+        return;
+    }
+
+    // 2. Prepare Data
+    const deliveryDto = getOrderDeliveryDto();
+    
+    // Create Payload
+    const orderRequest = {
+        receiverName: deliveryDto.receiverName,
+        receiverPhone: deliveryDto.receiverPhone,
+        address: deliveryDto.address,
+        deliveryMessage: deliveryDto.deliveryMessage,
+        orderEmail: deliveryDto.email,
+        paymentMethod: paymentMethod.value,
+        totalAmount: finalPaymentAmount.value,
+        usedMileage: Number(usedMileage.value) || 0,
+        usedDeposit: Number(usedDeposit.value) || 0,
+        savePaymentInfo: savePaymentInfo.value,
+        orderItems: products.value.map(p => ({
+            productId: p.productId,
+            quantity: p.quantity,
+            optionName: p.option,
+            price: p.price
+        }))
+    };
+
+    // 3. API Call
+    try {
+        const response = await http.post('/api/v1/orders', orderRequest);
+        if (response.status === 200 || response.status === 201) {
+            alert("주문이 정상적으로 접수되었습니다.");
+            // 추후 주문 완료 페이지로 이동 로직 추가 예정
+            // router.push('/order/complete'); 
+        }
+    } catch (error) {
+        console.error("주문 생성 실패:", error);
+        alert("주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
+};
 
 onMounted(() => {
   fetchUserInfo();
