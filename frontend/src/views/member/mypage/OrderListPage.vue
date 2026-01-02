@@ -122,7 +122,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../../../api/http.js'
 import OrderCard from '../../../components/mypage/OrderCard.vue'
@@ -228,52 +228,90 @@ const filteredOrders = computed(() => {
   return filtered
 })
 
+// Product cache - stores all products by ID
+const productCache = new Map()
+
+// Helper: Fetch all products and cache them
+async function fetchAllProducts() {
+  if (productCache.size > 0) {
+    return // Already cached
+  }
+
+  try {
+    const response = await api.get('/products')
+    const products = response.data.data || response.data || []
+
+    // Cache all products by ID
+    products.forEach(product => {
+      productCache.set(product.id, {
+        name: product.name || '상품명 없음',
+        imageUrl: product.imageUrl || null,
+        price: product.price || 0
+      })
+    })
+
+    console.log(`Cached ${productCache.size} products`)
+  } catch (error) {
+    console.error('Failed to fetch products:', error)
+  }
+}
+
+// Helper: Get product details by ID from cache
+function getProductDetails(productId) {
+  if (productCache.has(productId)) {
+    return productCache.get(productId)
+  }
+
+  // Return fallback if not found
+  return {
+    name: '상품 정보 없음',
+    imageUrl: null,
+    price: 0
+  }
+}
+
 // Methods
 async function fetchOrders() {
   loading.value = true
   try {
-    // Use the same endpoint as MyPage
+    // First, fetch and cache all products
+    await fetchAllProducts()
+
+    // Then fetch orders
     const response = await api.get('/mypage/orders')
 
     // Handle response structure (same as MyPage)
     if (response.data && response.data.data) {
       const rawOrders = response.data.data || []
-      console.log('=== RAW ORDERS FROM API ===')
-      console.log('Total orders:', rawOrders.length)
-      console.log('First order FULL DATA:', JSON.stringify(rawOrders[0], null, 2))
-      console.log('First order KEYS:', Object.keys(rawOrders[0] || {}))
-      console.log('First order structure:', rawOrders[0])
-      console.log('First order products:', rawOrders[0]?.orderProducts)
 
       // Transform backend data to match OrderCard expectations
-      orders.value = rawOrders.map(order => {
-        console.log(`Processing order ${order.id}:`, {
-          createdAt: order.createdAt,
-          orderProducts: order.orderProducts,
-          productCount: order.orderProducts?.length || 0
+      // Backend uses: orderId, orderedAt, items (with productId only)
+      const transformedOrders = rawOrders.map((order) => {
+        // Get product details for each item from cache
+        const itemsWithDetails = (order.items || []).map((item) => {
+          const productDetails = getProductDetails(item.productId)
+
+          return {
+            id: item.id,
+            productName: productDetails.name,
+            productImage: productDetails.imageUrl,
+            size: item.size || null,
+            quantity: item.quantity || 1,
+            price: item.unitPrice || productDetails.price || 0
+          }
         })
 
         return {
-          id: order.id,
-          orderNumber: order.orderNumber || `ORD-${order.id}`,
-          orderDate: order.createdAt || order.orderDate || new Date().toISOString(),
+          id: order.orderId,
+          orderNumber: order.orderNumber || `ORD-${order.orderId}`,
+          orderDate: order.orderedAt || new Date().toISOString(),
           status: order.status,
-          totalAmount: order.totalPrice || order.totalAmount || 0,
-          items: order.orderProducts?.map(item => ({
-            id: item.id,
-            productName: item.productName || item.product?.name || '상품명 없음',
-            productImage: item.productImage || item.product?.imageUrl || null,
-            size: item.size || item.option || null,
-            quantity: item.quantity || 1,
-            price: item.price || item.product?.price || 0
-          })) || []
+          totalAmount: order.totalPrice || 0,
+          items: itemsWithDetails
         }
       })
 
-      console.log('=== TRANSFORMED ORDERS ===')
-      console.log('Total transformed:', orders.value.length)
-      console.log('First transformed order:', orders.value[0])
-      console.log('First order items:', orders.value[0]?.items)
+      orders.value = transformedOrders
       totalPages.value = 1
     } else {
       orders.value = []
@@ -323,11 +361,6 @@ async function handleCancelOrder(orderId) {
     alert('주문 취소에 실패했습니다.')
   }
 }
-
-// Watch for filter/page changes
-watch([activeTab, activeFilter, activePeriod, currentPage], () => {
-  fetchOrders()
-})
 
 // Initialize from route query
 onMounted(() => {
