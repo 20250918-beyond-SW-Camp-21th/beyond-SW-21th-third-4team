@@ -94,6 +94,31 @@
           </div>
         </div>
 
+        <!-- 결제정보 -->
+        <div class="payment-info-section">
+          <div class="section-header">
+            <span class="section-title">결제정보</span>
+          </div>
+          <div class="payment-info-detail">
+            <div class="payment-info-row">
+              <span class="payment-info-label">주문상품</span>
+              <span class="payment-info-value">KRW {{ totalProductPrice.toLocaleString() }}</span>
+            </div>
+            <div class="payment-info-row">
+              <span class="payment-info-label">배송비</span>
+              <span class="payment-info-value">+KRW {{ shippingFee.toLocaleString() }}</span>
+            </div>
+            <div class="payment-info-row">
+              <span class="payment-info-label">할인/부가결제</span>
+              <span class="payment-info-value discount">-KRW {{ discount.toLocaleString() }}</span>
+            </div>
+          </div>
+          <div class="final-payment-row">
+            <span class="final-label">결제금액</span>
+            <span class="final-value">KRW {{ finalAmount.toLocaleString() }}</span>
+          </div>
+        </div>
+
         <!-- 여기에 추가 섹션 작업 예정 -->
 
       </div>
@@ -132,6 +157,12 @@ const products = computed(() => {
   }
 });
 const shippingFee = computed(() => Number(route.query.shippingFee) || 0);
+// 주문상품 총 금액 - products에서 직접 계산
+const totalProductPrice = computed(() => {
+  return products.value.reduce((sum, p) => sum + (p.price * p.quantity), 0);
+});
+const discount = computed(() => Number(route.query.discount) || 0);
+const finalAmount = computed(() => Number(route.query.amount) || 0);
 
 // 결제수단 - 입금자(주문자 이름 사용)
 const depositorName = receiverName;
@@ -424,6 +455,53 @@ const goToHome = () => {
 
 .fee-value {
   color: #333;
+}
+
+/* 결제정보 */
+.payment-info-section {
+  padding: 0;
+  border-top: 1px solid #ddd;
+}
+
+.payment-info-detail {
+  padding: 20px;
+}
+
+.payment-info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 20px;
+  font-size: 11px;
+  padding-bottom: 2px;
+}
+
+.payment-info-label {
+  color: #888;
+  padding-left: 1px;
+}
+
+.payment-info-value {
+  color: #333;
+  padding-right: 1px;
+}
+
+.final-payment-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 20px;
+  margin: 0 20px 20px 20px;
+  background-color: #f8f8f8;
+  font-size: 12px;
+}
+
+.final-label {
+  color: #333;
+  font-weight: 700;
+}
+
+.final-value {
+  color: #333;
+  font-weight: 900;
 }
 
 /* 하단 버튼 */

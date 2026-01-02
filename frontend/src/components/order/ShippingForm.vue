@@ -679,7 +679,9 @@ const handleSubmit = async () => {
                     receiverPhone: receiverPhone,
                     deliveryMessage: deliveryMsg || '',
                     products: JSON.stringify(products.value),
-                    shippingFee: shippingFee.value
+                    shippingFee: shippingFee.value,
+                    totalProductPrice: totalProductPrice.value,
+                    discount: totalDiscount.value
                 }
             });
         }
