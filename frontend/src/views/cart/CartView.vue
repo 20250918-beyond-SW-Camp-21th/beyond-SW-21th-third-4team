@@ -169,12 +169,25 @@ const deleteSelected = async () => {
 }
 
 const increase = async (it) => {
-  try { await increaseCartItem(it.cartItemId); await load(); } catch { alert('재고가 부족합니다.'); }
+  const prevQty = it.quantity;
+  it.quantity++; // 즉시 화면에 반영 (Optimistic Update)
+  try { 
+    await increaseCartItem(it.cartItemId); 
+  } catch { 
+    it.quantity = prevQty; // 실패 시 롤백
+    alert('재고가 부족합니다.'); 
+  }
 }
 
 const decrease = async (it) => {
-  if (it.quantity <= 1) return
-  await decreaseCartItem(it.cartItemId); await load();
+  if (it.quantity <= 1) return;
+  const prevQty = it.quantity;
+  it.quantity--; // 즉시 화면에 반영 (Optimistic Update)
+  try {
+    await decreaseCartItem(it.cartItemId);
+  } catch {
+    it.quantity = prevQty; // 실패 시 롤백
+  }
 }
 
 const orderOne = (item) => {

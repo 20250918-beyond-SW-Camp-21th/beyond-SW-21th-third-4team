@@ -405,7 +405,10 @@
 
 <script setup>
 import { reactive, ref, onMounted, computed } from 'vue';
+import { useRoute } from 'vue-router';
 import http from '../../api/http';
+
+const route = useRoute();
 
 /* [1. Shipping Info Logic] */
 const form = reactive({
@@ -531,9 +534,19 @@ const fetchCartItems = async () => {
     try {
         const response = await http.get('/cart/my');
         if (response.data && response.data.data) {
-            const cartItems = response.data.data;
+            let cartItems = response.data.data;
+            
+            // query parameter로 전달된 cartItemIds가 있으면 해당 상품들만 필터링
+            const queryIds = route.query.cartItemIds;
+            if (queryIds) {
+                const selectedIds = queryIds.split(',').map(id => parseInt(id));
+                cartItems = cartItems.filter(item => 
+                    selectedIds.includes(item.cartItemId || item.id)
+                );
+            }
+            
             products.value = cartItems.map(item => ({
-                cartItemId: item.cartItemId || item.id, // Capture Cart Item ID for Order API
+                cartItemId: item.cartItemId || item.id,
                 productId: item.productId, 
                 name: item.productName || item.name || '상품명 없음',
                 option: item.optionName || item.option || '옵션 없음',
