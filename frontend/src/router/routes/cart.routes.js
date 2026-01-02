@@ -6,5 +6,6 @@ export const cartRoutes = [
         path: '/cart',
         name: 'cart',
         component: CartView,
+        meta: { requiresAuth: true },
     },
 ]
