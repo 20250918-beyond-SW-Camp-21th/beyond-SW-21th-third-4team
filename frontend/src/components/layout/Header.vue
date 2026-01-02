@@ -310,12 +310,17 @@ a {
 
 /* [드롭다운] */
 /* [미니 드롭다운] - 고객센터, 계정 등 */
-/* [미니 드롭다운] - 고객센터, 계정 등 */
 .relative_item {
   position: relative;
   height: 100%;
   display: flex;
   align-items: center;
+}
+
+/* 텍스트 수직 보정 (지구본 등 다른 아이콘과 높이 맞춤) */
+.relative_item > a {
+  padding-top: 3px;
+  display: inline-block;
 }
 
 .mini_dropdown {
