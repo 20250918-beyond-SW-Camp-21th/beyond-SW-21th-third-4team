@@ -328,37 +328,39 @@
                 <div class="payment-method-header" style="padding: 5px 0; font-size: 11px; font-weight: bold; margin-bottom: 25px;">
                     결제수단 선택
                 </div>
-                
-                <!-- Radio List -->
-                <div class="radio-list">
-                    <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'card' }">
-                        <input type="radio" value="card" v-model="paymentMethod" name="payment_method">
-                        <span>카드 (CARD)</span>
-                    </label>
-                    <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'escrow' }">
-                        <input type="radio" value="escrow" v-model="paymentMethod" name="payment_method">
-                        <span>에스크로(실시간 계좌이체)</span>
-                    </label>
-                    <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'transfer' }">
-                        <input type="radio" value="transfer" v-model="paymentMethod" name="payment_method">
-                        <span>무통장 입금 (transfer)</span>
-                    </label>
-                    <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'payco' }">
-                        <input type="radio" value="payco" v-model="paymentMethod" name="payment_method">
-                        <span>페이코(간편결제)</span>
-                    </label>
-                    <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'samsung' }">
-                        <input type="radio" value="samsung" v-model="paymentMethod" name="payment_method">
-                        <span>삼성페이</span>
-                    </label>
-                    <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'kakaopay' }">
-                        <input type="radio" value="kakaopay" v-model="paymentMethod" name="payment_method">
-                        <span>카카오페이(간편결제)</span>
-                    </label>
-                    <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'toss' }">
-                        <input type="radio" value="toss" v-model="paymentMethod" name="payment_method">
-                        <span>토스</span>
-                    </label>
+                <!-- Table Wrapper -->
+                <div class="payment-table-wrapper" style="border: 1px solid #eee;">
+                    <!-- Radio List -->
+                    <div class="radio-list">
+                        <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'card' }">
+                            <input type="radio" value="card" v-model="paymentMethod" name="payment_method">
+                            <span>카드 (CARD)</span>
+                        </label>
+                        <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'escrow' }">
+                            <input type="radio" value="escrow" v-model="paymentMethod" name="payment_method">
+                            <span>에스크로(실시간 계좌이체)</span>
+                        </label>
+                        <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'transfer' }">
+                            <input type="radio" value="transfer" v-model="paymentMethod" name="payment_method">
+                            <span>무통장 입금 (transfer)</span>
+                        </label>
+                        <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'payco' }">
+                            <input type="radio" value="payco" v-model="paymentMethod" name="payment_method">
+                            <span>페이코(간편결제)</span>
+                        </label>
+                        <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'samsung' }">
+                            <input type="radio" value="samsung" v-model="paymentMethod" name="payment_method">
+                            <span>삼성페이</span>
+                        </label>
+                        <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'kakaopay' }">
+                            <input type="radio" value="kakaopay" v-model="paymentMethod" name="payment_method">
+                            <span>카카오페이(간편결제)</span>
+                        </label>
+                        <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'toss' }">
+                            <input type="radio" value="toss" v-model="paymentMethod" name="payment_method">
+                            <span>토스</span>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1085,6 +1087,9 @@ onMounted(() => {
     cursor: pointer;
     font-size: 11px; /* 폰트 사이즈 조정 */
     color: #888; /* 기본 컬러 연하게 */
+}
+.payment-radio-item:last-child {
+    border-bottom: none;
 }
 
 /* Hide default radio input */
