@@ -218,7 +218,7 @@
     <div class="discount-section-container">
         <div class="form-box">
              <!-- Section Title -->
-            <div class="section-title">
+            <div class="section-title no-border-bottom">
                 <h3>할인/부가결제</h3>
                 <span class="toggle-icon">^</span>
             </div>
@@ -497,6 +497,10 @@ onMounted(() => {
   font-size: 12px; /* 13 -> 12 */
   font-weight: bold;
   margin: 0;
+}
+
+.section-title.no-border-bottom {
+    border-bottom: none;
 }
 
 /* Toggle Icon Style (Not in provided CSS but used in template) */
@@ -876,12 +880,12 @@ onMounted(() => {
 
 /* New Layout Styles for Discount Section */
 .horizontal-row {
-    padding: 5px 15px; /* [수정] 10px -> 5px (공백 축소) */
+    padding: 15px 15px; /* [수정] 10px -> 5px (공백 축소) */
     border-bottom: 1px solid #eee;
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-bottom: 5px;
+    margin-bottom: 0px;
 }
 
 .horizontal-row.top-align {
