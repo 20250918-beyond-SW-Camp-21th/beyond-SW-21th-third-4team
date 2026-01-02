@@ -405,10 +405,11 @@
 
 <script setup>
 import { reactive, ref, onMounted, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import http from '../../api/http';
 
 const route = useRoute();
+const router = useRouter();
 
 /* [1. Shipping Info Logic] */
 const form = reactive({
@@ -631,7 +632,7 @@ const rewardPoints = computed(() => {
 });
 
 const handleSubmit = async () => {
-    // 1. Validation
+    // 1. 유효성 검사
     if (!form.receiverName || !form.phone2 || !form.phone3 || !form.detailAddress) {
         alert("배송지 정보를 모두 입력해주세요.");
         return;
@@ -644,29 +645,45 @@ const handleSubmit = async () => {
         return; // 사용자가 '아니오'를 선택한 경우
     }
 
-    // 2. Prepare Data
+    // 3. 주문 데이터 준비
     const deliveryDto = getOrderDeliveryDto();
     
-    // Create Payload for /api/v1/orders/cart
-    // Backend expects OrderCartRequestDto which extends OrderDeliveryDto
     const orderRequest = {
         receiverName: deliveryDto.receiverName,
         receiverPhone: deliveryDto.receiverPhone,
         address: deliveryDto.address,
         deliveryMessage: deliveryDto.deliveryMessage,
-        email: deliveryDto.email, // Backend DTO expects 'email', not 'orderEmail'
-        cartItemIds: products.value.map(p => p.cartItemId), // Required: List of cartItemIds
-        // Payment Info is currently not handled by backend OrderService, 
-        // but we send the request to create the order.
+        email: deliveryDto.email,
+        cartItemIds: products.value.map(p => p.cartItemId),
     };
 
-    // 3. API Call
+    // 4. API 호출
     try {
-        // Changed endpoint to /api/v1/orders/cart (POST)
         const response = await http.post('/api/v1/orders/cart', orderRequest);
         if (response.status === 200 || response.status === 201) {
-            alert("주문이 정상적으로 접수되었습니다. (주문번호: " + response.data.data + ")");
-            // router.push('/order/complete'); 
+            const orderId = response.data.data;
+            // 주문 완료 페이지로 리다이렉트
+            const receiverPhone = `${form.phone1}-${form.phone2}-${form.phone3}`;
+            const fullAddress = `${form.basicAddress} ${form.detailAddress}`.trim();
+            const deliveryMsg = form.deliveryMessage === 'direct' ? form.customMessage : form.deliveryMessage;
+            const email = `${form.emailId}@${form.emailDomain}`;
+            
+            router.push({
+                path: '/order/complete',
+                query: {
+                    orderId: orderId,
+                    amount: finalPaymentAmount.value,
+                    receiverName: form.receiverName,
+                    email: email,
+                    address: fullAddress,
+                    receiverPhone: receiverPhone,
+                    deliveryMessage: deliveryMsg || '',
+                    products: JSON.stringify(products.value),
+                    shippingFee: shippingFee.value,
+                    totalProductPrice: totalProductPrice.value,
+                    discount: totalDiscount.value
+                }
+            });
         }
     } catch (error) {
         console.error("주문 생성 실패:", error);
