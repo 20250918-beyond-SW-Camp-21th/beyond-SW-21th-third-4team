@@ -276,10 +276,41 @@
                  </div>
             </div>
 
-            <!-- 4. Applied Amount -->
+     <!-- 4. Applied Amount -->
             <div class="total-discount-wrapped">
                 <div class="row-label">적용금액</div>
                 <span class="price-text font-bold text-blue" style="font-size: 11px;">-KRW {{ totalDiscount.toLocaleString() }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- [SECTION 4] Payment Info (결제정보) -->
+    <div class="payment-info-section-container">
+        <div class="form-box" style="border-top: none;">
+             <!-- Section Title -->
+            <div class="section-title no-border-bottom">
+                <h3>결제정보</h3>
+                <span class="toggle-icon">^</span>
+            </div>
+
+            <!-- Payment Summary Rows -->
+            <div class="payment-summary-rows" style="padding: 0 20px 20px 20px;">
+                <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 11px;">
+                    <span style="color: #333;">주문상품</span>
+                    <span class="font-bold">KRW {{ totalProductPrice.toLocaleString() }}</span>
+                </div>
+                <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 11px;">
+                    <span style="color: #333;">배송비</span>
+                    <span class="font-bold">+KRW {{ shippingFee.toLocaleString() }}</span>
+                </div>
+                <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 30px; font-size: 11px;">
+                    <span style="color: #333;">할인/부가결제</span>
+                    <span class="text-red font-bold" style="color: #d9534f;">-KRW {{ totalDiscount.toLocaleString() }}</span>
+                </div>
+                 <div class="summary-row final-row" style="display: flex; justify-content: space-between; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; font-weight: 700;">
+                    <span>최종 결제 금액</span>
+                    <span style="font-size: 13px;">KRW {{ finalPaymentAmount.toLocaleString() }}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -446,6 +477,14 @@ const totalDiscount = computed(() => {
     return miles + deposit;
 });
 
+const totalProductPrice = computed(() => {
+    return products.value.reduce((sum, p) => sum + (p.price * p.quantity), 0);
+});
+
+const finalPaymentAmount = computed(() => {
+    return totalProductPrice.value + shippingFee.value - totalDiscount.value;
+});
+
 onMounted(() => {
   fetchUserInfo();
   fetchCartItems();
@@ -491,6 +530,7 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 15px;
 }
 
 .section-title h3 {
@@ -891,7 +931,7 @@ onMounted(() => {
 .horizontal-row.top-align {
     align-items: flex-start;
     padding-top: 30px; /* [수정] 15px -> 10px */
-    padding-bottom: 30px;
+    padding-bottom: 10px;
 }
 
 .horizontal-row.top-align .row-label {
@@ -982,6 +1022,7 @@ onMounted(() => {
     justify-content: space-between;
     align-items: center;
     width: 100%;
+
 }
 
 .mt-2 {
