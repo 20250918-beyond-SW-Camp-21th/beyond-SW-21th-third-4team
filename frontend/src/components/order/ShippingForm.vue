@@ -315,6 +315,55 @@
         </div>
     </div>
 
+    <!-- [SECTION 5] Payment Method (결제수단) -->
+    <div class="payment-method-section-container">
+        <div class="form-box" style="border-top: none;">
+             <!-- Section Title -->
+            <div class="section-title no-border-bottom">
+                <h3>결제수단</h3>
+                <span class="toggle-icon">^</span>
+            </div>
+
+            <div class="payment-methods-list" style="padding: 0 20px 20px 20px;">
+                <div class="payment-method-header" style="padding: 5px 0; font-size: 11px; font-weight: bold; margin-bottom: 25px;">
+                    결제수단 선택
+                </div>
+                
+                <!-- Radio List -->
+                <div class="radio-list">
+                    <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'card' }">
+                        <input type="radio" value="card" v-model="paymentMethod" name="payment_method">
+                        <span>카드 (CARD)</span>
+                    </label>
+                    <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'escrow' }">
+                        <input type="radio" value="escrow" v-model="paymentMethod" name="payment_method">
+                        <span>에스크로(실시간 계좌이체)</span>
+                    </label>
+                    <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'transfer' }">
+                        <input type="radio" value="transfer" v-model="paymentMethod" name="payment_method">
+                        <span>무통장 입금 (transfer)</span>
+                    </label>
+                    <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'payco' }">
+                        <input type="radio" value="payco" v-model="paymentMethod" name="payment_method">
+                        <span>페이코(간편결제)</span>
+                    </label>
+                    <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'samsung' }">
+                        <input type="radio" value="samsung" v-model="paymentMethod" name="payment_method">
+                        <span>삼성페이</span>
+                    </label>
+                    <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'kakaopay' }">
+                        <input type="radio" value="kakaopay" v-model="paymentMethod" name="payment_method">
+                        <span>카카오페이(간편결제)</span>
+                    </label>
+                    <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'toss' }">
+                        <input type="radio" value="toss" v-model="paymentMethod" name="payment_method">
+                        <span>토스</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
   </div>
 </template>
 
@@ -470,6 +519,7 @@ const mileageBalance = ref(0); // 기본값 0
 const depositBalance = ref(0); // 기본값 0
 const usedMileage = ref(''); // [수정] 기본값 0 -> 공란
 const usedDeposit = ref(''); // [수정] 기본값 0 -> 공란
+const paymentMethod = ref('card'); // 기본값 카드
 
 const totalDiscount = computed(() => {
     const miles = Number(usedMileage.value) || 0;
@@ -531,6 +581,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
+  margin-top: 10px;
 }
 
 .section-title h3 {
@@ -1023,6 +1074,33 @@ onMounted(() => {
     align-items: center;
     width: 100%;
 
+}
+
+/* Payment Method Styles */
+.payment-radio-item {
+    display: flex;
+    align-items: center;
+    padding: 20px; /* 여백 확대 */
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    font-size: 11px; /* 폰트 사이즈 조정 */
+    color: #888; /* 기본 컬러 연하게 */
+}
+
+/* Hide default radio input */
+.payment-radio-item input {
+    display: none;
+}
+
+.payment-radio-item.selected {
+    border: 1px solid #000; /* Selected Box Border */
+    margin-top: -1px; 
+    margin-bottom: -1px;
+    position: relative;
+    z-index: 10; /* 위로 올라오게 */
+    font-weight: bold;
+    color: #000; /* 선택된 텍스트 진하게 */
+    background: #fff;
 }
 
 .mt-2 {
