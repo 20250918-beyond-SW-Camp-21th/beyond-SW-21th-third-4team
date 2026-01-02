@@ -276,24 +276,20 @@
                  </div>
             </div>
 
-     <!-- 4. Applied Amount -->
+     <!-- 4. 적용금액 -->
             <div class="total-discount-wrapped">
                 <div class="row-label">적용금액</div>
                 <span class="price-text font-bold text-blue" style="font-size: 11px;">-KRW {{ totalDiscount.toLocaleString() }}</span>
             </div>
-        </div>
-    </div>
 
-    <!-- [SECTION 4] Payment Info (결제정보) -->
-    <div class="payment-info-section-container">
-        <div class="form-box" style="border-top: none;">
-             <!-- Section Title -->
-            <div class="section-title no-border-bottom">
+            <!-- [섹션 4] 결제정보 -->
+            <!-- 섹션 타이틀 -->
+            <div class="section-title no-border-bottom" style="border-top: 1px solid #ddd; margin-top: 0;">
                 <h3>결제정보</h3>
                 <span class="toggle-icon">^</span>
             </div>
 
-            <!-- Payment Summary Rows -->
+            <!-- 결제 요약 정보 -->
             <div class="payment-summary-rows" style="padding: 0 20px 20px 20px;">
                 <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 11px;">
                     <span style="color: #333;">주문상품</span>
@@ -312,14 +308,10 @@
                     <span style="font-size: 13px;">KRW {{ finalPaymentAmount.toLocaleString() }}</span>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- [SECTION 5] Payment Method (결제수단) -->
-    <div class="payment-method-section-container">
-        <div class="form-box" style="border-top: none;">
-             <!-- Section Title -->
-            <div class="section-title no-border-bottom">
+            <!-- [섹션 5] 결제수단 -->
+            <!-- 섹션 타이틀 -->
+            <div class="section-title no-border-bottom" style="border-top: 1px solid #ddd; margin-top: 0;">
                 <h3>결제수단</h3>
                 <span class="toggle-icon">^</span>
             </div>
@@ -630,6 +622,13 @@ const handleSubmit = async () => {
     if (!form.receiverName || !form.phone2 || !form.phone3 || !form.detailAddress) {
         alert("배송지 정보를 모두 입력해주세요.");
         return;
+    }
+
+    // 2. 결제 확인 대화상자
+    const formattedAmount = finalPaymentAmount.value.toLocaleString();
+    const confirmMessage = `총 결제 금액: KRW ${formattedAmount}\n\n결제하시겠습니까?`;
+    if (!confirm(confirmMessage)) {
+        return; // 사용자가 '아니오'를 선택한 경우
     }
 
     // 2. Prepare Data
