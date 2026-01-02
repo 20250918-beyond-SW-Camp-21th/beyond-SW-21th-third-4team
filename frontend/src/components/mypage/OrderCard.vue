@@ -96,10 +96,10 @@ function formatPrice(price) {
 
 function getStatusText(status) {
   const statusMap = {
-    'PENDING': '입금전',
-    'PAID': '결제완료',
+    'ORDERED': '입금전',
+    'PAYMENT_COMLETED': '결제완료',
     'PREPARING': '배송준비중',
-    'SHIPPED': '배송중',
+    'SHIPPING': '배송중',
     'DELIVERED': '배송완료',
     'CANCELLED': '취소됨',
     'EXCHANGED': '교환',
@@ -109,7 +109,7 @@ function getStatusText(status) {
 }
 
 function canCancel(status) {
-  return ['PENDING', 'PAID', 'PREPARING'].includes(status)
+  return ['ORDERED', 'PAYMENT_COMLETED', 'PREPARING'].includes(status)
 }
 
 function viewDetail() {

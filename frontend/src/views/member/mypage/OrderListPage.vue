@@ -31,13 +31,11 @@
           <span class="state">상태</span>
           <select v-model="activeFilter" class="fSelect">
             <option value="ALL">전체 주문처리상태</option>
-            <option value="PENDING">입금전</option>
+            <option value="ORDERED">입금전</option>
             <option value="PREPARING">배송준비중</option>
-            <option value="SHIPPED">배송중</option>
+            <option value="SHIPPING">배송중</option>
             <option value="DELIVERED">배송완료</option>
             <option value="CANCELLED">취소</option>
-            <option value="EXCHANGED">교환</option>
-            <option value="RETURNED">반품</option>
           </select>
         </div>
 
@@ -234,25 +232,49 @@ const filteredOrders = computed(() => {
 async function fetchOrders() {
   loading.value = true
   try {
-    const params = {
-      page: currentPage.value,
-      status: activeFilter.value !== 'ALL' ? activeFilter.value : undefined
-    }
+    // Use the same endpoint as MyPage
+    const response = await api.get('/mypage/orders')
 
-    // Add date range parameters if period is selected
-    if (activePeriod.value && activePeriod.value !== 'CUSTOM') {
-      const startDate = getDateRange(activePeriod.value)
-      if (startDate) {
-        params.startDate = startDate
-      }
-    }
+    // Handle response structure (same as MyPage)
+    if (response.data && response.data.data) {
+      const rawOrders = response.data.data || []
+      console.log('=== RAW ORDERS FROM API ===')
+      console.log('Total orders:', rawOrders.length)
+      console.log('First order FULL DATA:', JSON.stringify(rawOrders[0], null, 2))
+      console.log('First order KEYS:', Object.keys(rawOrders[0] || {}))
+      console.log('First order structure:', rawOrders[0])
+      console.log('First order products:', rawOrders[0]?.orderProducts)
 
-    const response = await api.get('/api/orders', { params })
+      // Transform backend data to match OrderCard expectations
+      orders.value = rawOrders.map(order => {
+        console.log(`Processing order ${order.id}:`, {
+          createdAt: order.createdAt,
+          orderProducts: order.orderProducts,
+          productCount: order.orderProducts?.length || 0
+        })
 
-    // Handle different response structures
-    if (response.data) {
-      orders.value = response.data.orders || response.data.data || []
-      totalPages.value = response.data.totalPages || response.data.total_pages || 1
+        return {
+          id: order.id,
+          orderNumber: order.orderNumber || `ORD-${order.id}`,
+          orderDate: order.createdAt || order.orderDate || new Date().toISOString(),
+          status: order.status,
+          totalAmount: order.totalPrice || order.totalAmount || 0,
+          items: order.orderProducts?.map(item => ({
+            id: item.id,
+            productName: item.productName || item.product?.name || '상품명 없음',
+            productImage: item.productImage || item.product?.imageUrl || null,
+            size: item.size || item.option || null,
+            quantity: item.quantity || 1,
+            price: item.price || item.product?.price || 0
+          })) || []
+        }
+      })
+
+      console.log('=== TRANSFORMED ORDERS ===')
+      console.log('Total transformed:', orders.value.length)
+      console.log('First transformed order:', orders.value[0])
+      console.log('First order items:', orders.value[0]?.items)
+      totalPages.value = 1
     } else {
       orders.value = []
       totalPages.value = 1
@@ -322,10 +344,10 @@ onMounted(() => {
 <style scoped>
 /* Container */
 #contents {
-  padding: var(--layout-padding, 0 40px);
+  padding: var(--layout-padding, 0 20px);
   padding-top: 80px;
   min-height: calc(100vh - 80px);
-  max-width: 1200px;
+  max-width: 640px;
   margin: 0 auto;
 }
 
