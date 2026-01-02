@@ -4,6 +4,7 @@ export const orderRoutes = [
     {
         path: '/order',
         name: 'OrderSheet',
-        component: OrderSheet
+        component: OrderSheet,
+        meta: { requiresAuth: true },
     }
 ];
