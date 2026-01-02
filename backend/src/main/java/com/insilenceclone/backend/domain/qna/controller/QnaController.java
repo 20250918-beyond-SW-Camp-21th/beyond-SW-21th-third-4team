@@ -52,7 +52,7 @@ public class QnaController {
     }
 
     // 답변 등록
-    @PostMapping("{/answer}")
+    @PostMapping("/{qnaId}/answer")
     public ApiResponse<Void> answer(@RequestBody @Validated QnaAnswerRequest req) {
 
         service.answerQna(req);
