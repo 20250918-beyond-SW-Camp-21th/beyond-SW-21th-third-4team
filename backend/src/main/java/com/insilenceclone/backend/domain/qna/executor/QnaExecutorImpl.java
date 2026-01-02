@@ -15,9 +15,9 @@ public class QnaExecutorImpl implements QnaExecutor{
 
     private final QnaRepository repository;
     @Override
-    public QnaResponse create(QnaCreateRequest req) {
+    public QnaResponse create(QnaCreateRequest req, Long userId) {
 
-        Qna qna = req.toEntity();
+        Qna qna = req.toEntity(userId);
 
         Qna savedQna = repository.save(qna);
 

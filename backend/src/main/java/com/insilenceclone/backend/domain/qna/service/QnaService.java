@@ -27,8 +27,8 @@ public class QnaService {
 
     // 게시글 작성
     @Transactional
-    public QnaResponse createQna(QnaCreateRequest req) {
-        return executor.create(req);
+    public QnaResponse createQna(QnaCreateRequest req, Long userId) {
+        return executor.create(req, userId);
     }
 
     // 게시글 목록 조회 (공지사항 선행, 최신순 정렬)

@@ -11,16 +11,14 @@ public record QnaCreateRequest(
         @NotBlank(message = "내용은 필수 입력 사항입니다.")
         String content,
         @NotNull(message = "질문 유형을 선택해주세요.")
-        QnaType type,
-        @NotNull(message = "사용자 ID는 필수입니다.")
-        Long userId
+        QnaType type
 ) {
-    public Qna toEntity() {
+    public Qna toEntity(Long userId) {
         return Qna.builder()
                 .title(this.title)
                 .content(this.content)
                 .type(this.type)
-                .userId(this.userId)
+                .userId(userId)
                 .build();
     }
 }
