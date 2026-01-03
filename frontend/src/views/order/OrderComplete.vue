@@ -12,8 +12,8 @@
               <path d="M16 10a4 4 0 0 1-8 0"></path>
             </svg>
           </div>
-          <p class="complete-title">고객님의 주문이</p>
-          <p class="complete-subtitle">정상적으로 완료되었습니다.</p>
+          <p class="complete-title">{{ isDetailMode ? '주문 상세 정보' : '고객님의 주문이' }}</p>
+          <p class="complete-subtitle">{{ isDetailMode ? '주문하신 상품의 상세 내역입니다.' : '정상적으로 완료되었습니다.' }}</p>
         </div>
 
         <!-- 주문 정보 -->
@@ -136,7 +136,7 @@
           </div>
           <!-- 하단 버튼 -->
           <div class="action-buttons">
-            <button class="btn-secondary" @click="goToOrderList">주문확인하기</button>
+            <button class="btn-secondary" @click="goToOrderList">{{ isDetailMode ? '목록으로' : '주문확인하기' }}</button>
             <button class="btn-primary" @click="goToHome">쇼핑계속하기</button>
           </div>
         </div>
@@ -147,36 +147,35 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import api from '../../api/http.js';
 
 const route = useRoute();
 const router = useRouter();
 
-// query에서 주문 정보 가져오기
-const orderId = computed(() => route.query.orderId || '0');
-const amount = computed(() => route.query.amount || '0');
-const receiverName = computed(() => route.query.receiverName || '주문자');
-const email = computed(() => route.query.email || '');
-const address = computed(() => route.query.address || '');
-const receiverPhone = computed(() => route.query.receiverPhone || '');
-const deliveryMessage = computed(() => route.query.deliveryMessage || '');
+// State
+const loading = ref(false);
+const orderId = ref(route.query.orderId || '0');
+const amount = ref(route.query.amount || '0');
+const receiverName = ref(route.query.receiverName || '주문자');
+const email = ref(route.query.email || '');
+const address = ref(route.query.address || '');
+const receiverPhone = ref(route.query.receiverPhone || '');
+const deliveryMessage = ref(route.query.deliveryMessage || '');
+const products = ref([]);
+const shippingFee = ref(Number(route.query.shippingFee) || 0);
+const discount = ref(Number(route.query.discount) || 0);
+const finalAmount = ref(Number(route.query.amount) || 0);
+const orderedAt = ref(null); // API로 가져올 경우 사용
 
-// 주문 상품 데이터
-const products = computed(() => {
-  try {
-    return JSON.parse(route.query.products || '[]');
-  } catch {
-    return [];
-  }
-});
-const shippingFee = computed(() => Number(route.query.shippingFee) || 0);
-// 주문상품 총 금액 - products에서 직접 계산
+// 조회 모드인지 확인
+const isDetailMode = computed(() => route.query.mode === 'detail');
+
+// 주문상품 총 금액 계산
 const totalProductPrice = computed(() => {
   return products.value.reduce((sum, p) => sum + (p.price * p.quantity), 0);
 });
-const discount = computed(() => Number(route.query.discount) || 0);
-const finalAmount = computed(() => Number(route.query.amount) || 0);
 
 // 적립 마일리지 (총 상품가격의 1%)
 const rewardPoints = computed(() => {
@@ -184,23 +183,99 @@ const rewardPoints = computed(() => {
 });
 
 // 결제수단 - 입금자(주문자 이름 사용)
-const depositorName = receiverName;
+const depositorName = computed(() => receiverName.value);
 
-// 주문번호 포맷: 20260102-0000{orderId}
+// 주문번호 포맷
 const orderNumber = computed(() => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
-  const dateStr = `${year}${month}${day}`;
-  const paddedId = String(orderId.value).padStart(4, '0');
-  return `${dateStr}-0000${paddedId}`;
+  if (orderedAt.value) {
+      // API에서 받은 날짜 사용
+      const date = new Date(orderedAt.value);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const dateStr = `${year}${month}${day}`;
+      const paddedId = String(orderId.value).padStart(4, '0');
+      return `${dateStr}-0000${paddedId}`;
+  } else {
+      // 주문 직후 (오늘 날짜)
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      const dateStr = `${year}${month}${day}`;
+      const paddedId = String(orderId.value).padStart(4, '0');
+      return `${dateStr}-0000${paddedId}`;
+  }
 });
 
 // 금액 포맷
 const formattedAmount = computed(() => {
   return Number(amount.value).toLocaleString();
 });
+
+// Product API import
+import { fetchProductDetail } from '../../api/product.js';
+
+// 주문 상세 조회 (API)
+const fetchOrderDetail = async (id) => {
+    loading.value = true;
+    try {
+        // [수정] /api/orders/{id} 대신 /mypage/orders 목록에서 찾기 (확실한 방법)
+        const response = await api.get('/mypage/orders');
+        const orders = response.data.data || response.data || [];
+        
+        // id 비교 (문자열 변환)
+        const targetOrder = orders.find(o => String(o.orderId) === String(id));
+        
+        if (targetOrder) {
+            orderedAt.value = targetOrder.orderedAt;
+            amount.value = targetOrder.totalPrice;
+            finalAmount.value = targetOrder.totalPrice;
+            
+            // [주의] 목록 조회 API에 배송 정보(receiverName 등)가 포함되어 있지 않을 수 있음.
+            // 만약 없다면 기본값 표시
+            receiverName.value = targetOrder.receiverName || '주문자'; 
+            receiverPhone.value = targetOrder.receiverPhone || ''; 
+            address.value = targetOrder.address || '';
+            deliveryMessage.value = targetOrder.deliveryMessage || '';
+
+            if (targetOrder.items) {
+                // 상품 상세 정보 병렬 조회
+                const itemsPromises = targetOrder.items.map(async (item) => {
+                     let productInfo = { name: '상품 정보 없음', image: null };
+                     try {
+                        const pRes = await fetchProductDetail(item.productId);
+                        if (pRes.data.data) {
+                            productInfo.name = pRes.data.data.name;
+                            productInfo.image = pRes.data.data.imageUrl;
+                        }
+                     } catch (e) { 
+                         console.warn('상품 상세 조회 실패:', item.productId);
+                     }
+                     
+                     return {
+                         name: productInfo.name,
+                         image: productInfo.image,
+                         option: item.size || 'FREE', // 옵션 정보가 items에 있다고 가정
+                         quantity: item.quantity,
+                         price: item.unitPrice
+                     };
+                });
+                
+                products.value = await Promise.all(itemsPromises);
+            } else {
+                products.value = [];
+            }
+        } else {
+            console.error("해당 주문을 찾을 수 없습니다:", id);
+        }
+        
+    } catch (error) {
+        console.error("주문 상세 조회 실패:", error);
+    } finally {
+        loading.value = false;
+    }
+};
 
 const goToOrderList = () => {
   router.push('/mypage/orders');
@@ -209,6 +284,21 @@ const goToOrderList = () => {
 const goToHome = () => {
   router.push('/');
 };
+
+onMounted(() => {
+    // 1. 쿼리 파라미터로 products가 넘어왔는지 확인 (주문 완료 직후)
+    if (route.query.products) {
+        try {
+            products.value = JSON.parse(route.query.products);
+        } catch (e) {
+            products.value = [];
+        }
+    } 
+    // 2. products가 없고 orderId만 있다면 상세 조회 모드 (목록에서 진입)
+    else if (route.query.orderId) {
+        fetchOrderDetail(route.query.orderId);
+    }
+});
 </script>
 
 <style scoped>

@@ -112,12 +112,14 @@
       </button>
     </div>
 
-    <!-- Order Detail Modal -->
+    <!-- Order Detail Modal (페이지 이동으로 변경되어 미사용) -->
+    <!--
     <OrderDetailModal
       v-if="showDetailModal"
       :orderId="selectedOrderId"
       @close="closeDetailModal"
     />
+    -->
   </div>
 </template>
 
@@ -338,14 +340,20 @@ async function fetchOrders() {
 }
 
 function viewOrderDetail(orderId) {
-  selectedOrderId.value = orderId
-  showDetailModal.value = true
+  // 모달 대신 페이지 이동으로 변경
+  router.push({
+    path: '/order/complete',
+    query: {
+      orderId: orderId,
+      mode: 'detail' // 상세 조회 모드
+    }
+  });
 }
-
-function closeDetailModal() {
-  showDetailModal.value = false
-  selectedOrderId.value = null
-}
+/* 모달 관련 코드 주석 처리 또는 제거 */
+// function closeDetailModal() {
+//   showDetailModal.value = false
+//   selectedOrderId.value = null
+// }
 
 async function handleCancelOrder(orderId) {
   if (!confirm('정말 주문을 취소하시겠습니까?')) {
