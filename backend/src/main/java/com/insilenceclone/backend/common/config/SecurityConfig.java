@@ -64,7 +64,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/v1/mypage/test/**").permitAll() // TODO: 로그인 기능 구현 후 제거
-                        .requestMatchers("/api/products/**").permitAll()
+                        .requestMatchers("/api/v1/products/**").permitAll()
                         .requestMatchers("/api/v1/product-details/**").permitAll()
                         // 그 외 인증 필요/
                         .anyRequest().authenticated()
