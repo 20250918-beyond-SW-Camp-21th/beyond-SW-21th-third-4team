@@ -2,10 +2,10 @@
   <div class="product-detail-container" v-if="productData">
     <div class="image-section" v-if="productData && productData.detailImages">
       <div class="image-wrapper">
-        <img :src="formatImageUrl(productData.imageUrl)" />
+        <img :src="formatImageUrl(productData.imageUrl)" @error="handleImageError" />
       </div>
       <div v-for="(img, index) in productData.detailImages" :key="index" class="image-wrapper">
-        <img :src="formatImageUrl(img)" />
+        <img :src="formatImageUrl(img)" @error="handleImageError" />
       </div>
     </div>
 
@@ -14,16 +14,12 @@
         <h1 class="product-title">{{ productData.name }}</h1>
 
         <div class="price-info">
-          <!-- 할인 전 가격이 있다면 표시 (API에 없으므로 생략 가능하거나 임의 표시) -->
-          <!-- <span class="original-price">KRW {{ (productData.price * 1.2).toLocaleString() }}</span> -->
           <div class="current-price">
             <span class="bold">KRW {{ productData.price.toLocaleString() }}</span>
-            <!-- <span class="discount">20%</span> -->
           </div>
         </div>
 
         <ul class="product-summary">
-          <!-- 설명 텍스트를 줄바꿈 기준으로 나누거나 그대로 표시 -->
           <li v-for="(line, index) in descriptionLines" :key="index">{{ line }}</li>
         </ul>
 
@@ -37,26 +33,16 @@
         <div class="option-section">
           <span class="option-label">Color</span>
           <div class="color-selector">
-            <!-- 색상 선택 시 라우팅 이동 (임시 하드코딩) -->
-            <div
-              class="color-dot black"
-              :class="{ active: currentProductId == 1 }"
-              @click="changeColor(1)"
-            ></div>
-            <div
-              class="color-dot gray"
-              :class="{ active: currentProductId == 2 }"
-              @click="changeColor(2)"
-            ></div>
+            <div class="color-dot black" :class="{ active: currentProductId == 1 }" @click="changeColor(1)"></div>
+            <div class="color-dot gray" :class="{ active: currentProductId == 2 }" @click="changeColor(2)"></div>
             <span class="color-name">{{ currentColorName }}</span>
           </div>
         </div>
 
         <div class="action-buttons">
           <button class="btn-black" @click="handleBuy">구매하기</button>
-          <!-- 네이버 페이 버튼 제거 -->
           <div class="btn-split">
-            <button class="btn-white">상품 문의하기</button>
+            <button class="btn-white" @click="handleQna">상품 문의하기</button>
             <button class="btn-white" @click="handleCart">장바구니 담기</button>
           </div>
         </div>
@@ -74,9 +60,7 @@
       </div>
     </div>
   </div>
-  <div v-else class="loading">
-    Loading...
-  </div>
+  <div v-else class="loading">Loading...</div>
 </template>
 
 <script setup>
@@ -92,18 +76,13 @@ const router = useRouter();
 const productData = ref(null);
 const currentProductId = ref(null);
 
-// 이미지 로드 에러 처리
-const handleImageError = (e) => {
-  e.target.src = '/images/no-image.png';
-};
+const handleImageError = (e) => { e.target.src = '/images/no-image.png'; };
 
-// 상품 설명 파싱
 const descriptionLines = computed(() => {
   if (!productData.value?.description) return [];
   return productData.value.description.split('\n');
 });
 
-// 현재 색상 이름
 const currentColorName = computed(() => {
   if (currentProductId.value == 1) return 'BLACK';
   if (currentProductId.value == 2) return 'GRAY';
@@ -116,15 +95,13 @@ const accordions = ref([
   { title: '교환 및 반품', isOpen: false, content: '상품 수령일로부터 7일 이내에 가능합니다.' }
 ]);
 
-// 데이터 로드 함수
 const loadProductData = async (id) => {
   try {
     const response = await fetchProductDetail(id);
     productData.value = response.data.data;
     currentProductId.value = id;
   } catch (error) {
-    console.error('상품 정보를 불러오는데 실패했습니다.', error);
-    alert('상품 정보를 불러올 수 없습니다.');
+    console.error('상품 로드 실패', error);
   }
 };
 
@@ -142,151 +119,63 @@ const changeColor = (id) => {
   router.push(`/product/${id}`);
 };
 
-// ProductDetail.vue 내부의 handleBuy 함수
 const handleBuy = () => {
-  if (!productData.value) return;
-
-  router.push({
-    path: '/order', // 👈 '/order/checkout' 대신 '/order'로 변경
-    query: {
-      productId: productData.value.productId,
-      quantity: 1
-    }
-  });
+  router.push({ path: '/order', query: { productId: productData.value.productId, quantity: 1 } });
 };
 
-// 장바구니 담기 핸들러
 const handleCart = async () => {
-  if (!productData.value) return;
-
   try {
-    // 1. 장바구니에 아이템을 추가하는 API 호출
     await addCartItem(productData.value.productId, 1);
-
-    // 2. 메시지나 확인창 없이 바로 장바구니 페이지로 이동
     router.push('/cart');
-
   } catch (error) {
-    console.error('장바구니 담기 실패', error);
-    alert('장바구니 담기에 실패했습니다.');
+    alert('장바구니 담기 실패');
   }
+};
+
+// [중요] Q&A 작성 모드로 직접 연결하는 함수
+const handleQna = () => {
+  if (!productData.value) return;
+  router.push({
+    path: '/qna',
+    query: {
+      mode: 'write', // QnaMain에서 이 값을 보고 작성창을 띄움
+      prodId: productData.value.productId,
+      prodName: productData.value.name,
+      prodPrice: productData.value.price,
+      prodImg: formatImageUrl(productData.value.imageUrl)
+    }
+  });
 };
 </script>
 
 <style scoped>
-.product-detail-container {
-  display: flex;
-  max-width: 1400px;
-  margin: 0 auto;
-  /* 상단 여백 수정: 40px -> 120px (헤더 높이 고려) */
-  padding: 120px 20px 40px;
-  gap: 80px;
-}
-
-.loading {
-  text-align: center;
-  padding: 100px;
-  font-size: 20px;
-}
-
-/* 좌측 이미지 */
+.product-detail-container { display: flex; max-width: 1400px; margin: 0 auto; padding: 120px 20px 40px; gap: 80px; }
+.loading { text-align: center; padding: 100px; font-size: 20px; }
 .image-section { flex: 1.5; }
 .image-wrapper { width: 100%; margin-bottom: 20px; }
 .image-wrapper img { width: 100%; display: block; }
-
-/* 우측 정보 고정 */
 .info-section { flex: 1; position: relative; }
-.sticky-content { position: sticky; top: 120px; /* 스크롤 시 고정 위치도 조정 */ }
-
-/* 텍스트 디테일 */
+.sticky-content { position: sticky; top: 120px; }
 .product-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
-.original-price { font-size: 13px; text-decoration: line-through; color: #999; }
 .current-price { font-size: 15px; margin-bottom: 25px; }
 .bold { font-weight: 700; margin-right: 8px; }
-.discount { color: #ff0000; font-weight: 700; }
-
-.product-summary {
-  list-style: none;
-  padding: 0;
-  margin-bottom: 40px;
-  font-size: 13px;
-  line-height: 1.6;
-  color: #333;
-}
-
-.option-section {
-  margin-bottom: 30px;
-}
-.option-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-
-.size-selector button {
-  border: 1px solid #ddd;
-  background: #fff;
-  padding: 8px 20px;
-  font-size: 12px;
-  cursor: pointer;
-}
-.size-selector button.active {
-  border-color: #000;
-  font-weight: 700;
-}
-
-.color-selector {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.color-dot {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 1px solid #ddd;
-}
-.color-dot.active {
-  border: 2px solid #000; /* 선택된 색상 강조 */
-}
+.product-summary { list-style: none; padding: 0; margin-bottom: 40px; font-size: 13px; line-height: 1.6; color: #333; }
+.option-section { margin-bottom: 30px; }
+.option-label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 10px; }
+.size-selector button { border: 1px solid #ddd; background: #fff; padding: 8px 20px; font-size: 12px; cursor: pointer; }
+.size-selector button.active { border-color: #000; font-weight: 700; }
+.color-selector { display: flex; align-items: center; gap: 10px; }
+.color-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 1px solid #ddd; }
+.color-dot.active { border: 2px solid #000; }
 .color-dot.black { background-color: #000; }
 .color-dot.gray { background-color: #888; }
 .color-name { font-size: 12px; margin-left: 5px; }
-
-.action-buttons {
-  margin-top: 40px;
-  margin-bottom: 40px;
-}
-.action-buttons button {
-  width: 100%;
-  height: 50px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 700;
-}
+.action-buttons { margin-top: 40px; margin-bottom: 40px; }
+.action-buttons button { width: 100%; height: 50px; margin-bottom: 10px; cursor: pointer; font-size: 14px; font-weight: 700; }
 .btn-black { background: #000; color: #fff; border: none; }
-.btn-naver { background: #2DB400; color: #fff; border: none; }
 .btn-split { display: flex; gap: 10px; }
 .btn-white { background: #fff; border: 1px solid #ddd; color: #000; }
-
 .accordion-list { border-top: 1px solid #eee; }
-.accordion-item {
-  padding: 15px 0;
-  border-bottom: 1px solid #eee;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  font-weight: 700;
-}
-.accordion-content {
-  padding: 10px 0 20px;
-  font-size: 12px;
-  line-height: 1.6;
-  color: #666;
-  border-bottom: 1px solid #eee;
-}
+.accordion-item { padding: 15px 0; border-bottom: 1px solid #eee; cursor: pointer; display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; }
+.accordion-content { padding: 10px 0 20px; font-size: 12px; line-height: 1.6; color: #666; border-bottom: 1px solid #eee; }
 </style>
