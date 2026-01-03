@@ -131,6 +131,46 @@
       </div>
 
     </div>
+
+    <!-- [모바일 메뉴 패널] -->
+    <transition name="slide">
+      <div v-if="mobileMenuOpen" class="mobile-menu-overlay">
+        <div class="mobile-menu-panel">
+          <!-- 닫기 버튼 -->
+          <div class="mobile-menu-header">
+            <button class="close-btn" @click="closeMobileMenu">닫기</button>
+          </div>
+
+          <!-- 메인 메뉴 -->
+          <nav class="mobile-main-nav">
+            <ul>
+              <li v-for="(menu, index) in mainMenus" :key="index" :class="{ 'highlight': menu.name === 'CLEARANCE' }">
+                <router-link :to="menu.link" @click="closeMobileMenu">
+                  <span>{{ menu.name }}</span>
+                  <span v-if="menu.subItems" class="arrow">›</span>
+                </router-link>
+              </li>
+            </ul>
+          </nav>
+
+          <!-- 구분선 -->
+          <div class="mobile-menu-divider"></div>
+
+          <!-- 유틸리티 메뉴 -->
+          <nav class="mobile-util-nav">
+            <ul>
+              <li v-for="(item, index) in mobileUtilMenus" :key="index">
+                <router-link :to="item.link" @click="closeMobileMenu">
+                  <span>{{ item.name }}</span>
+                  <span v-if="item.hasArrow" class="arrow">›</span>
+                </router-link>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </transition>
+
   </header>
 </template>
 
@@ -226,9 +266,28 @@ const openSearchModal = () => {
   console.log("검색 모달 열기");
 };
 
+// 모바일 메뉴 상태
+const mobileMenuOpen = ref(false);
+
 const toggleMobileMenu = () => {
-  console.log("모바일 사이드 메뉴 열기");
+  mobileMenuOpen.value = !mobileMenuOpen.value;
+  // body 스크롤 방지
+  document.body.style.overflow = mobileMenuOpen.value ? 'hidden' : '';
 };
+
+const closeMobileMenu = () => {
+  mobileMenuOpen.value = false;
+  document.body.style.overflow = '';
+};
+
+// 모바일 메뉴용 유틸리티 메뉴 항목
+const mobileUtilMenus = computed(() => [
+  { name: '고객센터', link: '/help', hasArrow: true },
+  { name: '계정', link: isLoggedIn.value ? '/mypage' : '/login', hasArrow: true },
+  { name: '쇼핑백', link: '/cart', hasArrow: false },
+  { name: '멤버쉽', link: '/membership', hasArrow: false },
+  { name: '언어(language)', link: '#', hasArrow: true },
+]);
 
 </script>
 
@@ -460,5 +519,116 @@ a {
     width: 20px;
     height: 20px;
   }
+}
+
+/* ========================================= */
+/* [모바일 메뉴 패널 스타일] */
+/* ========================================= */
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  z-index: 9999;
+  overflow-y: auto;
+}
+
+.mobile-menu-panel {
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.mobile-menu-header {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 30px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #000;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 5px 10px;
+}
+
+.close-btn:hover {
+  text-decoration: underline;
+}
+
+/* 메인 메뉴 */
+.mobile-main-nav ul,
+.mobile-util-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mobile-main-nav li,
+.mobile-util-nav li {
+  border-bottom: none;
+}
+
+.mobile-main-nav a,
+.mobile-util-nav a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  font-size: 12px;
+  color: #000;
+  text-decoration: none;
+  font-weight: 700;
+  font-family: 'Pretendard', sans-serif;
+  letter-spacing: -0.2px;
+}
+
+.mobile-main-nav a:hover,
+.mobile-util-nav a:hover {
+  text-decoration: underline;
+}
+
+/* CLEARANCE 빨간색 강조 */
+.mobile-main-nav li.highlight a {
+  color: #c00;
+  font-weight: 500;
+}
+
+.mobile-main-nav li.highlight .arrow {
+  color: #c00;
+}
+
+/* 화살표 */
+.arrow {
+  font-size: 18px;
+  color: #999;
+  font-weight: 300;
+}
+
+/* 구분선 */
+.mobile-menu-divider {
+  height: 1px;
+  background: #eee;
+  margin: 20px 0;
+}
+
+/* 슬라이드 트랜지션 */
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.slide-enter-from {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+
+.slide-leave-to {
+  opacity: 0;
+  transform: translateX(-100%);
 }
 </style>
