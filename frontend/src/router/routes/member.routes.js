@@ -11,12 +11,14 @@ export const memberRoutes = [
         path: '/login',
         name: 'Login',
         component: LoginView,
+        meta: { guestOnly: true },
     },
     // 회원가입 1단계: 약관
     {
         path: '/signup/terms',
         name: 'SignupTerms',
         component: SignupTermsView,
+        meta: { guestOnly: true },
     },
 
     // 회원가입 2단계: 정보 입력
@@ -24,6 +26,7 @@ export const memberRoutes = [
         path: '/signup',
         name: 'Signup',
         component: SignupView,
+        meta: { guestOnly: true },
     },
 
     // 마이페이지
@@ -31,6 +34,7 @@ export const memberRoutes = [
         path: '/mypage',
         name: 'MyPage',
         component: MyPage,
+        meta: { requiresAuth: true },
     },
 
     // 주문조회
@@ -38,6 +42,7 @@ export const memberRoutes = [
         path: '/mypage/orders',
         name: 'OrderList',
         component: OrderListPage,
+        meta: { requiresAuth: true },
     },
 
     // 회원정보 수정
@@ -45,5 +50,6 @@ export const memberRoutes = [
         path: '/mypage/profile',
         name: 'ProfileEdit',
         component: ProfileEditPage,
+        meta: { requiresAuth: true },
     },
 ]

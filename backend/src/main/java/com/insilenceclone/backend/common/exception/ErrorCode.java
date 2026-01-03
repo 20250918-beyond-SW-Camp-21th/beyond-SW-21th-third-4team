@@ -41,9 +41,6 @@ public enum ErrorCode {
     // Product Image
     PRODUCT_IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "I001", "이미지가 존재하지 않습니다."),
 
-    // temp(임시)
-    TEMP_PRODUCT_DOES_NOT_EXIST(HttpStatus.NOT_FOUND, "T001", "존재하지 않는 상품입니다."),
-
     // Order
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "O001", "주문 정보가 존재하지 않습니다."),
     ORDER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "O002", "주문 조회의 권한이 없습니다."),

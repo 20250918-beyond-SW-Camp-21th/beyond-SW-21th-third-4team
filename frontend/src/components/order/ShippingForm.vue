@@ -52,7 +52,7 @@
               <input type="text" v-model="form.zipcode" placeholder="우편번호" class="square-input width-150" readonly />
               <button type="button" @click="handleAddressSearch" class="btn-search square-btn">주소검색</button>
             </div>
-            <input type="text" v-model="form.basicAddress" placeholder="기본주소" class="full-width square-input mb-2" readonly />
+            <input type="text" v-model="form.basicAddress" placeholder="기본주소" class="full-width square-input mb-2" />
             <input type="text" v-model="form.detailAddress" placeholder="나머지 주소" class="full-width square-input" />
           </div>
         </div>
@@ -168,11 +168,11 @@
         </div>
       </div>
 
-      <div class="save-checkbox">
-        <label class="checkbox-label">
-          <input type="checkbox" />
-          <span class="custom-checkbox"></span>
-          기본 배송지로 저장
+      <div class="save-checkbox" style="margin-top: 0px; padding-bottom: 20px; padding-left: 20px;">
+        <label class="checkbox-label" style="display: flex; align-items: center; cursor: pointer;">
+          <input type="checkbox" class="custom-checkbox-input" />
+          <span class="custom-checkbox-box"></span>
+          <span style="font-size: 11px; color: #353535; font-weight: 400;">기본 배송지로 저장</span>
         </label>
       </div>
     </div>
@@ -276,20 +276,140 @@
                  </div>
             </div>
 
-            <!-- 4. Applied Amount -->
+     <!-- 4. 적용금액 -->
             <div class="total-discount-wrapped">
                 <div class="row-label">적용금액</div>
                 <span class="price-text font-bold text-blue" style="font-size: 11px;">-KRW {{ totalDiscount.toLocaleString() }}</span>
             </div>
+
+            <!-- [섹션 4] 결제정보 -->
+            <!-- 섹션 타이틀 -->
+            <div class="section-title no-border-bottom" style="border-top: 1px solid #ddd; margin-top: 0;">
+                <h3>결제정보</h3>
+                <span class="toggle-icon">^</span>
+            </div>
+
+            <!-- 결제 요약 정보 -->
+            <div class="payment-summary-rows" style="padding: 0 20px 20px 20px;">
+                <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 11px;">
+                    <span style="color: #333;">주문상품</span>
+                    <span class="font-bold">KRW {{ totalProductPrice.toLocaleString() }}</span>
+                </div>
+                <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 11px;">
+                    <span style="color: #333;">배송비</span>
+                    <span class="font-bold">+KRW {{ shippingFee.toLocaleString() }}</span>
+                </div>
+                <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 30px; font-size: 11px;">
+                    <span style="color: #333;">할인/부가결제</span>
+                    <span class="text-red font-bold" style="color: #d9534f;">-KRW {{ totalDiscount.toLocaleString() }}</span>
+                </div>
+                 <div class="summary-row final-row" style="display: flex; justify-content: space-between; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; font-weight: 700;">
+                    <span>최종 결제 금액</span>
+                    <span style="font-size: 13px;">KRW {{ finalPaymentAmount.toLocaleString() }}</span>
+                </div>
+            </div>
+
+            <!-- [섹션 5] 결제수단 -->
+            <!-- 섹션 타이틀 -->
+            <div class="section-title no-border-bottom" style="border-top: 1px solid #ddd; margin-top: 0;">
+                <h3>결제수단</h3>
+                <span class="toggle-icon">^</span>
+            </div>
+
+            <div class="payment-methods-list" style="padding: 0 20px 20px 20px;">
+                <div class="payment-method-header" style="padding: 5px 0; font-size: 11px; font-weight: bold; margin-bottom: 25px;">
+                    결제수단 선택
+                </div>
+                <!-- Table Wrapper -->
+                <div class="payment-table-wrapper" style="border: 1px solid #eee;">
+                    <!-- Radio List -->
+                    <div class="radio-list">
+                        <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'card' }">
+                            <input type="radio" value="card" v-model="paymentMethod" name="payment_method">
+                            <span>카드 (CARD)</span>
+                        </label>
+                        <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'escrow' }">
+                            <input type="radio" value="escrow" v-model="paymentMethod" name="payment_method">
+                            <span>에스크로(실시간 계좌이체)</span>
+                        </label>
+                        <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'transfer' }">
+                            <input type="radio" value="transfer" v-model="paymentMethod" name="payment_method">
+                            <span>무통장 입금 (transfer)</span>
+                        </label>
+                        <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'payco' }">
+                            <input type="radio" value="payco" v-model="paymentMethod" name="payment_method">
+                            <span>페이코(간편결제)</span>
+                        </label>
+                        <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'samsung' }">
+                            <input type="radio" value="samsung" v-model="paymentMethod" name="payment_method">
+                            <span>삼성페이</span>
+                        </label>
+                        <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'kakaopay' }">
+                            <input type="radio" value="kakaopay" v-model="paymentMethod" name="payment_method">
+                            <span>카카오페이(간편결제)</span>
+                        </label>
+                        <label class="payment-radio-item" :class="{ 'selected': paymentMethod === 'toss' }">
+                            <input type="radio" value="toss" v-model="paymentMethod" name="payment_method">
+                            <span>토스</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Payment Method Help Text -->
+                <div class="payment-help-box" v-if="currentHelpText.length > 0">
+                    <ul class="help-list">
+                        <li v-for="(text, index) in currentHelpText" :key="index" v-html="text"></li>
+                    </ul>
+            </div> <!-- Close payment-help-box -->
+
+            <!-- Save Payment Info Checkbox -->
+            <div class="save-payment-info" style="margin-top: 20px; padding: 0;">
+                <label class="checkbox-label" style="display: flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" v-model="savePaymentInfo" class="custom-checkbox-input">
+                    <span class="custom-checkbox-box"></span>
+                    <span style="font-size: 11px; color: #353535; font-weight: 400;">결제수단과 입력정보를 다음에도 사용</span>
+                </label>
+            </div>
+
+            <!-- Reward Benefits Section -->
+            <div class="reward-section" style="border-top: 1px solid #eee; padding: 20px 20px 20px 5px; display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                <span style="font-size: 11px; font-weight: bold; color: #333;">적립 혜택</span>
+                <div style="display: flex; align-items: center;">
+                    <span style="font-size: 12px; font-weight: bold; margin-right: 5px;">{{ rewardPoints.toLocaleString() }}원</span>
+                    <span style="font-size: 10px; color: #999;">▼</span>
+                </div>
+            </div>
+
+            <!-- Payment Button -->
+            <div class="payment-button-area" style="margin: 0 -20px 20px -20px; width: calc(100% + 40px);">
+                <button type="button" @click="handleSubmit" style="width: 100%; background: #000; color: #fff; border: none; padding: 15px 0; font-size: 11px; cursor: pointer;">
+                    KRW {{ finalPaymentAmount.toLocaleString() }} 결제하기
+                </button>
+            </div>
+
+            <!-- Notice Message -->
+            <div class="payment-notice" style="padding: 0 20px 20px 5px; color: #555; font-size: 11px; line-height: 1.5;">
+                <div style="margin-bottom: 10px;">
+                    - 무이자할부가 적용되지 않은 상품과 무이자할부가 가능한 상품을 동시에 구매할 경우 전체 주문 상품 금액에 대해 무이자할부가 적용되지 않습니다. 무이자할부를 원하시는 경우 장바구니에서 무이자할부 상품만 선택하여 주문하여 주시기 바랍니다.
+                </div>
+                <div>
+                    - 최소 결제 가능 금액은 결제금액에서 배송비를 제외한 금액입니다.
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
   </div>
 </template>
 
 <script setup>
 import { reactive, ref, onMounted, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import http from '../../api/http';
+
+const route = useRoute();
+const router = useRouter();
 
 /* [1. Shipping Info Logic] */
 const form = reactive({
@@ -387,7 +507,8 @@ const handleEmailDomainChange = () => {
 };
 
 const getOrderDeliveryDto = () => {
-  const fullAddress = `(${form.zipcode}) ${form.basicAddress} ${form.detailAddress}`;
+  // Zipcode is kept for display input only; actual address = basicAddress + detailAddress
+  const fullAddress = `${form.basicAddress} ${form.detailAddress}`.trim();
   const fullPhone = `${form.phone1}-${form.phone2}-${form.phone3}`;
   const fullEmail = `${form.emailId}@${form.emailDomain}`;
   const finalMessage = form.deliveryMessage === 'direct' ? form.customMessage : form.deliveryMessage;
@@ -414,8 +535,20 @@ const fetchCartItems = async () => {
     try {
         const response = await http.get('/cart/my');
         if (response.data && response.data.data) {
-            const cartItems = response.data.data;
+            let cartItems = response.data.data;
+            
+            // query parameter로 전달된 cartItemIds가 있으면 해당 상품들만 필터링
+            const queryIds = route.query.cartItemIds;
+            if (queryIds) {
+                const selectedIds = queryIds.split(',').map(id => parseInt(id));
+                cartItems = cartItems.filter(item => 
+                    selectedIds.includes(item.cartItemId || item.id)
+                );
+            }
+            
             products.value = cartItems.map(item => ({
+                cartItemId: item.cartItemId || item.id,
+                productId: item.productId, 
                 name: item.productName || item.name || '상품명 없음',
                 option: item.optionName || item.option || '옵션 없음',
                 quantity: item.quantity || item.qty || 1,
@@ -438,13 +571,125 @@ const couponCount = ref(0); // 기본값 0
 const mileageBalance = ref(0); // 기본값 0
 const depositBalance = ref(0); // 기본값 0
 const usedMileage = ref(''); // [수정] 기본값 0 -> 공란
-const usedDeposit = ref(''); // [수정] 기본값 0 -> 공란
+const usedDeposit = ref(''); // 기본값 빈 문자열
+const paymentMethod = ref('card'); // 기본값 카드
+const savePaymentInfo = ref(true); // Save Payment Info Checkbox (Default: true)
+
+/* Helper Text Logic */
+const helpTextMap = {
+    card: [
+        "최소 결제 가능 금액은 총 결제금액에서 배송비를 제외한 금액입니다.",
+        "소액 결제의 경우 PG사 정책에 따라 결제 금액 제한이 있을 수 있습니다."
+    ],
+    escrow: [
+        "최소 결제 가능 금액은 총 결제금액에서 배송비를 제외한 금액입니다.",
+        "소액 결제의 경우 PG사 정책에 따라 결제 금액 제한이 있을 수 있습니다."
+    ],
+    transfer: [
+        "최소 결제 가능 금액은 총 결제금액에서 배송비를 제외한 금액입니다.",
+        "소액 결제의 경우 PG사 정책에 따라 결제 금액 제한이 있을 수 있습니다."
+    ],
+    samsung: [
+        "최소 결제 가능 금액은 총 결제금액에서 배송비를 제외한 금액입니다.",
+        "소액 결제의 경우 PG사 정책에 따라 결제 금액 제한이 있을 수 있습니다."
+    ],
+    payco: [
+        "페이코(<a href='//www.payco.com' target='_blank'>www.payco.com</a>)에 회원가입 후, 최초 1회 카드 및 계좌 정보를 등록하셔야 사용 가능합니다."
+    ],
+    kakaopay: [
+        "카카오톡 앱을 설치한 후, 최초 1회 카드정보를 등록하셔야 사용 가능합니다.",
+        "인터넷 익스플로러는 8 이상에서만 결제 가능합니다.",
+        "카카오머니로 결제 시, 현금영수증 발급은 ㈜카카오페이에서 발급가능합니다."
+    ],
+    toss: [
+        "토스는 간편하게 지문 또는 비밀번호만으로 결제할 수 있는 빠르고 편리한 간편 결제 서비스입니다.",
+        "토스 결제 후 취소/반품 등이 발생할 경우 토스를 통한 신용카드 취소/토스머니 환불이 이루어집니다.",
+        "토스 이용가능 결제수단 : 국내 발행 신용/체크카드, 토스머니"
+    ]
+};
+
+const currentHelpText = computed(() => {
+    return helpTextMap[paymentMethod.value] || [];
+});
 
 const totalDiscount = computed(() => {
     const miles = Number(usedMileage.value) || 0;
     const deposit = Number(usedDeposit.value) || 0;
     return miles + deposit;
 });
+
+const totalProductPrice = computed(() => {
+    return products.value.reduce((sum, p) => sum + (p.price * p.quantity), 0);
+});
+
+const finalPaymentAmount = computed(() => {
+  return totalProductPrice.value + shippingFee.value - totalDiscount.value;
+});
+
+// Reward Points (1% of final payment amount)
+const rewardPoints = computed(() => {
+    return Math.floor(finalPaymentAmount.value * 0.01);
+});
+
+const handleSubmit = async () => {
+    // 1. 유효성 검사
+    if (!form.receiverName || !form.phone2 || !form.phone3 || !form.detailAddress) {
+        alert("배송지 정보를 모두 입력해주세요.");
+        return;
+    }
+
+    // 2. 결제 확인 대화상자
+    const formattedAmount = finalPaymentAmount.value.toLocaleString();
+    const confirmMessage = `총 결제 금액: KRW ${formattedAmount}\n\n결제하시겠습니까?`;
+    if (!confirm(confirmMessage)) {
+        return; // 사용자가 '아니오'를 선택한 경우
+    }
+
+    // 3. 주문 데이터 준비
+    const deliveryDto = getOrderDeliveryDto();
+    
+    const orderRequest = {
+        receiverName: deliveryDto.receiverName,
+        receiverPhone: deliveryDto.receiverPhone,
+        address: deliveryDto.address,
+        deliveryMessage: deliveryDto.deliveryMessage,
+        email: deliveryDto.email,
+        cartItemIds: products.value.map(p => p.cartItemId),
+    };
+
+    // 4. API 호출
+    try {
+        const response = await http.post('/api/v1/orders/cart', orderRequest);
+        if (response.status === 200 || response.status === 201) {
+            const orderId = response.data.data;
+            // 주문 완료 페이지로 리다이렉트
+            const receiverPhone = `${form.phone1}-${form.phone2}-${form.phone3}`;
+            const fullAddress = `${form.basicAddress} ${form.detailAddress}`.trim();
+            const deliveryMsg = form.deliveryMessage === 'direct' ? form.customMessage : form.deliveryMessage;
+            const email = `${form.emailId}@${form.emailDomain}`;
+            
+            router.push({
+                path: '/order/complete',
+                query: {
+                    orderId: orderId,
+                    amount: finalPaymentAmount.value,
+                    receiverName: form.receiverName,
+                    email: email,
+                    address: fullAddress,
+                    receiverPhone: receiverPhone,
+                    deliveryMessage: deliveryMsg || '',
+                    products: JSON.stringify(products.value),
+                    shippingFee: shippingFee.value,
+                    totalProductPrice: totalProductPrice.value,
+                    discount: totalDiscount.value
+                }
+            });
+        }
+    } catch (error) {
+        console.error("주문 생성 실패:", error);
+        alert("주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
+};
 
 onMounted(() => {
   fetchUserInfo();
@@ -491,6 +736,8 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 15px;
+  margin-top: 10px;
 }
 
 .section-title h3 {
@@ -831,6 +1078,40 @@ onMounted(() => {
     border-top: none;
 }
 
+/* New style for payment method section title */
+.payment-method-section-container .section-title {
+    margin-top: 0 !important;
+}
+
+/* Payment Help Box */
+.payment-help-box {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #e8e8e8;
+    background-color: #fbfbfb; /* Matching the reference gray */
+    color: #707070;
+    font-size: 11px;
+}
+
+.help-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.help-list li {
+    padding-left: 10px;
+    position: relative;
+    line-height: 1.8;
+}
+
+.help-list li::before {
+    content: "-";
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
 .justify-between {
     justify-content: space-between;
 }
@@ -891,7 +1172,7 @@ onMounted(() => {
 .horizontal-row.top-align {
     align-items: flex-start;
     padding-top: 30px; /* [수정] 15px -> 10px */
-    padding-bottom: 30px;
+    padding-bottom: 10px;
 }
 
 .horizontal-row.top-align .row-label {
@@ -982,6 +1263,37 @@ onMounted(() => {
     justify-content: space-between;
     align-items: center;
     width: 100%;
+
+}
+
+/* Payment Method Styles */
+.payment-radio-item {
+    display: flex;
+    align-items: center;
+    padding: 20px; /* 여백 확대 */
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    font-size: 11px; /* 폰트 사이즈 조정 */
+    color: #888; /* 기본 컬러 연하게 */
+}
+.payment-radio-item:last-child {
+    border-bottom: none;
+}
+
+/* Hide default radio input */
+.payment-radio-item input {
+    display: none;
+}
+
+.payment-radio-item.selected {
+    border: 1px solid #000; /* Selected Box Border */
+    margin-top: -1px; 
+    margin-bottom: -1px;
+    position: relative;
+    z-index: 10; /* 위로 올라오게 */
+    font-weight: bold;
+    color: #000; /* 선택된 텍스트 진하게 */
+    background: #fff;
 }
 
 .mt-2 {
@@ -1006,6 +1318,41 @@ onMounted(() => {
 .flex-row {
     display: flex;
     flex-direction: row;
+}
+
+/* Custom Checkbox Styling */
+.custom-checkbox-input {
+    display: none; /* Hide default checkbox */
+}
+
+.custom-checkbox-box {
+    width: 20px;
+    height: 20px;
+    background-color: #ddd; /* Light gray usually, or #e0e0e0 */
+    border-radius: 4px; /* Rounded corners */
+    margin-right: 8px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+/* Checked State */
+.custom-checkbox-input:checked + .custom-checkbox-box {
+    background-color: #ddd; /* Keep gray or change if needed based on reference, looking at image it seems gray with white check */
+}
+
+/* Checkmark Icon (CSS) */
+.custom-checkbox-input:checked + .custom-checkbox-box::after {
+    content: '';
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    position: absolute;
+    top: 3px;
 }
 
 </style>

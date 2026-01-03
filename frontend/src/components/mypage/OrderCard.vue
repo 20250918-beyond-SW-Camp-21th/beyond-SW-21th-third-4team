@@ -1,52 +1,72 @@
 <template>
-  <div class="order-card">
-    <div class="order-header">
-      <div class="order-info">
-        <span class="order-number">{{ order.orderNumber }}</span>
-        <span class="order-date">{{ formatDate(order.orderDate) }}</span>
-      </div>
-      <span class="order-status" :class="getStatusClass(order.status)">
-        {{ getStatusText(order.status) }}
+  <div class="order">
+    <!-- Order Header -->
+    <h3>
+      <span class="date">{{ formatDate(order.orderDate) }}</span>
+      <span class="number">
+        <a href="#" @click.prevent="viewDetail">주문번호 {{ order.orderNumber }}</a>
       </span>
-    </div>
+    </h3>
 
-    <div class="order-items">
+    <!-- Order Items -->
+    <div class="ec-base-prdInfo">
       <div
         v-for="item in order.items"
         :key="item.id"
-        class="order-item"
+        class="prdBox"
       >
-        <img
-          :src="item.productImage || 'https://via.placeholder.com/80'"
-          :alt="item.productName"
-          class="item-image"
-        />
-        <div class="item-details">
-          <h4 class="item-name">{{ item.productName }}</h4>
-          <p class="item-option">
-            사이즈: {{ item.size }} / 수량: {{ item.quantity }}개
-          </p>
-          <p class="item-price">{{ formatPrice(item.price) }}원</p>
+        <div class="thumbnail">
+          <a href="#" @click.prevent="viewDetail">
+            <img
+              :src="item.productImage || '//img.echosting.cafe24.com/thumb/img_product_small.gif'"
+              :alt="item.productName"
+              width="71"
+              height="71"
+            />
+          </a>
+        </div>
+        <div class="description">
+          <strong class="prdName">{{ item.productName }}</strong>
+          <ul class="info">
+            <li>
+              <span class="price">
+                <strong>{{ formatPrice(item.price) }}원</strong>
+              </span>
+              <span class="ec-base-qty">
+                <strong>{{ item.quantity }}</strong>개
+              </span>
+            </li>
+            <li v-if="item.size" class="option">
+              사이즈: {{ item.size }}
+            </li>
+          </ul>
         </div>
       </div>
-    </div>
 
-    <div class="order-footer">
-      <div class="order-total">
-        <span>총 결제금액</span>
-        <strong>{{ formatPrice(order.totalAmount) }}원</strong>
-      </div>
-      <div class="order-actions">
-        <button @click="viewDetail" class="btn-detail">
-          상세보기
-        </button>
-        <button
-          v-if="canCancel(order.status)"
-          @click="cancelOrder"
-          class="btn-cancel"
-        >
-          주문취소
-        </button>
+      <!-- Order Footer -->
+      <div class="prdFoot">
+        <div class="gLeft">
+          <span class="store">{{ getStatusText(order.status) }}</span>
+        </div>
+        <div class="gRight">
+          <button
+            v-if="canCancel(order.status)"
+            @click="cancelOrder"
+            class="btnNormal mini pc"
+          >
+            주문취소
+          </button>
+        </div>
+
+        <!-- Payment Detail -->
+        <div class="payDetail">
+          <div class="title">
+            <strong>총 결제금액</strong>
+            <div class="gRight">
+              <strong>{{ formatPrice(order.totalAmount) }}원</strong>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -76,10 +96,10 @@ function formatPrice(price) {
 
 function getStatusText(status) {
   const statusMap = {
-    'PENDING': '입금전',
-    'PAID': '결제완료',
+    'ORDERED': '입금전',
+    'PAYMENT_COMLETED': '결제완료',
     'PREPARING': '배송준비중',
-    'SHIPPED': '배송중',
+    'SHIPPING': '배송중',
     'DELIVERED': '배송완료',
     'CANCELLED': '취소됨',
     'EXCHANGED': '교환',
@@ -88,12 +108,8 @@ function getStatusText(status) {
   return statusMap[status] || status
 }
 
-function getStatusClass(status) {
-  return `status-${status.toLowerCase()}`
-}
-
 function canCancel(status) {
-  return ['PENDING', 'PAID', 'PREPARING'].includes(status)
+  return ['ORDERED', 'PAYMENT_COMLETED', 'PREPARING'].includes(status)
 }
 
 function viewDetail() {
@@ -106,167 +122,239 @@ function cancelOrder() {
 </script>
 
 <style scoped>
-.order-card {
-  background: #fff;
-  border: 1px solid var(--color-border);
-  padding: 1.5rem;
-  margin-bottom: 1rem;
+/* Order Container */
+.order {
+  position: relative;
+  border: 1px solid #d5d5d5;
+  background-color: #fff;
+  margin-bottom: 20px;
 }
 
-.order-header {
+/* Order Header */
+.order h3 {
+  overflow: hidden;
+  margin: 0;
+  padding: 12px 14px;
+  line-height: 20px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: normal;
+  background-color: #737781;
+}
+
+.order h3:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.order h3 .date {
+  float: left;
+  font-weight: bold;
+}
+
+.order h3 .number {
+  float: right;
+}
+
+.order h3 a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.order h3 a:hover {
+  text-decoration: underline;
+}
+
+/* Product Info */
+.ec-base-prdInfo {
+  padding: 14px;
+}
+
+/* Product Box */
+.prdBox {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 1rem;
-  margin-bottom: 1rem;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
   border-bottom: 1px solid #f0f0f0;
 }
 
-.order-info {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
+.prdBox:last-of-type {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
-.order-number {
-  font-size: 13px;
-  font-weight: var(--font-weight-bold);
+.thumbnail {
+  flex-shrink: 0;
 }
 
-.order-date {
-  font-size: var(--font-size-medium);
-  color: #666;
-}
-
-.order-status {
-  padding: 0.4rem 1rem;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: var(--font-weight-medium);
-}
-
-.status-pending { background: #fff3cd; color: #856404; }
-.status-paid { background: #d1ecf1; color: #0c5460; }
-.status-preparing { background: #d1ecf1; color: #0c5460; }
-.status-shipped { background: #cce5ff; color: #004085; }
-.status-delivered { background: #d4edda; color: #155724; }
-.status-cancelled { background: #f8d7da; color: #721c24; }
-
-.order-items {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.order-item {
-  display: flex;
-  gap: 1rem;
-}
-
-.item-image {
-  width: 80px;
-  height: 80px;
+.thumbnail img {
+  display: block;
+  width: 71px;
+  height: 71px;
   object-fit: cover;
-  border: 1px solid var(--color-border);
+  border: 1px solid #d5d5d5;
 }
 
-.item-details {
+.thumbnail a {
+  display: block;
+}
+
+/* Product Description */
+.description {
   flex: 1;
+  min-width: 0;
 }
 
-.item-name {
+.prdName {
+  display: block;
   font-size: 13px;
-  font-weight: var(--font-weight-medium);
-  margin-bottom: 0.5rem;
+  font-weight: normal;
+  margin-bottom: 8px;
+  line-height: 18px;
+  color: #000;
 }
 
-.item-option {
-  font-size: var(--font-size-medium);
-  color: #666;
-  margin-bottom: 0.5rem;
+.info {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.item-price {
+.info li {
   font-size: 12px;
-  font-weight: var(--font-weight-bold);
+  color: #666;
+  margin-bottom: 4px;
+  line-height: 16px;
 }
 
-.order-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 1rem;
+.info li:last-child {
+  margin-bottom: 0;
+}
+
+.price {
+  margin-right: 10px;
+}
+
+.price strong {
+  color: #000;
+  font-size: 13px;
+}
+
+.ec-base-qty strong {
+  color: #000;
+}
+
+.option {
+  color: #666;
+  font-size: 11px;
+}
+
+/* Product Footer */
+.prdFoot {
+  margin-top: 14px;
+  padding-top: 14px;
   border-top: 1px solid #f0f0f0;
 }
 
-.order-total {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+.prdFoot .gLeft,
+.prdFoot .gRight {
+  display: inline-block;
 }
 
-.order-total span {
-  font-size: 11px;
-  color: #666;
+.prdFoot .gLeft {
+  float: left;
 }
 
-.order-total strong {
-  font-size: 16px;
-  font-weight: var(--font-weight-bold);
+.prdFoot .gRight {
+  float: right;
 }
 
-.order-actions {
-  display: flex;
-  gap: 0.5rem;
+.prdFoot:after {
+  content: "";
+  display: block;
+  clear: both;
 }
 
-.btn-detail,
-.btn-cancel {
-  padding: 0.6rem 1.2rem;
-  border: 1px solid #ddd;
+.store {
+  font-size: 13px;
+  font-weight: bold;
+  color: #4a5164;
+}
+
+/* Buttons */
+.btnNormal.mini {
+  padding: 6px 12px;
+  border: 1px solid #d5d5d5;
   background: #fff;
-  font-size: var(--font-size-medium);
+  font-size: 11px;
+  color: #333;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.btn-detail:hover {
-  background: #000;
-  color: #fff;
-  border-color: #000;
+.btnNormal.mini:hover {
+  background: #f8f8f8;
+  border-color: #999;
 }
 
-.btn-cancel {
-  color: #dc3545;
-  border-color: #dc3545;
+/* Payment Detail */
+.payDetail {
+  clear: both;
+  margin-top: 14px;
 }
 
-.btn-cancel:hover {
-  background: #dc3545;
-  color: #fff;
+.payDetail .title {
+  padding: 10px 14px;
+  margin: 0 -14px;
+  font-weight: normal;
+  border-top: 1px solid #d5d5d5;
+  border-bottom: 1px solid #d5d5d5;
+  background: #f8f8f8;
 }
 
+.payDetail .title strong {
+  font-size: 13px;
+  color: #000;
+}
+
+.payDetail .title .gRight {
+  float: right;
+}
+
+.payDetail .title:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* Mobile Responsive */
 @media (max-width: 768px) {
-  .order-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
+  .prdBox {
+    gap: 10px;
   }
 
-  .order-footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+  .thumbnail img {
+    width: 60px;
+    height: 60px;
   }
 
-  .order-actions {
+  .prdName {
+    font-size: 12px;
+  }
+
+  .prdFoot .gLeft,
+  .prdFoot .gRight {
+    float: none;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .btnNormal.mini {
     width: 100%;
-  }
-
-  .btn-detail,
-  .btn-cancel {
-    flex: 1;
+    display: block;
   }
 }
 </style>
