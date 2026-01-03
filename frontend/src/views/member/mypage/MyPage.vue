@@ -53,7 +53,6 @@ import QuickMenu from '../../../components/mypage/QuickMenu.vue'
 
 const router = useRouter()
 
-// State
 const loading = ref(false)
 const error = ref(null)
 const user = ref(null)
@@ -62,32 +61,27 @@ const deposits = ref(0)
 const couponCount = ref(0)
 const orderStatusCounts = ref({})
 
-// Fetch all data
 async function fetchData() {
   loading.value = true
   error.value = null
 
   try {
-    // Fetch user info
     const userResponse = await api.get('/mypage/user-info')
     user.value = userResponse.data.data
 
-    // Fetch order history to count statuses
     const ordersResponse = await api.get('/mypage/orders')
     const orders = ordersResponse.data.data || []
 
-    // Calculate order status counts from orders
     orderStatusCounts.value = {
       pending: orders.filter(o => o.status === 'ORDERED' || o.status === 'PAYMENT_COMLETED').length,
       preparing: orders.filter(o => o.status === 'PREPARING').length,
       shipped: orders.filter(o => o.status === 'SHIPPING').length,
       delivered: orders.filter(o => o.status === 'DELIVERED').length,
       cancelled: orders.filter(o => o.status === 'CANCELLED').length,
-      exchanged: 0, // Not in current OrderStatus enum
-      returned: 0,  // Not in current OrderStatus enum
+      exchanged: 0,
+      returned: 0,
     }
 
-    // Set account info (TODO: backend needs to add these fields to UserDTO)
     mileage.value = 0
     deposits.value = 0
     couponCount.value = 0
@@ -96,7 +90,6 @@ async function fetchData() {
     console.error('Failed to fetch mypage data:', err)
     error.value = '정보를 불러오는데 실패했습니다.'
 
-    // Redirect to login if unauthorized
     if (err.response?.status === 401) {
       router.push('/login')
     }
@@ -137,7 +130,6 @@ onMounted(() => {
   padding-bottom: 3rem;
 }
 
-/* Loading State */
 .loading {
   text-align: center;
   padding: 4rem 0;
@@ -164,7 +156,6 @@ onMounted(() => {
   line-height: 18px;
 }
 
-/* Error State */
 .error {
   text-align: center;
   padding: 4rem 0;
