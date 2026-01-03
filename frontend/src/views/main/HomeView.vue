@@ -14,6 +14,7 @@ import MainBanner from '../../components/main/MainBanner.vue';
 
 // 메인페이지 중앙부 베스트 컬렉션
 import BestProductList from '../../components/main/BestProductList.vue';
+
 </script>
 
 <style scoped>

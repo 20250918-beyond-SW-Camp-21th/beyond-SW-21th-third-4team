@@ -138,7 +138,7 @@ import { ref, onMounted } from 'vue';
 import http from '../../api/http';
 
 const mainMenus = ref([
-  { name: '남성복', link: '/men', subItems: null },
+  { name: '남성복', link: '/product/list', subItems: null },
   { name: '여성복', link: '/women', subItems: null },
   { name: 'CLEARANCE', link: '/clearance', subItems: null },
   { name: '컬렉션', link: '/collection', subItems: null },
