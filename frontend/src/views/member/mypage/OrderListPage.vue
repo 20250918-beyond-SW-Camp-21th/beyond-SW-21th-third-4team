@@ -1,11 +1,9 @@
 <template>
   <div id="contents">
-    <!-- Title -->
     <div id="titleArea">
       <h2>주문조회</h2>
     </div>
 
-    <!-- Tabs -->
     <div class="ec-base-tab gBlank7">
       <ul>
         <li :class="{ selected: activeTab === 'orders' }">
@@ -21,12 +19,10 @@
       </ul>
     </div>
 
-    <!-- Search Filters -->
     <div class="xans-myshop-orderhistoryhead">
       <fieldset>
         <legend>검색기간설정</legend>
 
-        <!-- Status Filter -->
         <div class="stateSelect">
           <span class="state">상태</span>
           <select v-model="activeFilter" class="fSelect">
@@ -39,7 +35,6 @@
           </select>
         </div>
 
-        <!-- Period Buttons -->
         <span class="term">기간</span>
         <div class="ec-base-button gColumn">
           <button
@@ -53,7 +48,6 @@
           </button>
         </div>
 
-        <!-- Help Text -->
         <ul class="ec-base-help">
           <li>완료 후 36개월 이상 경과한 주문은 <a href="#" @click.prevent>[과거주문내역]</a>에서 확인할 수 있습니다.</li>
           <li>리뉴얼 전에 주문한 내역은 <a href="#" @click.prevent>[이전 주문내역]</a>에서 확인할 수 있습니다.</li>
@@ -62,20 +56,16 @@
       </fieldset>
     </div>
 
-    <!-- Order List -->
     <div class="xans-myshop-orderhistorylistitem">
-      <!-- Loading State -->
       <div v-if="loading" class="loading">
         <div class="spinner"></div>
         <p>주문내역을 불러오는 중...</p>
       </div>
 
-      <!-- Empty State -->
       <p v-else-if="filteredOrders.length === 0" class="empty">
         주문 내역이 없습니다.
       </p>
 
-      <!-- Orders -->
       <div v-else class="orderList">
         <OrderCard
           v-for="order in filteredOrders"
@@ -87,7 +77,6 @@
       </div>
     </div>
 
-    <!-- Pagination -->
     <div v-if="totalPages > 1" class="ec-base-paginate typeList">
       <button @click="currentPage--" :disabled="currentPage === 1" class="btnPrev">
         이전 페이지
@@ -112,14 +101,6 @@
       </button>
     </div>
 
-    <!-- Order Detail Modal (페이지 이동으로 변경되어 미사용) -->
-    <!--
-    <OrderDetailModal
-      v-if="showDetailModal"
-      :orderId="selectedOrderId"
-      @close="closeDetailModal"
-    />
-    -->
   </div>
 </template>
 
@@ -128,12 +109,10 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../../../api/http.js'
 import OrderCard from '../../../components/mypage/OrderCard.vue'
-import OrderDetailModal from '../../../components/mypage/OrderDetailModal.vue'
 
 const route = useRoute()
 const router = useRouter()
 
-// State
 const loading = ref(false)
 const orders = ref([])
 const activeTab = ref('orders')
@@ -141,10 +120,7 @@ const activeFilter = ref('ALL')
 const activePeriod = ref('MONTH')
 const currentPage = ref(1)
 const totalPages = ref(1)
-const showDetailModal = ref(false)
-const selectedOrderId = ref(null)
 
-// Date Periods
 const datePeriods = [
   { key: 'TODAY', label: '오늘' },
   { key: 'MONTH', label: '1개월' },
@@ -153,7 +129,6 @@ const datePeriods = [
   { key: 'CUSTOM', label: '기간설정' }
 ]
 
-// Computed counts
 const orderCount = computed(() => {
   if (activeTab.value === 'orders') {
     return orders.value.filter(o =>
@@ -169,7 +144,6 @@ const csCount = computed(() => {
   ).length
 })
 
-// Helper: Calculate date range based on period
 function getDateRange(period) {
   if (period === 'CUSTOM') return null
 
@@ -196,11 +170,9 @@ function getDateRange(period) {
   return startDate.toISOString().split('T')[0]
 }
 
-// Computed
 const filteredOrders = computed(() => {
   let filtered = orders.value
 
-  // Filter by tab
   if (activeTab.value === 'orders') {
     filtered = filtered.filter(o =>
       !['CANCELLED', 'RETURNED', 'EXCHANGED'].includes(o.status)
@@ -211,12 +183,10 @@ const filteredOrders = computed(() => {
     )
   }
 
-  // Filter by status
   if (activeFilter.value !== 'ALL') {
     filtered = filtered.filter(o => o.status === activeFilter.value)
   }
 
-  // Filter by date period (client-side filtering)
   if (activePeriod.value && activePeriod.value !== 'CUSTOM') {
     const startDate = getDateRange(activePeriod.value)
     if (startDate) {
@@ -230,10 +200,8 @@ const filteredOrders = computed(() => {
   return filtered
 })
 
-// Product cache - stores all products by ID
 const productCache = new Map()
 
-// Helper: Fetch all products and cache them
 async function fetchAllProducts() {
   if (productCache.size > 0) {
     return // Already cached
@@ -243,7 +211,6 @@ async function fetchAllProducts() {
     const response = await api.get('/products')
     const products = response.data.data || response.data || []
 
-    // Cache all products by ID
     products.forEach(product => {
       productCache.set(product.id, {
         name: product.name || '상품명 없음',
@@ -258,13 +225,11 @@ async function fetchAllProducts() {
   }
 }
 
-// Helper: Get product details by ID from cache
 function getProductDetails(productId) {
   if (productCache.has(productId)) {
     return productCache.get(productId)
   }
 
-  // Return fallback if not found
   return {
     name: '상품 정보 없음',
     imageUrl: null,
@@ -272,24 +237,17 @@ function getProductDetails(productId) {
   }
 }
 
-// Methods
 async function fetchOrders() {
   loading.value = true
   try {
-    // First, fetch and cache all products
     await fetchAllProducts()
 
-    // Then fetch orders
     const response = await api.get('/mypage/orders')
 
-    // Handle response structure (same as MyPage)
     if (response.data && response.data.data) {
       const rawOrders = response.data.data || []
 
-      // Transform backend data to match OrderCard expectations
-      // Backend uses: orderId, orderedAt, items (with productId only)
       const transformedOrders = rawOrders.map((order) => {
-        // Get product details for each item from cache
         const itemsWithDetails = (order.items || []).map((item) => {
           const productDetails = getProductDetails(item.productId)
 
@@ -322,7 +280,6 @@ async function fetchOrders() {
   } catch (error) {
     console.error('Failed to fetch orders:', error)
 
-    // More detailed error handling
     if (error.response) {
       console.error('Server error:', error.response.status, error.response.data)
     } else if (error.request) {
@@ -331,7 +288,6 @@ async function fetchOrders() {
       console.error('Request setup error:', error.message)
     }
 
-    // Set empty state instead of showing alert
     orders.value = []
     totalPages.value = 1
   } finally {
@@ -340,20 +296,14 @@ async function fetchOrders() {
 }
 
 function viewOrderDetail(orderId) {
-  // 모달 대신 페이지 이동으로 변경
   router.push({
     path: '/order/complete',
     query: {
       orderId: orderId,
-      mode: 'detail' // 상세 조회 모드
+      mode: 'detail'
     }
   });
 }
-/* 모달 관련 코드 주석 처리 또는 제거 */
-// function closeDetailModal() {
-//   showDetailModal.value = false
-//   selectedOrderId.value = null
-// }
 
 async function handleCancelOrder(orderId) {
   if (!confirm('정말 주문을 취소하시겠습니까?')) {
@@ -361,7 +311,7 @@ async function handleCancelOrder(orderId) {
   }
 
   try {
-    await api.put(`/api/orders/${orderId}/cancel`)
+    await api.put(`/orders/${orderId}/cancel`)
     alert('주문이 취소되었습니다.')
     fetchOrders()
   } catch (error) {
@@ -370,7 +320,6 @@ async function handleCancelOrder(orderId) {
   }
 }
 
-// Initialize from route query
 onMounted(() => {
   if (route.query.status) {
     activeFilter.value = route.query.status
@@ -383,7 +332,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Container */
 #contents {
   padding: var(--layout-padding, 0 20px);
   padding-top: 80px;
@@ -392,7 +340,6 @@ onMounted(() => {
   margin: 0 auto;
 }
 
-/* Title Area */
 #titleArea {
   margin-bottom: 1.5rem;
   text-align: center;
@@ -407,7 +354,6 @@ onMounted(() => {
   line-height: 18px;
 }
 
-/* Tabs */
 .ec-base-tab {
   margin-bottom: 1.5rem;
 }
@@ -455,7 +401,6 @@ onMounted(() => {
   margin-left: 5px;
 }
 
-/* Search Filters */
 .xans-myshop-orderhistoryhead {
   background: #fff;
   margin-bottom: 2rem;
@@ -477,7 +422,6 @@ onMounted(() => {
   clip: rect(0, 0, 0, 0);
 }
 
-/* Status Select */
 .stateSelect {
   display: flex;
   align-items: center;
@@ -501,7 +445,6 @@ onMounted(() => {
   cursor: pointer;
 }
 
-/* Period Buttons */
 .term {
   display: inline-block;
   font-size: 13px;
@@ -538,7 +481,6 @@ onMounted(() => {
   font-weight: 500;
 }
 
-/* Help Text */
 .ec-base-help {
   list-style: none;
   padding: 15px 0 0;
@@ -582,12 +524,10 @@ onMounted(() => {
   color: #000;
 }
 
-/* Order List Container */
 .xans-myshop-orderhistorylistitem {
   margin: 0;
 }
 
-/* Loading State */
 .loading {
   text-align: center;
   padding: 60px 0;
@@ -613,7 +553,6 @@ onMounted(() => {
   color: #666;
 }
 
-/* Empty State */
 .empty {
   text-align: center;
   padding: 80px 20px;
@@ -624,14 +563,12 @@ onMounted(() => {
   margin: 0;
 }
 
-/* Order List */
 .orderList {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* Pagination */
 .ec-base-paginate.typeList {
   display: flex;
   justify-content: center;
@@ -695,7 +632,6 @@ onMounted(() => {
   cursor: not-allowed;
 }
 
-/* Mobile Responsive */
 @media (max-width: 1024px) {
   #contents {
     padding: 0 10px;
