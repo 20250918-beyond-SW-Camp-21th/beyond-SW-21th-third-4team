@@ -62,10 +62,11 @@ public class SecurityConfig {
                 // TODO(세현): 접근 정책으로 인증 없이 허용할 api url 추가
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/v1/mypage/test/**").permitAll() // TODO: 로그인 기능 구현 후 제거
-
-                        // 그 외 인증 필요
+                        .requestMatchers("/api/products/**").permitAll()
+                        .requestMatchers("/api/v1/product-details/**").permitAll()
+                        // 그 외 인증 필요/
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

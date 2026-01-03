@@ -3,27 +3,30 @@
     <h2>MEN BEST</h2>
     <div class="product-list-container">
       <ul class="prdList column4">
-        <li v-for="(product, index) in products" :key="index" class="item">
+        <li v-for="product in products" :key="product.id" class="item">
           <div class="box_wrap">
             <div class="box">
-              <a :href="product.link" class="link"></a>
+              <!-- router-link로 수정 -->
+              <router-link :to="`/product/${product.id}`" class="link"></router-link>
               <div class="thumb">
-                <img :src="product.image" class="big" alt="Product Image">
-                <img :src="product.hoverImage" class="medium" alt="Hover Image">
+                <!-- formatImageUrl 적용 -->
+                <img :src="formatImageUrl(product.imageUrl)" class="big" alt="Product Image" @error="handleImageError">
+                <!-- hoverImage는 API에 없으므로 일단 동일 이미지 사용 -->
+                <img :src="formatImageUrl(product.imageUrl)" class="medium" alt="Hover Image" @error="handleImageError">
               </div>
               <div class="contents">
                 <div class="name_wrap">
                   <div class="name_contents flex_wrap space_between">
-                    <a :href="product.link" class="name">
+                    <!-- router-link로 수정 -->
+                    <router-link :to="`/product/${product.id}`" class="name">
                       <span style="font-size:12px;color:#000000;">{{ product.name }}</span>
-                    </a>
+                    </router-link>
                   </div>
                 </div>
                 <div class="custom_price_wrap">
-                  <div class="sale_price custom"><span>{{ product.originalPrice }}</span></div>
+                  <!-- API에 할인 정보가 없으므로 가격만 표시 -->
                   <div class="flex_wrap">
-                    <div class="original_price custom"><span>{{ product.salePrice }}</span></div>
-                    <div class="custom_sale_percent">{{ product.discount }}%</div>
+                    <div class="original_price custom"><span>KRW {{ product.price.toLocaleString() }}</span></div>
                   </div>
                 </div>
               </div>
@@ -36,46 +39,27 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { fetchProducts } from '../../api/product.js';
+import { formatImageUrl } from '../../utils/imageUtils.js';
 
-const products = ref([
-  {
-    name: '마펠 캐시미어 발마칸 코트 BLACK',
-    link: '/product/detail.html?product_no=2791',
-    image: '//www.insilence.co.kr/web/product/big/202509/d1e9cadb016f364283b23e587576e2b3.jpg',
-    hoverImage: '//www.insilence.co.kr/web/product/extra/big/202509/ed8682cc61ca5581be16d3a7c1277648.jpg',
-    originalPrice: 'KRW 399,000',
-    salePrice: 'KRW 319,200',
-    discount: 20
-  },
-  {
-    name: '마펠 캐시미어 발마칸 코트 MELANGE BROWN',
-    link: '/product/detail.html?product_no=6848',
-    image: '//www.insilence.co.kr/web/product/big/202509/0d65dec0b39aca3832f3f90f41652269.jpg',
-    hoverImage: '//www.insilence.co.kr/web/product/extra/big/202509/7c721c246556e802a5433fea374e1b3e.jpg',
-    originalPrice: 'KRW 399,000',
-    salePrice: 'KRW 319,200',
-    discount: 20
-  },
-  {
-    name: '칼라 플라이트 다운 푸퍼 BLACK',
-    link: '/product/detail.html?product_no=6959',
-    image: '//www.insilence.co.kr/web/product/big/202509/e2544dae09199485a27076fef68f0b96.jpg',
-    hoverImage: '//www.insilence.co.kr/web/product/extra/big/202509/e2ce892a2c79eb866b9f211c740f88c4.jpg',
-    originalPrice: 'KRW 310,000',
-    salePrice: 'KRW 248,000',
-    discount: 20
-  },
-  {
-    name: '칼라 플라이트 다운 푸퍼 KHAKI',
-    link: '/product/detail.html?product_no=6960',
-    image: '//www.insilence.co.kr/web/product/big/202509/014bde499ee36c8c91deacb7851a6bc5.jpg',
-    hoverImage: '//www.insilence.co.kr/web/product/extra/big/202509/24fb6deeba61ed9939f788b57a622ec7.jpg',
-    originalPrice: 'KRW 310,000',
-    salePrice: 'KRW 248,000',
-    discount: 20
+const products = ref([]);
+
+// 이미지 로드 에러 처리
+const handleImageError = (e) => {
+  e.target.src = '/images/no-image.png'; // 기본 이미지 경로 (public/images/no-image.png 필요)
+};
+
+onMounted(async () => {
+  try {
+    // 'OUTER' 카테고리 상품을 가져오거나, 전체 상품을 가져오려면 null 전달
+    const response = await fetchProducts('OUTER');
+    // 수정: response.data는 { success: true, data: [...] } 형태이므로 .data를 한 번 더 접근해야 함
+    products.value = response.data.data;
+  } catch (error) {
+    console.error('상품 목록을 불러오는데 실패했습니다.', error);
   }
-]);
+});
 </script>
 
 <style scoped>
