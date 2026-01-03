@@ -145,8 +145,8 @@ const router = useRouter();
 
 const mainMenus = ref([
   { name: '남성복', link: '/product/list', subItems: null },
-  { name: '여성복', link: '/women', subItems: null },
-  { name: 'CLEARANCE', link: '/clearance', subItems: null },
+  { name: '여성복', link: '/product/list', subItems: null },
+  { name: 'CLEARANCE', link: '/product/list', subItems: null },
   { name: '컬렉션', link: '/collection', subItems: null },
   { name: '컨텐츠', link: '/contents', subItems: null },
   { name: '매장안내', link: '/store', subItems: null },
