@@ -36,6 +36,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 1) 토큰 검증 (문제 있으면 예외 -> EntryPoint에서 401 처리)
             try {
                 jwtTokenProvider.validateToken(token);
+
+
             } catch (BusinessException e) {
                 // AuthenticationException으로 감싸서 EntryPoint로 보내기
                 // TODO(세현) : errorcode로 처리

@@ -94,7 +94,8 @@
             <transition name="fade">
               <ul v-show="showAccountSub" class="mini_dropdown">
                 <li v-for="item in accountItems" :key="item.name">
-                  <router-link :to="item.link">{{ item.name }}</router-link>
+                  <router-link v-if="item.link" :to="item.link">{{ item.name }}</router-link>
+                  <a v-else href="#" @click.prevent="item.action">{{ item.name }}</a>
                 </li>
               </ul>
             </transition>
@@ -134,8 +135,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import http from '../../api/http';
+import { getToken, removeToken } from '../../utils/token';
+
+const route = useRoute();
+const router = useRouter();
 
 const mainMenus = ref([
   { name: '남성복', link: '/product/list', subItems: null },
@@ -154,14 +160,47 @@ const customerItems = [
   { name: '소재별 케어', link: '/care' },
 ];
 
-// [계정] 서브메뉴 데이터
+// [계정] 서브메뉴 데이터 (로그인 여부에 따라 변경)
 const showAccountSub = ref(false);
-const accountItems = [
-  { name: '로그인', link: '/login' },
-  { name: '회원가입', link: '/signup' },
-  { name: '마이 페이지', link: '/mypage' },
-  { name: '주문조회', link: '/orders' },
-];
+const isLoggedIn = ref(false);
+
+const checkLoginStatus = () => {
+  isLoggedIn.value = !!getToken();
+};
+
+const handleLogout = () => {
+  removeToken();
+  isLoggedIn.value = false;
+  alert('로그아웃 되었습니다.');
+  // 메인으로 이동 또는 새로고침
+  if (route.path === '/') {
+      window.location.reload();
+  } else {
+      router.push('/');
+  }
+};
+
+const accountItems = computed(() => {
+  if (isLoggedIn.value) {
+    return [
+      { name: '로그아웃', action: handleLogout },
+      { name: '정보수정', link: '/mypage/profile' },
+      { name: '마이 페이지', link: '/mypage' },
+      { name: '주문조회', link: '/mypage/orders' },
+    ];
+  } else {
+    return [
+      { name: '로그인', link: '/login' },
+      { name: '회원가입', link: '/signup' },
+      { name: '마이 페이지', link: '/mypage' },
+      { name: '주문조회', link: '/mypage/orders' },
+    ];
+  }
+});
+
+watch(() => route.path, () => {
+  checkLoginStatus();
+});
 
 // 장바구니 카운트 (초기값 0)
 const cartCount = ref(0);
@@ -179,6 +218,7 @@ const fetchCartCount = async () => {
 };
 
 onMounted(() => {
+  checkLoginStatus();
   fetchCartCount();
 });
 
@@ -277,33 +317,56 @@ a {
   align-items: center;
 }
 
+/* 텍스트 수직 보정 (지구본 등 다른 아이콘과 높이 맞춤) */
+.relative_item > a {
+  padding-top: 3px;
+  display: inline-block;
+}
+
 .mini_dropdown {
   position: absolute;
-  top: 30px; /* 텍스트 바로 아래 */
+  top: 30px;
   left: 50%;
   transform: translateX(-50%);
   background: #fff;
   border: 1px solid #000;
-  min-width: 100px;
+  min-width: 110px; /* 너비 축소 */
   display: flex;
   flex-direction: column;
   gap: 0;
   z-index: 100;
+  padding: 10px 0 !important; /* 상하 패딩 축소 */
+  margin: 0 !important;
+  list-style: none !important;
 }
 
 .mini_dropdown li {
-  width: 100%;
-  text-align: left; /* 왼쪽 정렬 */
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  width: 100% !important;
+  text-align: center !important; /* 중앙 정렬 */
+  display: block !important;
+  min-height: auto !important;
+  height: auto !important;
+  line-height: normal !important;
 }
 
 .mini_dropdown a {
-  display: block;
-  padding: 3px 15px; /* 상하 간격 매우 좁게 */
-  font-size: 11px; /* 기존폰트 유지 */
-  color: #000;
-  font-weight: 400;
-  text-decoration: none;
-  white-space: nowrap;
+  display: block !important;
+  padding: 3px 0 !important; /* 항목 간격 더 배짝 붙임 */
+  font-size: 11px !important;
+  color: #000 !important;
+  font-weight: 400 !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  background-color: transparent !important;
+  line-height: 1.2 !important; /* 줄 간격도 줄임 */
+}
+
+.mini_dropdown a:hover {
+  text-decoration: underline !important;
+  background-color: transparent !important;
 }
 
 .mini_dropdown a:hover {
