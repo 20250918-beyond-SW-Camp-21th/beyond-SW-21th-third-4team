@@ -4,6 +4,7 @@ import { memberRoutes } from "./routes/member.routes.js";
 import { orderRoutes } from "./routes/order.routes.js";
 import { cartRoutes } from './routes/cart.routes.js'
 import { productRoutes } from './routes/product.routes.js'
+import { qnaRoutes } from './routes/qna.routes.js'
 import { getToken } from '../utils/token.js'
 
 // TODO: router import
@@ -17,6 +18,7 @@ const router = createRouter({
         ...orderRoutes,
         ...cartRoutes,
         ...productRoutes,
+        ...qnaRoutes,
     ]
 })
 
