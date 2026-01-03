@@ -1,13 +1,11 @@
 <template>
   <div class="product-detail-container" v-if="productData">
-    <div class="image-section">
+    <div class="image-section" v-if="productData && productData.detailImages">
       <div class="image-wrapper">
-        <!-- 메인 썸네일 -->
-        <img :src="productData.imageUrl" :alt="productData.name" />
+        <img :src="formatImageUrl(productData.imageUrl)" />
       </div>
-      <!-- 상세 이미지들 -->
       <div v-for="(img, index) in productData.detailImages" :key="index" class="image-wrapper">
-        <img :src="img" :alt="`상품 상세 이미지 ${index + 1}`" />
+        <img :src="formatImageUrl(img)" />
       </div>
     </div>
 
@@ -16,8 +14,11 @@
         <h1 class="product-title">{{ productData.name }}</h1>
 
         <div class="price-info">
+          <!-- 할인 전 가격이 있다면 표시 (API에 없으므로 생략 가능하거나 임의 표시) -->
+          <!-- <span class="original-price">KRW {{ (productData.price * 1.2).toLocaleString() }}</span> -->
           <div class="current-price">
             <span class="bold">KRW {{ productData.price.toLocaleString() }}</span>
+            <!-- <span class="discount">20%</span> -->
           </div>
         </div>
 
@@ -53,7 +54,7 @@
 
         <div class="action-buttons">
           <button class="btn-black" @click="handleBuy">구매하기</button>
-          <button class="btn-naver">네이버 페이</button>
+          <!-- 네이버 페이 버튼 제거 -->
           <div class="btn-split">
             <button class="btn-white">상품 문의하기</button>
             <button class="btn-white" @click="handleCart">장바구니 담기</button>
@@ -81,8 +82,9 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { fetchProductDetail } from '@/api/product';
-import { addCartItem } from '@/api/cart';
+import { fetchProductDetail } from '../../api/product.js';
+import { addCartItem } from '../../api/cart.js';
+import { formatImageUrl } from '../../utils/imageUtils.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -90,15 +92,19 @@ const router = useRouter();
 const productData = ref(null);
 const currentProductId = ref(null);
 
+// 이미지 로드 에러 처리
+const handleImageError = (e) => {
+  e.target.src = '/images/no-image.png';
+};
+
 // 상품 설명 파싱
 const descriptionLines = computed(() => {
   if (!productData.value?.description) return [];
   return productData.value.description.split('\n');
 });
 
-// 현재 색상 이름 (임시 로직)
+// 현재 색상 이름
 const currentColorName = computed(() => {
-  // 실제로는 API에서 색상 정보를 받아와야 함
   if (currentProductId.value == 1) return 'BLACK';
   if (currentProductId.value == 2) return 'GRAY';
   return 'BLACK';
@@ -114,7 +120,7 @@ const accordions = ref([
 const loadProductData = async (id) => {
   try {
     const response = await fetchProductDetail(id);
-    productData.value = response.data;
+    productData.value = response.data.data;
     currentProductId.value = id;
   } catch (error) {
     console.error('상품 정보를 불러오는데 실패했습니다.', error);
@@ -122,47 +128,44 @@ const loadProductData = async (id) => {
   }
 };
 
-// 초기 로드
 onMounted(() => {
-  const id = route.params.productId || 1; // 기본값 1
+  const id = route.params.productId || 1;
   loadProductData(id);
 });
 
-// 라우트 변경 감지 (색상 변경 시)
 watch(() => route.params.productId, (newId) => {
   if (newId) loadProductData(newId);
 });
 
-// 색상 변경 핸들러
 const changeColor = (id) => {
   if (currentProductId.value === id) return;
   router.push(`/product/${id}`);
 };
 
-// 구매하기 (주문서 작성 페이지로 이동)
+// ProductDetail.vue 내부의 handleBuy 함수
 const handleBuy = () => {
   if (!productData.value) return;
 
-  // 주문서 작성 페이지로 이동하며 상품 정보 전달
   router.push({
-    path: '/order/checkout',
+    path: '/order', // 👈 '/order/checkout' 대신 '/order'로 변경
     query: {
       productId: productData.value.productId,
-      quantity: 1 // 수량 선택 기능이 없으므로 기본 1
+      quantity: 1
     }
   });
 };
 
-// 장바구니 담기
+// 장바구니 담기 핸들러
 const handleCart = async () => {
   if (!productData.value) return;
 
   try {
+    // 1. 장바구니에 아이템을 추가하는 API 호출
     await addCartItem(productData.value.productId, 1);
-    const confirmMove = confirm('장바구니에 담겼습니다. 장바구니로 이동하시겠습니까?');
-    if (confirmMove) {
-      router.push('/cart');
-    }
+
+    // 2. 메시지나 확인창 없이 바로 장바구니 페이지로 이동
+    router.push('/cart');
+
   } catch (error) {
     console.error('장바구니 담기 실패', error);
     alert('장바구니 담기에 실패했습니다.');
@@ -175,7 +178,8 @@ const handleCart = async () => {
   display: flex;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 40px 20px;
+  /* 상단 여백 수정: 40px -> 120px (헤더 높이 고려) */
+  padding: 120px 20px 40px;
   gap: 80px;
 }
 
@@ -192,7 +196,7 @@ const handleCart = async () => {
 
 /* 우측 정보 고정 */
 .info-section { flex: 1; position: relative; }
-.sticky-content { position: sticky; top: 40px; }
+.sticky-content { position: sticky; top: 120px; /* 스크롤 시 고정 위치도 조정 */ }
 
 /* 텍스트 디테일 */
 .product-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
