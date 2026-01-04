@@ -9,6 +9,7 @@ const http = axios.create({
     headers: { 'Content-Type' : 'application/json'},
     timeout: 10000,
 })
+console.log('BASE_URL:', import.meta.env.VITE_API_BASE_URL)
 
 http.interceptors.request.use((config) => {
     const url = config.url || ''
