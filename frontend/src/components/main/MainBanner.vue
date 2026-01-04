@@ -45,34 +45,37 @@ import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
+import bannerImg1 from '../../assets/images/banner2.png';
+import bannerImg2 from '../../assets/images/banner2.png';
+import bannerImg3 from '../../assets/images/banner2.png';
+
 const modules = [Autoplay, Pagination];
 
 // Data derived from your HTML snippet
 const slides = ref([
   {
-    title: 'MEN — CLEARANCE SALE',
-    image: 'https://ambient.diskn.com/image/home/main/25FW/PC_1.jpg',
-    link: 'https://www.insilence.co.kr/product/outlet_list.html?cate_no=572',
+    // title: 'MEN — CLEARANCE SALE',
+    image: bannerImg1, // new URL('@/assets/banner1.png', import.meta.url).href,
+    // link: 'https://www.insilence.co.kr/product/outlet_list.html?cate_no=572',
     buttonText: 'SHOP NOW',
-    buttonLink: 'https://www.insilence.co.kr/product/outlet_list.html?cate_no=572'
+    // buttonLink: 'https://www.insilence.co.kr/product/outlet_list.html?cate_no=572'
   },
   {
     title: 'WOMEN — CLEARANCE SALE',
     image: 'https://ambient.diskn.com/image/home/main/25FW/PC_2.png',
-    link: 'https://www.insilence.co.kr/product/outlet_list.html?cate_no=556',
+    // link: 'https://www.insilence.co.kr/product/outlet_list.html?cate_no=556',
     buttonText: 'SHOP NOW',
-    buttonLink: '/magazine/sample.html'
+    // buttonLink: '/magazine/sample.html'
   },
   {
     title: 'FW25 EDITORIAL',
     image: 'https://ambient.diskn.com/image/home/main/25FW/PC_3.png',
-    link: 'https://www.insilence.co.kr/product/lookbook_detail.html?product_no=6808&cate_no=330&display_group=1',
+    // link: 'https://www.insilence.co.kr/product/lookbook_detail.html?product_no=6808&cate_no=330&display_group=1',
     buttonText: 'VIEW MORE',
-    buttonLink: '/magazine/sample.html'
+    // buttonLink: '/magazine/sample.html'
   }
 ]);
 
-// Custom pagination renderer to match your HTML structure (<ul><li><button>)
 const customPagination = (index, className) => {
   return `<li class="${className}"><button type="button">${index + 1}</button></li>`;
 };
@@ -89,7 +92,7 @@ const customPagination = (index, className) => {
 .main-banner {
   position: relative;
   width: 100%;
-  height: 100vh; /* Adjust height as needed */
+  height: 90vh;
 }
 
 /* Background Image */
@@ -101,15 +104,6 @@ const customPagination = (index, className) => {
   background-repeat: no-repeat;
 }
 
-/* Link Overlay */
-.link {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
 
 /* Text Overlay Styling */
 .text_wrap {
