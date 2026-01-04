@@ -32,7 +32,7 @@ public class QnaService {
     }
 
     // 게시글 목록 조회 (공지사항 선행, 최신순 정렬)
-    public List<QnaListResponse> getQnaList() {
+    public List<Qna> getQnaList() {
         return reader.readAllSorted();
     }
 
