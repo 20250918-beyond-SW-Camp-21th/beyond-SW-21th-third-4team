@@ -25,7 +25,7 @@ public class QnaReaderImpl implements QnaReader {
     }
 
     @Override
-    public List<QnaListResponse> readAllSorted() {
+    public List<Qna> readAllSorted() {
         return repository.findAllByOrderByTypeAscIdDesc();
     }
 

@@ -126,25 +126,22 @@ const handleFileChange = (event, n) => {
   if (file) form.value.files[n - 1] = file;
 };
 
+// Qna.vue의 submitForm 함수 내부를 이렇게 바꿔보세요
 const submitForm = async () => {
+  console.log("버튼 클릭됨!"); // 👈 1. 함수가 실행은 되는지 확인
   try {
-    const payload = {
-      productId: Number(form.value.productId) || 1, // 테스트용 ID
-      category: "ETC", // 일단 단순 문자열
-      content: form.value.content,
-      password: form.value.password,
-      isPrivate: true
-      // 일단 subject나 uccUrl 등은 빼고 최소한의 데이터만 보내보세요.
-    };
+    const payload = { ... };
+    console.log("보내는 데이터:", payload); // 👈 2. 데이터가 뽑히는지 확인
 
-    const response = await axios.post('/api/v1/qnas', payload, {
-      withCredentials: true // 👈 요청할 때마다 "나 로그인 정보 여기 있어!"라고 외치는 옵션
+    const response = await axios.post('http://localhost:8080/api/v1/qnas', payload, {
+      withCredentials: true
     });
-    console.log("성공 응답:", response);
-    alert('성공!');
+
+    console.log("서버 응답:", response); // 👈 3. 성공 응답 확인
   } catch (error) {
-    // 콘솔에 찍히는 에러가 CORS인지 확인하세요.
-    console.error("에러 발생 원인:", error);
+    // 👈 여기서 에러가 잡혀서 화면엔 무반응처럼 보일 수 있습니다.
+    console.error("실제 에러 원인:", error.response || error);
+    alert("에러 발생! 콘솔을 확인하세요.");
   }
 };
 
