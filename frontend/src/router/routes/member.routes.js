@@ -3,7 +3,6 @@ import SignupTermsView from "../../views/member/SignupTermsView.vue";
 import SignupView from "../../views/member/SignupView.vue";
 import MyPage from "../../views/member/mypage/MyPage.vue";
 import OrderListPage from "../../views/member/mypage/OrderListPage.vue";
-import ProfileEditPage from "../../views/member/mypage/ProfileEditPage.vue";
 
 export const memberRoutes = [
     // 로그인
@@ -45,11 +44,4 @@ export const memberRoutes = [
         meta: { requiresAuth: true },
     },
 
-    // 회원정보 수정
-    {
-        path: '/mypage/profile',
-        name: 'ProfileEdit',
-        component: ProfileEditPage,
-        meta: { requiresAuth: true },
-    },
 ]

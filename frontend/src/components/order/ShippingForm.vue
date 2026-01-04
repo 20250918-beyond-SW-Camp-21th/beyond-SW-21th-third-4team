@@ -431,9 +431,20 @@ const userInfo = ref(null);
 
 const fetchUserInfo = async () => {
   try {
-    const response = await http.get('/mypage/user-info');
-    if (response.data && response.data.data) {
-      userInfo.value = response.data.data;
+    // [수정] 권한 에러(O002) 회피를 위해 ProfileEditPage와 동일한 경로 사용
+    const response = await http.get('/api/users/me');
+    if (response.data) {
+      // 구조 확인: ProfileEditPage는 response.data가 user 객체임
+      // ShippingForm 기존 로직은 response.data.data를 썼음.
+      // ProfileEditPage: user.value = response.data
+      // MyPage: user.value = userResponse.data.data
+      
+      // /api/users/me 응답 구조에 맞게 수정 필요.
+      // ProfileEditPage에서는 response.data를 바로 썼으므로 여기도 그렇게 처리하거나, 
+      // 안전하게 data.data 체크.
+      
+      // 하지만 ProfileEditPage 코드를 보면: user.value = response.data 라고 되어있음.
+      userInfo.value = response.data.data || response.data;
     }
   } catch (error) {
     console.error('회원 정보 조회 실패:', error);
@@ -528,40 +539,72 @@ defineExpose({
 
 /* [2. Product List Data (Mock)] */
 /* [2. Product List Data (API Fetch)] */
+import { fetchProductDetail } from '../../api/product.js';
+
 const products = ref([]);
 const shippingFee = ref(0);
 
-const fetchCartItems = async () => {
-    try {
-        const response = await http.get('/cart/my');
-        if (response.data && response.data.data) {
-            let cartItems = response.data.data;
+const fetchOrderItems = async () => {
+    const { productId, quantity, cartItemIds } = route.query;
+
+    // 1. 단일 상품 바로 구매 (ProductDetail -> Order)
+    if (productId) {
+        try {
+            const response = await fetchProductDetail(productId);
+            const product = response.data.data;
             
-            // query parameter로 전달된 cartItemIds가 있으면 해당 상품들만 필터링
-            const queryIds = route.query.cartItemIds;
-            if (queryIds) {
-                const selectedIds = queryIds.split(',').map(id => parseInt(id));
-                cartItems = cartItems.filter(item => 
-                    selectedIds.includes(item.cartItemId || item.id)
-                );
-            }
-            
-            products.value = cartItems.map(item => ({
-                cartItemId: item.cartItemId || item.id,
-                productId: item.productId, 
-                name: item.productName || item.name || '상품명 없음',
-                option: item.optionName || item.option || '옵션 없음',
-                quantity: item.quantity || item.qty || 1,
-                price: item.price || item.productPrice || 0,
-                image: item.imageUrl || item.image || item.thumbnail || 'https://via.placeholder.com/90x100?text=No+Image' 
-            }));
-            
-            // 배송비 계산 (예: 5만원 이상 무료)
+            // 단일 상품을 products 배열에 포맷 맞춰서 추가
+            products.value = [{
+                cartItemId: null, // 장바구니 아이템 아님
+                productId: product.productId,
+                name: product.name,
+                option: 'FREE', // [TODO] 옵션 정보가 필요하다면 추가 쿼리로 받거나 API 확장이 필요할 수 있음
+                quantity: parseInt(quantity) || 1,
+                price: product.price,
+                image: product.imageUrl // 이미지 경로 확인 필요 (formatImageUrl 등 사용 고려)
+            }];
+
+            // 배송비 계산
             const total = products.value.reduce((sum, p) => sum + (p.price * p.quantity), 0);
             shippingFee.value = total >= 50000 ? 0 : 3000;
+
+        } catch (error) {
+            console.error("상품 정보 조회 실패:", error);
+            alert("상품 정보를 불러올 수 없습니다.");
         }
-    } catch (error) {
-        console.error("장바구니 조회 실패:", error);
+    } 
+    // 2. 장바구니 선택 구매 (Cart -> Order)
+    else {
+        try {
+            const response = await http.get('/cart/my');
+            if (response.data && response.data.data) {
+                let cartItems = response.data.data;
+                
+                // query parameter로 전달된 cartItemIds가 있으면 해당 상품들만 필터링
+                if (cartItemIds) {
+                    const selectedIds = cartItemIds.split(',').map(id => parseInt(id));
+                    cartItems = cartItems.filter(item => 
+                        selectedIds.includes(item.cartItemId || item.id)
+                    );
+                }
+                
+                products.value = cartItems.map(item => ({
+                    cartItemId: item.cartItemId || item.id,
+                    productId: item.productId, 
+                    name: item.productName || item.name || '상품명 없음',
+                    option: item.optionName || item.option || '옵션 없음',
+                    quantity: item.quantity || item.qty || 1,
+                    price: item.price || item.productPrice || 0,
+                    image: item.imageUrl || item.image || item.thumbnail || 'https://via.placeholder.com/90x100?text=No+Image' 
+                }));
+                
+                // 배송비 계산 (예: 5만원 이상 무료)
+                const total = products.value.reduce((sum, p) => sum + (p.price * p.quantity), 0);
+                shippingFee.value = total >= 50000 ? 0 : 3000;
+            }
+        } catch (error) {
+            console.error("장바구니 조회 실패:", error);
+        }
     }
 };
 
@@ -648,18 +691,29 @@ const handleSubmit = async () => {
     // 3. 주문 데이터 준비
     const deliveryDto = getOrderDeliveryDto();
     
-    const orderRequest = {
+    const isDirectOrder = products.value.some(p => !p.cartItemId);
+    let apiUrl = '/api/v1/orders/cart';
+    let orderRequest = {
         receiverName: deliveryDto.receiverName,
         receiverPhone: deliveryDto.receiverPhone,
         address: deliveryDto.address,
         deliveryMessage: deliveryDto.deliveryMessage,
         email: deliveryDto.email,
-        cartItemIds: products.value.map(p => p.cartItemId),
     };
+
+    if (isDirectOrder) {
+        apiUrl = '/api/v1/orders/direct';
+        // 바로 주문은 보통 단일 상품
+        const item = products.value[0];
+        orderRequest.productId = item.productId;
+        orderRequest.count = item.quantity; // [수정] DTO 필드명은 count임 (에러 메시지 기반)
+    } else {
+        orderRequest.cartItemIds = products.value.map(p => p.cartItemId);
+    }
 
     // 4. API 호출
     try {
-        const response = await http.post('/api/v1/orders/cart', orderRequest);
+        const response = await http.post(apiUrl, orderRequest);
         if (response.status === 200 || response.status === 201) {
             const orderId = response.data.data;
             // 주문 완료 페이지로 리다이렉트
@@ -693,7 +747,7 @@ const handleSubmit = async () => {
 
 onMounted(() => {
   fetchUserInfo();
-  fetchCartItems();
+  fetchOrderItems();
 });
 </script>
 

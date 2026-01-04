@@ -75,7 +75,7 @@ public class Qna extends BaseTimeEntity {
 
     public void writeAnswer(String answer) {
         this.answer = answer;
-        this.answererId += answererId;
+        this.answererId = 1L;
         this.answeredAt = LocalDateTime.now();
         this.status = QnaStatus.ANSWERED;
     }

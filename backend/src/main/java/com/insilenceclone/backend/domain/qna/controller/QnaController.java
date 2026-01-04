@@ -4,8 +4,8 @@ import com.insilenceclone.backend.common.response.ApiResponse;
 import com.insilenceclone.backend.domain.qna.controller.dto.request.QnaAnswerRequest;
 import com.insilenceclone.backend.domain.qna.controller.dto.request.QnaCreateRequest;
 import com.insilenceclone.backend.domain.qna.controller.dto.request.QnaRequest;
-import com.insilenceclone.backend.domain.qna.controller.dto.response.QnaListResponse;
 import com.insilenceclone.backend.domain.qna.controller.dto.response.QnaResponse;
+import com.insilenceclone.backend.domain.qna.entity.Qna;
 import com.insilenceclone.backend.domain.qna.service.QnaService;
 import com.insilenceclone.backend.domain.user.security.CustomUser;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class QnaController {
 
     // 게시글 목록 조회
     @GetMapping
-    public ApiResponse<List<QnaListResponse>> getQanList() {
+    public ApiResponse<List<Qna>> getQanList() {
         return ApiResponse.success(service.getQnaList());
     }
 

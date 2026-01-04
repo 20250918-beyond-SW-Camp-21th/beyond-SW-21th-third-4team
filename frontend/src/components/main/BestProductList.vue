@@ -95,6 +95,8 @@ h2 {
   margin: 0;
   gap: 20px;
 }
+
+
 .prdList .item {
   width: calc(25% - 15px);
   margin-bottom: 30px;
