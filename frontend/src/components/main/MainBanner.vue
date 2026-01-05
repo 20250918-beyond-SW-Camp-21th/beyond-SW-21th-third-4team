@@ -46,8 +46,8 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 import bannerImg1 from '../../assets/images/banner2.png';
-import bannerImg2 from '../../assets/images/banner2.png';
-import bannerImg3 from '../../assets/images/banner2.png';
+import bannerImg2 from '../../assets/images/qqq.png';
+import bannerImg3 from '../../assets/images/bb.png';
 
 const modules = [Autoplay, Pagination];
 
@@ -61,18 +61,15 @@ const slides = ref([
     // buttonLink: 'https://www.insilence.co.kr/product/outlet_list.html?cate_no=572'
   },
   {
-    title: 'WOMEN — CLEARANCE SALE',
-    image: 'https://ambient.diskn.com/image/home/main/25FW/PC_2.png',
+    // title: 'Insilence',
+    image: bannerImg2,
     // link: 'https://www.insilence.co.kr/product/outlet_list.html?cate_no=556',
     buttonText: 'SHOP NOW',
     // buttonLink: '/magazine/sample.html'
   },
   {
-    title: 'FW25 EDITORIAL',
-    image: 'https://ambient.diskn.com/image/home/main/25FW/PC_3.png',
-    // link: 'https://www.insilence.co.kr/product/lookbook_detail.html?product_no=6808&cate_no=330&display_group=1',
-    buttonText: 'VIEW MORE',
-    // buttonLink: '/magazine/sample.html'
+    // title: 'FW25 EDITORIAL',
+    image: bannerImg3,
   }
 ]);
 
