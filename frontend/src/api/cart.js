@@ -4,7 +4,6 @@ import http from './http.js'
 /**
  * 장바구니 담기
  * POST /api/v1/cart/items
- * body: { productId: Long, quantity: Int }
  */
 export const addCartItem = (productId, quantity = 1) => {
     return http.post('/cart/items', { productId, quantity })
@@ -21,7 +20,6 @@ export const fetchMyCart = () => {
 /**
  * 장바구니 선택 삭제 (여러 개)
  * POST /api/v1/cart/items/delete
- * body: { cartItemIds: [Long, ...] }
  */
 export const deleteCartItems = (cartItemIds) => {
     return http.post('/cart/items/delete', { cartItemIds })
