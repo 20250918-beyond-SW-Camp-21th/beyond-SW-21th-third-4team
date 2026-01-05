@@ -4,7 +4,7 @@
 # 😄 팀소개
 |[김세현]()|[송형욱]()|[유찬연]()|[윤홍석]()|[이상준]()
 |:-:|:-:|:-:|:-:|:-:|
-| 회원 & 장바구니 <br>(Auth & Cart) | 주문 & 결제 <br>(Order) | 상품 상세 <br>(Detail) | 주문 내역 & UI <br>(History) | 메인 & 상품 목록 <br>(List) |
+| 회원 & 장바구니 <br>(Auth & Cart) | 주문 & 결제 <br>(Order) | 상품 상세 <br>(Detail) | 마이페이지 <br>(My Page) | 메인 & 상품 목록 <br>(List) |
 | <img width="200" alt="image" src="https://github.com/user-attachments/assets/001e59f9-6dff-41ff-acfc-8313dca7619f" /> | <img width="200" alt="image" src="https://github.com/user-attachments/assets/ae19cad1-7646-4ce8-ab47-2f39556440d1" /> | <img width="200" alt="image" src="https://github.com/user-attachments/assets/59d2112b-f7ee-4e51-8376-becfd0af9c9b" /> | <img width="200" alt="image" src="https://github.com/user-attachments/assets/67fdafd0-5f6f-4528-bc2f-79fdacfee03f" /> | <img width="200" alt="image" src="https://github.com/user-attachments/assets/072f6b8c-bbd8-4f1e-bdd8-271531867fcd" /> |
 
 ---
@@ -111,13 +111,46 @@ INSILENCE 웹 페이지를 클론 대상으로 선정했습니다.
 - 상품명
 - 가격 정보
 ---
-# 요구사항 정의서
+# 요구사항 명세서
+<details>
+<summary>요구사항 명세서  </summary>
+<div markdown="1">
+
+<img width="2226" height="1314" alt="image" src="https://github.com/user-attachments/assets/76ae5da1-14b8-47d5-b978-1656350a85b5" />
+
+
+</div>
+</details>
 
 ---
 # 스토리보드
+<details>
+<summary>스토리보드</summary>
+<div markdown="1">
+
+<img width="2238" height="1450" alt="image" src="https://github.com/user-attachments/assets/45191557-c5dc-4b39-9a3a-d408c39519a3" />
+<img width="1544" height="1094" alt="image" src="https://github.com/user-attachments/assets/b89eceb8-c013-4145-9e5c-3df77fed27df" />
+<img width="1544" height="1068" alt="image" src="https://github.com/user-attachments/assets/6bb480d9-71bb-454e-acdb-dd7be1672985" />
+<img width="1556" height="1062" alt="image" src="https://github.com/user-attachments/assets/d47717c9-7d9d-4b6a-8101-6b001ada5972" />
+<img width="1542" height="1040" alt="image" src="https://github.com/user-attachments/assets/4002a26a-3a31-4031-8a29-2ddab7e36a57" />
+<img width="1538" height="1034" alt="image" src="https://github.com/user-attachments/assets/dad9346e-552d-4658-863d-27b25db318b1" />
+<img width="1532" height="1030" alt="image" src="https://github.com/user-attachments/assets/91bb787c-76d6-4672-898f-e66697da4db9" />
+<img width="1534" height="1024" alt="image" src="https://github.com/user-attachments/assets/044de5ae-be44-4544-a067-60582c53a860" />
+
+</div>
+</details>
 
 ---
-# 태스트 케이스 명세서
+# 테스트 케이스 명세서
+<details>
+<summary>테스트 케이스 명세서  </summary>
+<div markdown="1">
+
+<img width="2960" height="1082" alt="image" src="https://github.com/user-attachments/assets/43b8a9e8-5349-437a-aa81-23aca274a0fa" />
+
+
+</div>
+</details>
 
 --- 
 # 🚀 추후 개선 및 확장 계획
@@ -136,8 +169,8 @@ Access Token(JWT) 기반 인증 사용
 # ✍️ 프로젝트 회고
 | 이름 | 회고 내용 |
 | :- |  :---- |
-| 김세현 |       |
-| 송형욱 |      |
-| 유찬연 |    |
-| 윤홍석 |       |
-| 이상준 |      |
+| 김세현 | 이번 프로젝트를 통해 백엔드로 구현한 API를 직접 프론트엔드에 연결하여 실제로 기능을 사용해보는 경험을 할 수 있었습니다. 프론트엔드와 백엔드를 함께 연동해보는 과정이 처음이라 어떤 기능을 백엔드에서 구현해야 하고 어떤 부분을 프론트엔드에서 처리해야 하는지 헷갈리는 순간도 있었지만 직접 부딪히며 구현해보면서 점차 역할의 경계를 이해할 수 있었습니다.<br>또한 기능별로 서로의 API를 호출하는 구조였기 때문에 원활한 개발을 위해 팀원 간의 소통이 얼마나 중요한지 체감할 수 있었습니다. 이번 프로젝트에서는 PR, 커밋 메시지, 이슈 관리, 브랜치 전략 등 협업을 위한 컨벤션을 미리 정하고 이를 기반으로 개발을 진행했는데 이 과정을 통해 협업에서 규칙이 왜 필요한지, 그리고 규칙이 개발 효율과 협업의 질을 얼마나 높여주는지 직접 경험할 수 있었습니다.      |
+| 송형욱 | 비록 프론트엔드 프로젝트였지만, 저희 팀은 화면을 예쁘게 꾸미는 것보다 백엔드와 프론트엔드의 연결에 더 집요하게 매달렸습니다. 팀원 모두 백엔드 개발에 뜻이 있다 보니, 단순히 API를 가져다 쓰는 것을 넘어 이 데이터가 서버에서 어떻게 가공되어 넘어오는지를 계속해서 고민했습니다. 덕분에 프론트엔드 로직을 짜면서도 백엔드의 구조를 깊이 이해하는 계기가 되었고, 개발자로서 한 단계 더 성장할 수 있었던 값진 시간이었습니다.     |
+| 유찬연 |  저는 이번 프로젝트를 통해 프론트 엔드와 백 엔드 연결을 경험해 볼 수 있었습니다. 프론트 프로젝트였지만 백 엔드 구현도 소홀히 하지 않아 이전 프로젝트들로 경험했던 백 엔드 구현을 다시 연습할 수 있었던 시간이었고, UI 구현은 클론 코딩을 진행하였기 때문에 큰 어려움이 없었지만 라우터 설정부터 백 엔드와 연결하는 것에서 매우 큰 어려움을 겪었습니다. 백 엔드 구현에 있어서 프론트를 고려하고 코드를 작성하는 것이 필요하다는 생각들이 들었고, 프론트에서 역시 백 엔드와 소통이 많이 필요하다는 사실을 알게 되었습니다. 다시 한 번 프로젝트에서의 소통이 중요하다는 사실을 깨달을 수 있었던 유익한 시간이었습니다.  |
+| 윤홍석 |  이번 프로젝트를 하면서 프론트의 대한 연습과 백엔드의 기초를 복습할 기회가 있어서 좋았습니다. 이번 프로젝트는 시간도 다른 단위보다 부족하고, 디자인이라는 한계에 부딪혀 클론 코딩으로 방향을 정했는데 나중에는 규모가 작더라도 완전한 프로젝트를 하고 싶습니다.     |
+| 이상준 | 쇼핑몰이라는 간단한 CRUD였지만 프론트엔드와 백엔드를 연결할때 어려움과 협업의 중요성을 느꼈습니다. 현재 사용하고 있는 사이트를 클론코딩했지만 프론트에 대해서 어떻게 작동하고 코드를 쳐야되는지 어떻게 백엔드와 연결해야되는지 알 수 있는 뜻깊은 프로젝트였습니다. 다음에는 조금 더 무거운 주제로 조금 더 크게 만들고 싶습니다. 감사합니다.     |
