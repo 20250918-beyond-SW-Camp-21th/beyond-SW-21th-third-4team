@@ -431,8 +431,8 @@ const userInfo = ref(null);
 
 const fetchUserInfo = async () => {
   try {
-    // [수정] 권한 에러(O002) 회피를 위해 ProfileEditPage와 동일한 경로 사용
-    const response = await http.get('/api/users/me');
+    // [수정] 회원 정보 조회 경로 수정 (/mypage/user-info)
+    const response = await http.get('/mypage/user-info');
     if (response.data) {
       // 구조 확인: ProfileEditPage는 response.data가 user 객체임
       // ShippingForm 기존 로직은 response.data.data를 썼음.
@@ -443,8 +443,9 @@ const fetchUserInfo = async () => {
       // ProfileEditPage에서는 response.data를 바로 썼으므로 여기도 그렇게 처리하거나, 
       // 안전하게 data.data 체크.
       
-      // 하지만 ProfileEditPage 코드를 보면: user.value = response.data 라고 되어있음.
-      userInfo.value = response.data.data || response.data;
+    if (response.data && response.data.data) {
+       userInfo.value = response.data.data;
+    }
     }
   } catch (error) {
     console.error('회원 정보 조회 실패:', error);
