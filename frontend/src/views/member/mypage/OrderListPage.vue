@@ -27,7 +27,7 @@
           <span class="state">상태</span>
           <select v-model="activeFilter" class="fSelect">
             <option value="ALL">전체 주문처리상태</option>
-            <option value="ORDERED">입금전</option>
+            <option value="ORDERED">결제완료</option>
             <option value="PREPARING">배송준비중</option>
             <option value="SHIPPING">배송중</option>
             <option value="DELIVERED">배송완료</option>

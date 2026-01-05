@@ -96,7 +96,7 @@ function formatPrice(price) {
 
 function getStatusText(status) {
   const statusMap = {
-    'ORDERED': '입금전',
+    'ORDERED': '결제완료',
     'PAYMENT_COMLETED': '결제완료',
     'PREPARING': '배송준비중',
     'SHIPPING': '배송중',
@@ -303,16 +303,16 @@ function cancelOrder() {
 /* Payment Detail */
 .payDetail {
   clear: both;
-  margin-top: 14px;
+  margin-top: 0;
 }
 
 .payDetail .title {
-  padding: 10px 14px;
-  margin: 0 -14px;
+  padding: 15px 0 5px;
+  margin: 15px 0 0;
   font-weight: normal;
-  border-top: 1px solid #d5d5d5;
-  border-bottom: 1px solid #d5d5d5;
-  background: #f8f8f8;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: none;
+  background: #fff;
 }
 
 .payDetail .title strong {
