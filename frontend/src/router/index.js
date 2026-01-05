@@ -20,7 +20,7 @@ const router = createRouter({
         ...productRoutes,
         ...qnaRoutes,
 
-        { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('../views/common/NotFound.vue') },
+        { path: '/:pathMatch(.*)*', redirect: '/' },
 
     ]
 })
