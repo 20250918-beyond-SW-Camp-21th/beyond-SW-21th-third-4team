@@ -19,6 +19,8 @@ const router = createRouter({
         ...cartRoutes,
         ...productRoutes,
         ...qnaRoutes,
+
+        { path: '/:pathMatch(.*)*', redirect: '/' },
     ]
 })
 
@@ -34,14 +36,14 @@ router.beforeEach((to, from, next) => {
         route => route.meta.guestOnly
     )
 
-    // 1️⃣ 로그인 필요한 페이지인데 토큰 없음
+    // 1) 로그인 필요한 페이지인데 토큰 없음
     if (requiresAuth && !token) {
         alert('로그인이 필요합니다.')
         next('/login')
         return
     }
 
-    // 2️⃣ 이미 로그인 했는데 로그인/회원가입 페이지 접근
+    // 2) 이미 로그인 했는데 로그인/회원가입 페이지 접근
     if (guestOnly && token) {
         next('/') // 또는 '/cart'
         return
