@@ -25,12 +25,14 @@
                 />
               </div>
 
-              <div class="item-image">
+              <div class="item-image" @click="goDetail(item.productId)" style="cursor:pointer">
                 <img :src="item.imageUrl" :alt="item.name" />
               </div>
 
               <div class="item-details">
-                <div class="item-name">{{ item.name }}</div>
+                <div class="item-name" @click="goDetail(item.productId)" style="cursor:pointer">
+                  {{ item.name }}
+                </div>
                 <div class="item-delivery-info">배송 : [무료] / 기본배송 (해외배송 가능)</div>
                 <div class="item-price">상품구매금액: <strong>KRW {{ format(item.price) }}</strong></div>
                 <div class="item-discount">할인금액: KRW -0</div>
@@ -197,6 +199,11 @@ const orderOne = (item) => {
       cartItemIds: item.cartItemId
     }
   })
+}
+
+const goDetail = (productId) => {
+  router.push({ name: 'ProductDetail', params: { productId } })
+  // 또는 router.push(`/product/${productId}`)
 }
 
 const orderSelected = () => {
