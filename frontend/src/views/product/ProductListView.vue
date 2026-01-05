@@ -411,7 +411,7 @@ const allProducts = [
     category: 'ACC',
     name: '워시드 캔버스 크로스백 BEIGE',
     link: '#',
-    image: 'https://ambient.diskn.com/detailimg/25SS/MEN/acc/IM2E2AC01/beige/250114_INSILENCE_DAY%20_1951%20%2898%29.jpg',
+    image: 'https://ambient.diskn.com/detailimg/25SS/MEN/acc/IM2E2AC01/beige/d01.jpg',
     salePrice: 'KRW 127,200'
   }
 ];
