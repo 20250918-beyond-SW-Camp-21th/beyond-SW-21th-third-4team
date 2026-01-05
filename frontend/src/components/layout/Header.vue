@@ -231,7 +231,7 @@ const accountItems = computed(() => {
   } else {
     return [
       { name: '로그인', link: '/login' },
-      { name: '회원가입', link: '/signup' },
+      { name: '회원가입', link: '/signup/terms' },
       { name: '마이 페이지', link: '/mypage' },
       { name: '주문조회', link: '/mypage/orders' },
     ];
