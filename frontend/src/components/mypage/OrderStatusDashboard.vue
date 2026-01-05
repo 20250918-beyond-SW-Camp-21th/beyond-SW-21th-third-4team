@@ -38,7 +38,7 @@ const props = defineProps({
 })
 
 const orderStatuses = computed(() => [
-  { key: 'ORDERED', label: '입금전', count: props.statusCounts.pending || 0 },
+  { key: 'ORDERED', label: '결제완료', count: props.statusCounts.pending || 0 },
   { key: 'PREPARING', label: '배송준비중', count: props.statusCounts.preparing || 0 },
   { key: 'SHIPPING', label: '배송중', count: props.statusCounts.shipped || 0 },
   { key: 'DELIVERED', label: '배송완료', count: props.statusCounts.delivered || 0 }

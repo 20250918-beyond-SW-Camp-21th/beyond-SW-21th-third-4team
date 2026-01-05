@@ -40,12 +40,12 @@
           <!-- filteredProducts: 현재 선택된 카테고리 상품만 보여줌 -->
           <div v-for="(product, index) in filteredProducts" :key="index" class="product-item">
             <div class="thumb">
-              <a :href="product.link">
+              <router-link :to="`/product/${product.id}`">
                 <img :src="product.image" alt="상품 이미지">
-              </a>
+              </router-link>
             </div>
             <div class="info">
-              <a :href="product.link" class="name">{{ product.name }}</a>
+              <router-link :to="`/product/${product.id}`" class="name">{{ product.name }}</router-link>
               <div class="price-wrap">
                 <span class="sale-price">{{ product.salePrice }}</span>
               </div>
@@ -89,6 +89,7 @@ const changeCategory = (categoryName) => {
 const allProducts = [
   // [OUTER]
   {
+    id: 1,
     category: 'OUTER',
     name: '칼라 플라이트 다운 푸퍼 KHAKI',
     link: '#',
@@ -96,6 +97,7 @@ const allProducts = [
     salePrice: 'KRW 248,000'
   },
   {
+    id: 2,
     category: 'OUTER',
     name: '칼라 플라이트 다운 푸퍼 BLACK',
     link: '#',
@@ -103,6 +105,7 @@ const allProducts = [
     salePrice: 'KRW 248,000'
   },
   {
+    id: 3,
     category: 'OUTER',
     name: '더블 레이어드 다운 자켓 BLACK',
     link: '#',
@@ -110,6 +113,7 @@ const allProducts = [
     salePrice: 'KRW 207,200'
   },
   {
+    id: 4,
     category: 'OUTER',
     name: '에센셜 다운 자켓 BLACK',
     link: '#',
@@ -117,6 +121,7 @@ const allProducts = [
     salePrice: 'KRW 141,600'
   },
   {
+    id: 5,
     category: 'OUTER',
     name: '마펠 캐시미어 발마칸 코트 MELANGE BROWN',
     link: '#',
@@ -124,6 +129,7 @@ const allProducts = [
     salePrice: 'KRW 319,200'
   },
   {
+    id: 6,
     category: 'OUTER',
     name: '캐시미어 더블 롱 코트 BLACK',
     link: '#',
@@ -131,6 +137,7 @@ const allProducts = [
     salePrice: 'KRW 248,000'
   },
   {
+    id: 7,
     category: 'OUTER',
     name: '울 캐시미어 카 코트 BLACK',
     link: '#',
@@ -138,6 +145,7 @@ const allProducts = [
     salePrice: 'KRW 284,000'
   },
   {
+    id: 8,
     category: 'OUTER',
     name: '솔리스트 캐시미어 코트 BLACK',
     link: '#',
@@ -145,6 +153,7 @@ const allProducts = [
     salePrice: 'KRW 212,800'
   },
   {
+    id: 9,
     category: 'OUTER',
     name: '퍼플렉 플라이트 푸퍼 BLACK',
     link: '#',
@@ -152,6 +161,7 @@ const allProducts = [
     salePrice: 'KRW 221,600'
   },
   {
+    id: 10,
     category: 'OUTER',
     name: '[UNISEX] N-2B 파일럿 파카 KHAKI BROWN',
     link: '#',
@@ -161,6 +171,7 @@ const allProducts = [
 
   // [TOP]
   {
+    id: 11,
     category: 'TOP',
     name: '리브 헨리넥 롱슬리브 MELANGE GREY',
     link: '#',
@@ -168,6 +179,7 @@ const allProducts = [
     salePrice: 'KRW 53,000'
   },
   {
+    id: 12,
     category: 'TOP',
     name: '라이트웨이트 집업 후디 BLACK',
     link: '#',
@@ -175,6 +187,7 @@ const allProducts = [
     salePrice: 'KRW 79,200'
   },
   {
+    id: 13,
     category: 'TOP',
     name: '스프라이프 럭비 폴로 BROWN',
     link: '#',
@@ -182,6 +195,7 @@ const allProducts = [
     salePrice: 'KRW 88,000'
   },
   {
+    id: 14,
     category: 'TOP',
     name: '버튼 다운 저지 셔츠 CHARCOAL',
     link: '#',
@@ -189,6 +203,7 @@ const allProducts = [
     salePrice: 'KRW 89,000'
   },
   {
+    id: 15,
     category: 'TOP',
     name: '버튼 다운 저지 셔츠 BLACK',
     link: '#',
@@ -196,6 +211,7 @@ const allProducts = [
     salePrice: 'KRW 87,000'
   },
   {
+    id: 16,
     category: 'TOP',
     name: '컷오프 롱슬리브 CHARCOAL',
     link: '#',
@@ -203,6 +219,7 @@ const allProducts = [
     salePrice: 'KRW 61,600'
   },
   {
+    id: 17,
     category: 'TOP',
     name: '리브 헨리넥 롱 슬리브 WHITE',
     link: '#',
@@ -210,6 +227,7 @@ const allProducts = [
     salePrice: 'KRW 53,000'
   },
   {
+    id: 18,
     category: 'TOP',
     name: '보더 스트라이프 롱슬리브 CHARCOAL',
     link: '#',
@@ -217,6 +235,7 @@ const allProducts = [
     salePrice: 'KRW 61,600'
   },
   {
+    id: 19,
     category: 'TOP',
     name: '오가닉 코튼 헨리넥 롱슬리브 DARK GREY',
     link: '#',
@@ -224,6 +243,7 @@ const allProducts = [
     salePrice: 'KRW 79,200'
   },
   {
+    id: 20,
     category: 'TOP',
     name: '루나 다잉 롱슬리브 MUD BEIGE',
     link: '#',
@@ -233,6 +253,7 @@ const allProducts = [
 
   // [BOTTOM]
   {
+    id: 21,
     category: 'BOTTOM',
     name: '스트라이브 카고 팬츠 MELANGE GREY',
     link: '#',
@@ -240,6 +261,7 @@ const allProducts = [
     salePrice: 'KRW 115,200'
   },
   {
+    id: 22,
     category: 'BOTTOM',
     name: '워시드 코튼 카고 팬츠 KHAKI BROWN',
     link: '#',
@@ -247,6 +269,7 @@ const allProducts = [
     salePrice: 'KRW 132,800'
   },
   {
+    id: 23,
     category: 'BOTTOM',
     name: '플라이트 카고 팬츠 BROWN',
     link: '#',
@@ -254,6 +277,7 @@ const allProducts = [
     salePrice: 'KRW 130,400'
   },
   {
+    id: 24,
     category: 'BOTTOM',
     name: '울 테이퍼드 팬츠 GREY',
     link: '#',
@@ -261,6 +285,7 @@ const allProducts = [
     salePrice: 'KRW 132,800'
   },
   {
+    id: 25,
     category: 'BOTTOM',
     name: '인시전 커브드 팬츠 BLACK',
     link: '#',
@@ -268,6 +293,7 @@ const allProducts = [
     salePrice: 'KRW 115,200'
   },
   {
+    id: 26,
     category: 'BOTTOM',
     name: '카펜터 데님 팬츠 RINSED',
     link: '#',
@@ -275,6 +301,7 @@ const allProducts = [
     salePrice: 'KRW 124,400'
   },
   {
+    id: 27,
     category: 'BOTTOM',
     name: '코드 데님 워크 팬츠 BROWN',
     link: '#',
@@ -282,6 +309,7 @@ const allProducts = [
     salePrice: 'KRW 143,600'
   },
   {
+    id: 28,
     category: 'BOTTOM',
     name: '커브드 와이드 진 BLUE',
     link: '#',
@@ -289,6 +317,7 @@ const allProducts = [
     salePrice: 'KRW 155,000'
   },
   {
+    id: 29,
     category: 'BOTTOM',
     name: '데미지 워시드 데님 팬츠 GREY',
     link: '#',
@@ -296,6 +325,7 @@ const allProducts = [
     salePrice: 'KRW 132,800'
   },
   {
+    id: 30,
     category: 'BOTTOM',
     name: '빈티지 컴뱃 카고 팬츠2 OLIVE',
     link: '#',
@@ -305,6 +335,7 @@ const allProducts = [
 
   // [ACC]
   {
+    id: 31,
     category: 'ACC',
     name: '실버 체인 디스트레스드 레더 벨트 DARK BROWN',
     link: '#',
@@ -312,6 +343,7 @@ const allProducts = [
     salePrice: 'KRW 49,000'
   },
   {
+    id: 32,
     category: 'ACC',
     name: '스페이드 키체인 네크리스 BLACK',
     link: '#',
@@ -319,6 +351,7 @@ const allProducts = [
     salePrice: 'KRW 46,200'
   },
   {
+    id: 33,
     category: 'ACC',
     name: '이펙트 씬 벨트 BLACK',
     link: '#',
@@ -326,6 +359,7 @@ const allProducts = [
     salePrice: 'KRW 65,000'
   },
   {
+    id: 34,
     category: 'ACC',
     name: '청키 크레이프솔 더비 BLACK',
     link: '#',
@@ -333,6 +367,7 @@ const allProducts = [
     salePrice: 'KRW 249,000'
   },
   {
+    id: 35,
     category: 'ACC',
     name: '라운드토 첼시 부츠 OIL BROWN',
     link: '#',
@@ -340,6 +375,7 @@ const allProducts = [
     salePrice: 'KRW 298,000'
   },
   {
+    id: 36,
     category: 'ACC',
     name: '볼드 스티치 스프리트 부츠 TAN BROWN',
     link: '#',
@@ -347,6 +383,7 @@ const allProducts = [
     salePrice: 'KRW 269,000'
   },
   {
+    id: 37,
     category: 'ACC',
     name: '리벳 포인트 크레페솔 샌들 BLACK',
     link: '#',
@@ -354,6 +391,7 @@ const allProducts = [
     salePrice: 'KRW 260,000'
   },
   {
+    id: 38,
     category: 'ACC',
     name: '위빙 피셔맨 샌들 WHITE',
     link: '#',
@@ -361,6 +399,7 @@ const allProducts = [
     salePrice: 'KRW 256,000'
   },
   {
+    id: 39,
     category: 'ACC',
     name: '워시드 코튼 메신저 백 KHAKI',
     link: '#',
@@ -368,6 +407,7 @@ const allProducts = [
     salePrice: 'KRW 135,200'
   },
   {
+    id: 40,
     category: 'ACC',
     name: '워시드 캔버스 크로스백 BEIGE',
     link: '#',
